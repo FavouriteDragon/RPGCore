@@ -12,44 +12,32 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class SkillLevelPunch extends SkillLevelBase implements IExtendedEntityProperties {
 	
-	public static String skillId = "skillPunch";
-	private final EntityPlayer player;
-
-	public String nbtSkillId = "";
+	public static String staticSkillId = "skillPunch";
 	
 	public SkillLevelPunch(EntityPlayer player, String skillID) {
+		skillId = "skillPunch";
 		skillName = "Punch";
-		this.player = player;
 		this.xp = 0;
-		//this.skillId = skillID;
 	}
 	
 	public static final void register(EntityPlayer player) {
-		player.registerExtendedProperties(SkillLevelPunch.skillId, new SkillLevelPunch(player, skillId));
+		player.registerExtendedProperties(SkillLevelPunch.staticSkillId, new SkillLevelPunch(player, staticSkillId));
 	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setInteger(nbtSkillId, xp);
+		nbt.setInteger(skillName, xp);
 		compound.setTag(skillId, nbt);
 	}
 
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = (NBTTagCompound) compound.getTag(skillId);
-		xp = nbt.getInteger(nbtSkillId);		
+		xp = nbt.getInteger(skillName);		
 	}
 
 	@Override public void init(Entity entity, World world) {}
-		
-	public static SkillLevelPunch get(EntityPlayer player) {
-		return (SkillLevelPunch) player.getExtendedProperties(skillId);
-	}
-	
-	public void copy(SkillLevelPunch properties) {
-		xp = properties.xp;
-	}
 	
 	@SubscribeEvent
 	public void onEntityConstructing(EntityConstructing event) {
@@ -62,14 +50,10 @@ public class SkillLevelPunch extends SkillLevelBase implements IExtendedEntityPr
 	public void onPunch(LivingAttackEvent event) {
 		//TODO Check if player has this skill equipped
 		if (event.source.getEntity() instanceof EntityPlayer) {
-			SkillLevelPunch skill = SkillLevelPunch.get((EntityPlayer) event.source.getEntity());
+			System.out.println("onPunch skillId: " + skillId);
+			SkillLevelPunch skill = (SkillLevelPunch) SkillLevelPunch.get((EntityPlayer) event.source.getEntity(), skillId);
 			skill.addXP(1);
 			System.out.println("It Punched! XP: " + skill.getXP());
 		}
-	}
-	
-	@SubscribeEvent
-	public void onClonePlayer(PlayerEvent.Clone event) {
-		SkillLevelPunch.get(event.entityPlayer).copy(SkillLevelPunch.get(event.original));
 	}
 }

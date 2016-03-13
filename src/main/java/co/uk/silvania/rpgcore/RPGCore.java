@@ -1,5 +1,6 @@
 package co.uk.silvania.rpgcore;
 
+import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import co.uk.silvania.rpgcore.skills.SkillLevelJump;
 import co.uk.silvania.rpgcore.skills.SkillLevelPunch;
 import cpw.mods.fml.common.Mod;
@@ -23,7 +24,7 @@ public class RPGCore {
     	network = NetworkRegistry.INSTANCE.newSimpleChannel("RPGCore");
     	
     	network.registerMessage(LevelPacket.Handler.class, LevelPacket.class, 0, Side.CLIENT);
-    	
+
     	SkillLevelJump skillJump = new SkillLevelJump(null, "skillJump");
     	SkillLevelPunch skillPunch = new SkillLevelPunch(null, "skillPunch");
 
@@ -43,6 +44,7 @@ public class RPGCore {
     	System.out.println("########## INIT ##########");
     	
     	MinecraftForge.EVENT_BUS.register(new HandlerOfEvents());
+    	MinecraftForge.EVENT_BUS.register(new SkillLevelBase());
     	MinecraftForge.EVENT_BUS.register(new SkillLevelJump(null, "skillJump"));
     	MinecraftForge.EVENT_BUS.register(new SkillLevelPunch(null, "skillPunch"));
     }

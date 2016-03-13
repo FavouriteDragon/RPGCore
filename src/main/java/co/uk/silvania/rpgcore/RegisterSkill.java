@@ -12,9 +12,7 @@ public class RegisterSkill {
 	
 	public static void register(SkillLevelBase skill) {
 		skillList.add(skill);
-		
-		System.out.println("Skill added to list: " + skill.skillName);
-		System.out.println("Class name: " + skill.getClass().getName());
+		System.out.println("[RPGCore] Skill " + skill.skillName + " loaded successfully!");
 	}
 
 }

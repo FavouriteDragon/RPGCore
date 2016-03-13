@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -26,24 +27,24 @@ public class HandlerOfEvents {
 		Minecraft mc = Minecraft.getMinecraft();
 		
 		for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
+			System.out.println("skillList: " + RegisterSkill.skillList.get(i));
 			SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
-			if (skillBase instanceof SkillLevelJump) {
-				SkillLevelJump jump = ((SkillLevelJump) skillBase).get((EntityPlayer) mc.thePlayer);
-				mc.fontRenderer.drawString("Name: " + jump.skillName + ", XP: " + jump.getXP(), 2, (i*10)+2, 16777215);
-			} else if (skillBase instanceof SkillLevelPunch) {
-				SkillLevelPunch punch = ((SkillLevelPunch) skillBase).get((EntityPlayer) mc.thePlayer);
-				mc.fontRenderer.drawString("Name: " + punch.skillName + ", XP: " + punch.getXP(), 2, (i*10)+2, 16777215);
-			}
+			SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
+			mc.fontRenderer.drawString("Name: " + skill.skillName + ", XP: " + skill.getXP(), 2, (i*10)+2, 16777215);
 		}
 	}
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void onPlayerJoinWorld(EntityJoinWorldEvent event) {
 		if (event.entity instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
-			SkillLevelBase level = SkillLevelBase.get((EntityPlayer) event.entity);
-			System.out.println("Sending data to client!");
-			//RPGCore.network.sendTo(new LevelPacket(level.getXP()), (EntityPlayerMP) event.entity);
+			for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
+				SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
+				System.out.println("skillID being sent to client: " + skillBase.skillId);
+				SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) event.entity, skillBase.skillId);
+				System.out.println("Sending data to client!");
+				RPGCore.network.sendTo(new LevelPacket(skill.getXP(), skill.skillId), (EntityPlayerMP) event.entity);
+			}
 		}
-	}*/
+	}
 
 }
