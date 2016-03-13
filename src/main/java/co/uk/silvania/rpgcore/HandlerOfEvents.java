@@ -1,8 +1,6 @@
 package co.uk.silvania.rpgcore;
 
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
-import co.uk.silvania.rpgcore.skills.SkillLevelJump;
-import co.uk.silvania.rpgcore.skills.SkillLevelPunch;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -11,15 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
 
 public class HandlerOfEvents {
-	
-	@SubscribeEvent
-	public void onFall(LivingFallEvent event) {
-		if (event.entity instanceof EntityPlayer) {
-		}
-	}
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
