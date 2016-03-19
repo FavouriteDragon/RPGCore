@@ -1,5 +1,6 @@
 package co.uk.silvania.rpgcore;
 
+import co.uk.silvania.rpgcore.network.LevelPacket;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

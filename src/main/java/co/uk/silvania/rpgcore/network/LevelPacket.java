@@ -1,4 +1,4 @@
-package co.uk.silvania.rpgcore;
+package co.uk.silvania.rpgcore.network;
 
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import cpw.mods.fml.common.network.ByteBufUtils;
