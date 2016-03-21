@@ -38,6 +38,16 @@ public class SkillsContainer extends Container {
                 }
             });
         }
+		
+		for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                this.addSlotToContainer(new Slot(inventory, j + (i + 1) * 9, 217 + i * 18, -26 + j * 18));
+            }
+        }
+
+        for (int i = 0; i < 9; ++i) {
+            this.addSlotToContainer(new Slot(inventory, i, 273, -26 + i * 18));
+        }
 	}
 
 	@Override

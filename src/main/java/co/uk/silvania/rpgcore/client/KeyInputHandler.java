@@ -13,7 +13,6 @@ public class KeyInputHandler {
 		Minecraft mc = Minecraft.getMinecraft();
 		if (KeyBindings.openSkills.isPressed()) {
 			RPGCore.network.sendToServer(new OpenGuiPacket(0));
-			//mc.thePlayer.openGui(RPGCore.instance, 0, mc.thePlayer.worldObj, (int) mc.thePlayer.posX, (int) mc.thePlayer.posY,( int) mc.thePlayer.posZ);
 			System.out.println("Open skills");
 		}
 	}
