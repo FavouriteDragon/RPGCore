@@ -1,8 +1,14 @@
 package co.uk.silvania.rpgcore;
 
+import co.uk.silvania.rpgcore.network.EquipNewSkillPacket;
+import co.uk.silvania.rpgcore.network.EquippedSkillsPacket;
 import co.uk.silvania.rpgcore.network.LevelPacket;
 import co.uk.silvania.rpgcore.network.OpenGuiPacket;
+import co.uk.silvania.rpgcore.skills.EquippedSkills;
+import co.uk.silvania.rpgcore.skills.SkillLevelAgility;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
+import co.uk.silvania.rpgcore.skills.SkillLevelStrength;
+import co.uk.silvania.rpgcore.skills.SkillLevelSwords;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -40,10 +46,24 @@ public class RPGCore {
     	
     	proxy.init();
     	
+    	SkillLevelAgility skillAgility = new SkillLevelAgility(null, "skillAgility");
+    	SkillLevelSwords skillSwords = new SkillLevelSwords(null, "skillSwords");
+    	SkillLevelStrength skillStrength = new SkillLevelStrength(null, "skillStrength");
+    	
+    	RegisterSkill.register(skillAgility);
+    	RegisterSkill.register(skillSwords);
+    	RegisterSkill.register(skillStrength);
+    	
     	network.registerMessage(LevelPacket.Handler.class, LevelPacket.class, 0, Side.CLIENT);
     	network.registerMessage(OpenGuiPacket.Handler.class, OpenGuiPacket.class, 1, Side.SERVER);
+    	network.registerMessage(EquippedSkillsPacket.Handler.class, EquippedSkillsPacket.class, 2, Side.CLIENT);
+    	network.registerMessage(EquipNewSkillPacket.Handler.class, EquipNewSkillPacket.class, 3, Side.SERVER);
     	
     	MinecraftForge.EVENT_BUS.register(new HandlerOfEvents());
     	MinecraftForge.EVENT_BUS.register(new SkillLevelBase());
+    	MinecraftForge.EVENT_BUS.register(new EquippedSkills());
+    	MinecraftForge.EVENT_BUS.register(new SkillLevelAgility(null, "skillAgility"));
+    	MinecraftForge.EVENT_BUS.register(new SkillLevelSwords(null, "skillSwords"));
+    	MinecraftForge.EVENT_BUS.register(new SkillLevelStrength(null, "skillStrength"));
     }
 }
