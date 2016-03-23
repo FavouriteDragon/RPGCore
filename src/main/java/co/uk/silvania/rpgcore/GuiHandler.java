@@ -1,5 +1,6 @@
 package co.uk.silvania.rpgcore;
 
+import co.uk.silvania.rpgcore.client.SkillListGui;
 import co.uk.silvania.rpgcore.client.SkillSelectGui;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +25,13 @@ public class GuiHandler implements IGuiHandler {
 		switch (id) {
 			case 0: {
 				return new SkillSelectGui(new SkillsContainer(player));
+			}
+			case 1: {
+				//AGI/STR stuff
+				return null;
+			}
+			case 2: {
+				return new SkillListGui();
 			}
 		}
 		return null;

@@ -5,7 +5,11 @@ import org.lwjgl.opengl.GL11;
 import co.uk.silvania.rpgcore.RPGCore;
 import co.uk.silvania.rpgcore.SkillsContainer;
 import co.uk.silvania.rpgcore.network.OpenGuiPacket;
+import co.uk.silvania.rpgcore.skills.EquippedSkills;
+import co.uk.silvania.rpgcore.skills.SkillLevelBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 public class SkillSelectGui extends GuiContainer {
@@ -16,6 +20,8 @@ public class SkillSelectGui extends GuiContainer {
 	
 	int xSize;
 	int ySize;
+	
+	public static int slotClicked = -1;
 	
 	public SkillSelectGui(SkillsContainer containerSkills) {
 		super(containerSkills);
@@ -34,6 +40,50 @@ public class SkillSelectGui extends GuiContainer {
 		
 		int left = (this.width - this.xSize) / 2;
 		int top  = (this.height - this.ySize) / 2;
+		
+		EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) Minecraft.getMinecraft().thePlayer);
+		
+		if (equippedSkills != null) {
+			
+			for (int i = 0; i < 7; i++) {
+				if (!equippedSkills.getSkillInSlot(i).isEmpty()) {
+					//System.out.println("Skill found in slot 0!");
+					SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(i), mc.thePlayer);
+					ResourceLocation icon;
+					int iconPosX = 0;
+					int iconPosZ = 0;
+					
+					GL11.glDisable(GL11.GL_LIGHTING);
+		            GL11.glDisable(GL11.GL_DEPTH_TEST);
+		            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		    		GL11.glEnable(GL11.GL_BLEND);
+					
+					if (skill != null) {
+						if (skill.skillIcon != null) {
+							mc.getTextureManager().bindTexture(skill.skillIcon);
+							iconPosX = skill.iconX;
+							iconPosZ = skill.iconZ;
+						} else {
+							mc.getTextureManager().bindTexture(new ResourceLocation(RPGCore.MODID, "textures/gui/skillicons.png"));
+							iconPosZ = 88;
+						}
+					}
+					
+					int xPos = 0;
+					int zPos = 0;
+					
+					if (i == 0) { xPos = 45;  zPos = 181; }
+					if (i == 1) { xPos = 17;  zPos = 113; }
+					if (i == 2) { xPos = 45;  zPos = 45;  }
+					if (i == 3) { xPos = 113; zPos = 17;  }
+					if (i == 4) { xPos = 181; zPos = 45;  }
+					if (i == 5) { xPos = 208; zPos = 113; }
+					if (i == 6) { xPos = 181; zPos = 181; }
+					
+					drawTexturedModalRect(((this.width - xSize) / 2) + xPos, ((this.height - ySize) / 2) + zPos, iconPosX, iconPosZ, 30, 30);
+				}
+			}
+		}
 		
 		if (skillSlot == 0) { slotX = 45;  slotZ = 181; }
 		if (skillSlot == 1) { slotX = 17;  slotZ = 113; }
@@ -78,8 +128,13 @@ public class SkillSelectGui extends GuiContainer {
         		//RPGCore.network.sendToServer(new OpenGuiPacket(1));
         	} else
         	System.out.println("Clicked Skill Slot " + skillSlot);
-        	RPGCore.network.sendToServer(new OpenGuiPacket(2));
+        	slotClicked = skillSlot;
+			openGui(2);
         }
+	}
+	
+	public void openGui(int id) {
+		mc.thePlayer.openGui(RPGCore.instance, id, mc.thePlayer.worldObj, (int) mc.thePlayer.posX, (int) mc.thePlayer.posY, (int) mc.thePlayer.posZ);
 	}
 	
 	@Override
