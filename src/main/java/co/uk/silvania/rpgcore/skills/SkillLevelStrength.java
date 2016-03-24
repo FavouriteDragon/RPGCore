@@ -25,7 +25,7 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 		iconX = 0;
 		iconZ = 0;
 		
-		incompatableSkills.add("skillAgility");
+		incompatableSkills.add("skillAgility"); 
 	}
 
 	@Override

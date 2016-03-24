@@ -102,7 +102,6 @@ public class EquippedSkills implements IExtendedEntityProperties {
 	
 	public int findSkillSlot(String skillId) {
 		for (int i = 0; i < skillSlots; i++) {
-			System.out.println("Finding skill " + skillId + ". Checking slot " + i + " and found skill " + getSkillInSlot(i));
 			if (getSkillInSlot(i).equals(skillId)) {
 				return i;
 			}

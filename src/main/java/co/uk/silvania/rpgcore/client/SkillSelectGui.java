@@ -132,7 +132,7 @@ public class SkillSelectGui extends GuiContainer {
             SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(skillSlot), mc.thePlayer);
             
 			if (skill != null) {
-				String[] text = {"\u00A7l" + skill.skillName, "Lvl: ", "XP: " + skill.getXP()};
+				String[] text = {"\u00A7l" + skill.skillName, "Lvl: " + skill.getLevel(), "XP: " + skill.getXP(), "getXPForLevel: " + skill.getXpForLevel(skill.getLevel()), "XpToNextLevel: " + skill.xpToNextLevel()};
 				List temp = Arrays.asList(text);
 				drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
 			}
