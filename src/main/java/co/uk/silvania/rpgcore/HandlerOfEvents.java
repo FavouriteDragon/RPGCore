@@ -20,10 +20,17 @@ public class HandlerOfEvents {
 	public void onRender(RenderGameOverlayEvent.Pre event) {
 		Minecraft mc = Minecraft.getMinecraft();
 		
+		int totalEquipped = 0;
+		
 		for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
 			SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
 			SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
-			mc.fontRenderer.drawString("Name: " + skill.skillName + ", XP: " + skill.getXP(), 2, (i*10)+2, 16777215);
+			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) Minecraft.getMinecraft().thePlayer);
+			
+			if (equippedSkills.isSkillEquipped(skill.skillId)) {
+				totalEquipped++;
+				mc.fontRenderer.drawString("Name: " + skill.skillName + ", XP: " + skill.getXP(), 2, ((totalEquipped-1)*10)+2, 16777215);
+			}
 		}
 	}
 	

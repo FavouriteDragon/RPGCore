@@ -1,5 +1,7 @@
 package co.uk.silvania.rpgcore.client;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 
 import co.uk.silvania.rpgcore.RPGCore;
@@ -11,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import scala.actors.threadpool.Arrays;
 
 public class SkillSelectGui extends GuiContainer {
 	
@@ -45,9 +48,8 @@ public class SkillSelectGui extends GuiContainer {
 		
 		if (equippedSkills != null) {
 			
-			for (int i = 0; i < 7; i++) {
+			for (int i = 0; i < equippedSkills.skillSlots; i++) {
 				if (!equippedSkills.getSkillInSlot(i).isEmpty()) {
-					//System.out.println("Skill found in slot 0!");
 					SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(i), mc.thePlayer);
 					ResourceLocation icon;
 					int iconPosX = 0;
@@ -64,9 +66,13 @@ public class SkillSelectGui extends GuiContainer {
 							iconPosX = skill.iconX;
 							iconPosZ = skill.iconZ;
 						} else {
-							mc.getTextureManager().bindTexture(new ResourceLocation(RPGCore.MODID, "textures/gui/skillicons.png"));
+							mc.getTextureManager().bindTexture(skillIcons);
 							iconPosZ = 88;
 						}
+					} else {
+						mc.getTextureManager().bindTexture(skillIcons);
+						iconPosX = 30;
+						iconPosZ = 88;
 					}
 					
 					int xPos = 0;
@@ -81,6 +87,12 @@ public class SkillSelectGui extends GuiContainer {
 					if (i == 6) { xPos = 181; zPos = 181; }
 					
 					drawTexturedModalRect(((this.width - xSize) / 2) + xPos, ((this.height - ySize) / 2) + zPos, iconPosX, iconPosZ, 30, 30);
+					
+					if (skill != null && skillSlot == i) {
+						String[] text = {"\u00A7l" + skill.skillName, "Lvl: ", "XP: " + skill.getXP()};
+						List temp = Arrays.asList(text);
+						drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
+					}
 				}
 			}
 		}
@@ -116,6 +128,14 @@ public class SkillSelectGui extends GuiContainer {
             GL11.glColorMask(true, true, true, true);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
+            
+            SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(skillSlot), mc.thePlayer);
+            
+			if (skill != null) {
+				String[] text = {"\u00A7l" + skill.skillName, "Lvl: ", "XP: " + skill.getXP()};
+				List temp = Arrays.asList(text);
+				drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
+			}
 		}
 	}
 	

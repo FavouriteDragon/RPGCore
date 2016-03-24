@@ -1,6 +1,7 @@
 package co.uk.silvania.rpgcore.network;
 
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
+import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -37,17 +38,41 @@ public class EquipNewSkillPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(EquipNewSkillPacket message, MessageContext ctx) {
-			EquippedSkills skills = (EquippedSkills) EquippedSkills.get(ctx.getServerHandler().playerEntity);
-			skills.setSkill(message.slotId, message.skillId);
+			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get(ctx.getServerHandler().playerEntity);
+			for (int i = 0; i < equippedSkills.skillSlots; i++) {
+				SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(i), ctx.getServerHandler().playerEntity);
+				SkillLevelBase newSkill = SkillLevelBase.getSkillByID(message.skillId, ctx.getServerHandler().playerEntity);
+				
+				if (skill != null) {
+					if (skill.skillId.equals(message.skillId)) {
+						System.out.println("Duplicate skill detected. Removing...");
+						equippedSkills.setSkill(i, "");
+					}
+					if (newSkill != null) {
+						for (int j = 0; j < newSkill.incompatableSkills.size(); j++) {
+							System.out.println("Iterating. " + j + ": " + newSkill.incompatableSkills.get(j));
+							if (newSkill.incompatableSkills.get(j).equals(skill.skillId)) {
+								System.out.println("Incompatable skill " + newSkill.incompatableSkills.get(j) + " detected. Incompatible with " + skill.skillId + ". Removing...?");
+								System.out.println("Slot: " + equippedSkills.findSkillSlot(newSkill.incompatableSkills.get(j)));
+								equippedSkills.setSkill(equippedSkills.findSkillSlot(newSkill.incompatableSkills.get(j)), "");
+							}
+						}
+					}
+				}
+			}
+			
+			equippedSkills.setSkill(message.slotId, message.skillId);
+			
+			
 			
 			return new EquippedSkillsPacket(
-				skills.getSkillInSlot(0), 
-				skills.getSkillInSlot(1), 
-				skills.getSkillInSlot(2), 
-				skills.getSkillInSlot(3), 
-				skills.getSkillInSlot(4), 
-				skills.getSkillInSlot(5), 
-				skills.getSkillInSlot(6)
+				equippedSkills.getSkillInSlot(0), 
+				equippedSkills.getSkillInSlot(1), 
+				equippedSkills.getSkillInSlot(2), 
+				equippedSkills.getSkillInSlot(3), 
+				equippedSkills.getSkillInSlot(4), 
+				equippedSkills.getSkillInSlot(5), 
+				equippedSkills.getSkillInSlot(6)
 			);
 		}
 	}

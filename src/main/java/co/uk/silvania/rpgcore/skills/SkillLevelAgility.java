@@ -1,5 +1,7 @@
 package co.uk.silvania.rpgcore.skills;
 
+import java.util.ArrayList;
+
 import co.uk.silvania.rpgcore.RPGCore;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
@@ -22,6 +24,8 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 		skillIcon = new ResourceLocation(RPGCore.MODID, "textures/gui/skills.png");
 		iconX = 30;
 		iconZ = 0;
+		
+		incompatableSkills.add("skillStrength");
 	}
 
 	@Override

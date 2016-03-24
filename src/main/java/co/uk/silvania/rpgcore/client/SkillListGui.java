@@ -1,9 +1,13 @@
 package co.uk.silvania.rpgcore.client;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 
 import co.uk.silvania.rpgcore.RPGCore;
 import co.uk.silvania.rpgcore.RegisterSkill;
+import co.uk.silvania.rpgcore.network.EquipNewSkillPacket;
+import co.uk.silvania.rpgcore.network.OpenGuiPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import cpw.mods.fml.client.GuiScrollingList;
@@ -25,6 +29,7 @@ public class SkillListGui extends GuiScreen {
 	public GuiButton buttonCancel;
 	public GuiButton buttonConfirm;
 	public GuiButton buttonDetails;
+	public GuiButton buttonClear;
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseZ, float partialTick) {	
@@ -38,7 +43,7 @@ public class SkillListGui extends GuiScreen {
 		int top  = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(left, top, 0, 0, this.xSize, this.ySize);
 		
-		
+		mc.fontRenderer.drawString("Selecting skill for slot " + SkillSelectGui.slotClicked, left+9, top+9, 4210752);
 		
 		super.drawScreen(mouseX, mouseZ, partialTick);
 	}
@@ -57,10 +62,12 @@ public class SkillListGui extends GuiScreen {
 		buttonCancel = new GuiButton(1, left+181, top+14, 68, 20, "Cancel");
 		buttonConfirm = new GuiButton(2, left+27, top+224, 92, 20, "Confirm Selection");
 		buttonDetails = new GuiButton(3, left+137, top+224, 92, 20, "Skill Details");
+		buttonClear = new GuiButton(4, left+9, top+23, 92, 20, "Clear Slot");
 		
 		buttonList.add(buttonCancel);
 		buttonList.add(buttonConfirm);
 		buttonList.add(buttonDetails);
+		buttonList.add(buttonClear);
 		
 		this.list = new SkillListScrollable(this, this.width, this.height, 256, 256);
 		this.list.registerScrollButtons(this.buttonList, 7, 8);
@@ -69,6 +76,7 @@ public class SkillListGui extends GuiScreen {
 	
 	private int selected = -1;
 	private SkillLevelBase selectedSkill;
+	ArrayList<SkillLevelBase> skillLevelList = RegisterSkill.skillList;
 	
 	public void selectModIndex(int index) {
         this.selected = index;
@@ -83,6 +91,28 @@ public class SkillListGui extends GuiScreen {
 
     public boolean modIndexSelected(int index) {
         return index == selected;
+    }
+    
+    @Override
+    public void actionPerformed(GuiButton button) {
+    	switch(button.id) {
+    	case 1:
+    		RPGCore.network.sendToServer(new OpenGuiPacket(0));
+    		break;
+    	case 2:
+    		if (selected >= 0) {
+	    		RPGCore.network.sendToServer(new EquipNewSkillPacket(SkillSelectGui.slotClicked, skillLevelList.get(selected).skillId));
+				RPGCore.network.sendToServer(new OpenGuiPacket(0));
+    		}
+    		break;
+    	case 3:
+    		System.out.println("Details not yet implemented.");
+    		break;
+    	case 4:
+    		RPGCore.network.sendToServer(new EquipNewSkillPacket(SkillSelectGui.slotClicked, ""));
+			RPGCore.network.sendToServer(new OpenGuiPacket(0));
+			break;
+    	}
     }
 
 }

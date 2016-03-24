@@ -1,5 +1,7 @@
 package co.uk.silvania.rpgcore.skills;
 
+import java.util.ArrayList;
+
 import co.uk.silvania.rpgcore.RegisterSkill;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
@@ -18,6 +20,8 @@ public class SkillLevelBase {
 	public int iconZ;
 	public String skillName;
 	public String skillId;
+	
+	public ArrayList<String> incompatableSkills = new ArrayList<String>();
 	
 	public SkillLevelBase() {
 		this.xp = 0;

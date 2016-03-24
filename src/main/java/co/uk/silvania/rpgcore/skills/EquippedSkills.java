@@ -19,29 +19,27 @@ public class EquippedSkills implements IExtendedEntityProperties {
 	public String skillId5;
 	public String skillId6;
 	
+	public int skillSlots = 7;
+	
 	public EquippedSkills() {}
 	
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		System.out.println("Saving skills. Slot0: " + skillId0);
-		nbt.setString("slot0", skillId0);
-		nbt.setString("slot1", skillId1);
-		nbt.setString("slot2", skillId2);
-		nbt.setString("slot3", skillId3);
-		nbt.setString("slot4", skillId4);
-		nbt.setString("slot5", skillId5);
-		nbt.setString("slot6", skillId6);
+		//Empty skills prevent accidentally setting them to null; which wipes the data entirely. 
+		nbt.setString("slot0", skillId0 + "");
+		nbt.setString("slot1", skillId1 + "");
+		nbt.setString("slot2", skillId2 + "");
+		nbt.setString("slot3", skillId3 + "");
+		nbt.setString("slot4", skillId4 + "");
+		nbt.setString("slot5", skillId5 + "");
+		nbt.setString("slot6", skillId6 + "");
 		compound.setTag("equippedSkills", nbt);		
 	}
 
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = (NBTTagCompound) compound.getTag("equippedSkills");
-		System.out.println("Loading skills. Slot0: " + nbt.getString("slot0"));
-		System.out.println("Loading skills. Slot1: " + nbt.getString("slot1"));
-		System.out.println("Loading skills. Slot2: " + nbt.getString("slot2"));
-		System.out.println("Loading skills. Slot3: " + nbt.getString("slot3"));
 		skillId0 = nbt.getString("slot0");
 		skillId1 = nbt.getString("slot1");
 		skillId2 = nbt.getString("slot2");
@@ -100,5 +98,19 @@ public class EquippedSkills implements IExtendedEntityProperties {
 		if (slot == 5 && skillId5 != null) { return skillId5; }
 		if (slot == 6 && skillId6 != null) { return skillId6; }
 		return " ";
+	}
+	
+	public int findSkillSlot(String skillId) {
+		for (int i = 0; i < skillSlots; i++) {
+			System.out.println("Finding skill " + skillId + ". Checking slot " + i + " and found skill " + getSkillInSlot(i));
+			if (getSkillInSlot(i).equals(skillId)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public boolean isSkillEquipped(String skillId) {
+		return findSkillSlot(skillId) != -1;
 	}
 }
