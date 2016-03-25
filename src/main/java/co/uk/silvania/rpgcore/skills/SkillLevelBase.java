@@ -122,4 +122,6 @@ public class SkillLevelBase {
 		}
 		return null;
 	}
+	
+	public void openGui() {}
 }
