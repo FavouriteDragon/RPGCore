@@ -1,5 +1,6 @@
 package co.uk.silvania.rpgcore.network;
 
+import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -37,9 +38,15 @@ public class LevelPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(LevelPacket message, MessageContext ctx) {
-			SkillLevelBase level = (SkillLevelBase) SkillLevelBase.get((EntityPlayer) Minecraft.getMinecraft().thePlayer, message.skillId);
-			System.out.println("PACKET RECEIVED! SKILLID: " + message.skillId + ", XP: " + message.xp);
-			level.setXP(message.xp);
+			if (message.skillId.equalsIgnoreCase(GlobalLevel.staticSkillId)) {
+				System.out.println("####### GLOBAL LEVEL RECEIVED. XP: " +message.xp);
+				GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) Minecraft.getMinecraft().thePlayer);
+				glevel.setXP((message.xp)/10.0F);
+			} else {
+				SkillLevelBase level = (SkillLevelBase) SkillLevelBase.get((EntityPlayer) Minecraft.getMinecraft().thePlayer, message.skillId);
+				System.out.println("PACKET RECEIVED! SKILLID: " + message.skillId + ", XP: " + message.xp);
+				level.setXP(message.xp);
+			}
 			return null;
 		}
 	}

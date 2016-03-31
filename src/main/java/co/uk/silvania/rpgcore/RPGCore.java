@@ -5,8 +5,10 @@ import co.uk.silvania.rpgcore.network.EquippedSkillsPacket;
 import co.uk.silvania.rpgcore.network.LevelPacket;
 import co.uk.silvania.rpgcore.network.OpenGuiPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
+import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelAgility;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
+import co.uk.silvania.rpgcore.skills.SkillLevelHealth;
 import co.uk.silvania.rpgcore.skills.SkillLevelStrength;
 import co.uk.silvania.rpgcore.skills.SkillLevelSwords;
 import cpw.mods.fml.common.Mod;
@@ -49,10 +51,16 @@ public class RPGCore {
     	SkillLevelAgility skillAgility = new SkillLevelAgility(null, "skillAgility");
     	SkillLevelSwords skillSwords = new SkillLevelSwords(null, "skillSwords");
     	SkillLevelStrength skillStrength = new SkillLevelStrength(null, "skillStrength");
+    	SkillLevelHealth skillHealth = new SkillLevelHealth(null, "skillHealth");
+    	
+    	//Global level is NOT registered as it's not a normal skill, and shouldn't appear in lists etc.
+    	//This only works because it's within the mod. Registration is required for external skills.
+    	GlobalLevel gLevel = new GlobalLevel(null, "globalLevel");
     	
     	RegisterSkill.register(skillAgility);
     	RegisterSkill.register(skillSwords);
     	RegisterSkill.register(skillStrength);
+    	RegisterSkill.register(skillHealth);
     	
     	network.registerMessage(LevelPacket.Handler.class, LevelPacket.class, 0, Side.CLIENT);
     	network.registerMessage(OpenGuiPacket.Handler.class, OpenGuiPacket.class, 1, Side.SERVER);
@@ -62,8 +70,10 @@ public class RPGCore {
     	MinecraftForge.EVENT_BUS.register(new HandlerOfEvents());
     	MinecraftForge.EVENT_BUS.register(new SkillLevelBase());
     	MinecraftForge.EVENT_BUS.register(new EquippedSkills());
+    	MinecraftForge.EVENT_BUS.register(new GlobalLevel(null, "globalLevel"));
     	MinecraftForge.EVENT_BUS.register(new SkillLevelAgility(null, "skillAgility"));
     	MinecraftForge.EVENT_BUS.register(new SkillLevelSwords(null, "skillSwords"));
     	MinecraftForge.EVENT_BUS.register(new SkillLevelStrength(null, "skillStrength"));
+    	MinecraftForge.EVENT_BUS.register(new SkillLevelHealth(null, "skillHealth"));
     }
 }

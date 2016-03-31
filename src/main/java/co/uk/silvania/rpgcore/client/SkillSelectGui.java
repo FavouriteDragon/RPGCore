@@ -5,13 +5,19 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import co.uk.silvania.rpgcore.RPGCore;
+import co.uk.silvania.rpgcore.RegisterSkill;
 import co.uk.silvania.rpgcore.SkillsContainer;
-import co.uk.silvania.rpgcore.network.OpenGuiPacket;
+import co.uk.silvania.rpgcore.network.EquipNewSkillPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
+import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import scala.actors.threadpool.Arrays;
 
@@ -21,6 +27,8 @@ public class SkillSelectGui extends GuiContainer {
 	public static final ResourceLocation skillEquip2 = new ResourceLocation(RPGCore.MODID, "textures/gui/skillequip2.png");
 	public static final ResourceLocation skillIcons  = new ResourceLocation(RPGCore.MODID, "textures/gui/skillicons.png");
 	
+	private IInventory playerInv;
+	
 	int xSize;
 	int ySize;
 	
@@ -29,6 +37,8 @@ public class SkillSelectGui extends GuiContainer {
 	public SkillSelectGui(SkillsContainer containerSkills) {
 		super(containerSkills);
 		
+		playerInv = containerSkills.inventory;
+		
 		xSize = 256;
 		ySize = 256;
 	}
@@ -36,13 +46,77 @@ public class SkillSelectGui extends GuiContainer {
 	@Override
 	public void drawScreen(int mouseX, int mouseZ, float par3) {
 		super.drawScreen(mouseX, mouseZ, par3);
+	}
+	
+	protected void mouseClicked(int mouseX, int mouseZ, int buttonId) {
+        super.mouseClicked(mouseX, mouseZ, buttonId);
+        int skillSlot = getSkillSlotHover(mouseX, mouseZ);
+        boolean openGui = true;
+        
+        if (skillSlot >= 0) {
+        	if ((skillSlot == 4 && mc.thePlayer.inventory.armorItemInSlot(0) != null) || 
+        		(skillSlot == 5 && mc.thePlayer.inventory.armorItemInSlot(1) != null) || 
+        		(skillSlot == 7 && mc.thePlayer.inventory.armorItemInSlot(2) != null) || 
+        		(skillSlot == 8 && mc.thePlayer.inventory.armorItemInSlot(3) != null)) {
+        		//Equipment slot used for armour. Do not equip skill.
+        		//TODO allow removal of armour here.
+        		if (skillSlot == 4) { System.out.println("Armour in slot: " + mc.thePlayer.inventory.armorItemInSlot(0).getDisplayName()); }
+        		if (skillSlot == 5) { System.out.println("Armour in slot: " + mc.thePlayer.inventory.armorItemInSlot(1).getDisplayName()); }
+        		if (skillSlot == 7) { System.out.println("Armour in slot: " + mc.thePlayer.inventory.armorItemInSlot(2).getDisplayName()); }
+        		if (skillSlot == 8) { System.out.println("Armour in slot: " + mc.thePlayer.inventory.armorItemInSlot(3).getDisplayName()); }
+        		
+        		openGui = false;
+        		System.out.println("No skills while wearing armour!");
+        	}
+        	System.out.println("Clicked Skill Slot " + skillSlot);
+        	slotClicked = skillSlot;
+			if (openGui) { openGui(2); }
+        }
+	}
+	
+	public void openGui(int id) {
+		mc.thePlayer.openGui(RPGCore.instance, id, mc.thePlayer.worldObj, (int) mc.thePlayer.posX, (int) mc.thePlayer.posY, (int) mc.thePlayer.posZ);
+	}
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer(int x, int z) {
+		int left = -40;
+		int top  = -45;
+		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(mc.thePlayer);
+		
+		
+		mc.fontRenderer.drawString("\u00A7l" + mc.thePlayer.getDisplayName(), left - 100, top + 17, 4210752);
+		mc.fontRenderer.drawString("Global Level: " + glevel.getLevel(), left - 100, top + 27, 4210752);
+		mc.fontRenderer.drawString("XP: " + glevel.getXPForPrint(), left - 100, top + 37, 4210752);
+		mc.fontRenderer.drawString("Guild: ", left - 100, top + 50, 4210752);
+		mc.fontRenderer.drawString("Faction: ", left - 100, top + 60, 4210752);
+		mc.fontRenderer.drawString("\u00A7lParty", left - 100, top + 80, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player1", left - 98, top + 94, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player2", left - 98, top + 108, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player3", left - 98, top + 122, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player4", left - 98, top + 136, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player5", left - 98, top + 150, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player6", left - 98, top + 164, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player7", left - 98, top + 178, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player8", left - 98, top + 192, 4210752);
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mouseX, int mouseZ) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glEnable(GL11.GL_BLEND);
+		this.mc.getTextureManager().bindTexture(skillEquip); //Main skill pane
+		int left = (this.width - this.xSize) / 2;
+		int top  = (this.height - this.ySize) / 2;
+		this.drawTexturedModalRect(left, top, 0, 0, this.xSize, this.ySize);
+		
+		this.mc.getTextureManager().bindTexture(skillEquip2); //Item inventory on the side (Skill window is a full 256x texture)
+		this.drawTexturedModalRect(left+this.xSize, top+11, 0, 0, 81, 198);
+		this.drawTexturedModalRect(left-106, top+11, 150, 0, 106, 198);
 		
 		int skillSlot = getSkillSlotHover(mouseX, mouseZ);
 		int slotX = 0;
 		int slotZ = 0;
-		
-		int left = (this.width - this.xSize) / 2;
-		int top  = (this.height - this.ySize) / 2;
 		
 		EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) Minecraft.getMinecraft().thePlayer);
 		
@@ -71,40 +145,94 @@ public class SkillSelectGui extends GuiContainer {
 						}
 					} else {
 						mc.getTextureManager().bindTexture(skillIcons);
-						iconPosX = 30;
-						iconPosZ = 88;
+						iconPosX = 226;
+						iconPosZ = 226;
 					}
 					
 					int xPos = 0;
 					int zPos = 0;
 					
-					if (i == 0) { xPos = 45;  zPos = 181; }
-					if (i == 1) { xPos = 17;  zPos = 113; }
-					if (i == 2) { xPos = 45;  zPos = 45;  }
-					if (i == 3) { xPos = 113; zPos = 17;  }
-					if (i == 4) { xPos = 181; zPos = 45;  }
-					if (i == 5) { xPos = 208; zPos = 113; }
-					if (i == 6) { xPos = 181; zPos = 181; }
+					if (i == 0)  { xPos = 113;  zPos = 17;  }
+					if (i == 1)  { xPos = 161;  zPos = 30;  }
+					if (i == 2)  { xPos = 196;  zPos = 65;  }
+					if (i == 3)  { xPos = 209;  zPos = 113; }
+					if (i == 4)  { xPos = 196;  zPos = 161; }
+					if (i == 5)  { xPos = 161;  zPos = 196; }
+					if (i == 6)  { xPos = 113;  zPos = 209; }
+					if (i == 7)  { xPos = 65;   zPos = 196; }
+					if (i == 8)  { xPos = 30;   zPos = 161; }
+					if (i == 9)  { xPos = 17;   zPos = 113; }
+					if (i == 10) { xPos = 30;   zPos = 64; }
+					if (i == 11) { xPos = 65;   zPos = 29; }
 					
 					drawTexturedModalRect(((this.width - xSize) / 2) + xPos, ((this.height - ySize) / 2) + zPos, iconPosX, iconPosZ, 30, 30);
 					
-					if (skill != null && skillSlot == i) {
-						String[] text = {"\u00A7l" + skill.skillName, "Lvl: ", "XP: " + skill.getXP()};
+					/*if (skill != null && skillSlot == i) {
+						String[] text = {"\u00A7l" + skill.skillName, "Lvl: " + skill.getLevel(), "XP: " + skill.getXP()};
 						List temp = Arrays.asList(text);
 						drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
-					}
+					}*/
 				}
 			}
 		}
 		
-		if (skillSlot == 0) { slotX = 45;  slotZ = 181; }
-		if (skillSlot == 1) { slotX = 17;  slotZ = 113; }
-		if (skillSlot == 2) { slotX = 45;  slotZ = 45;  }
-		if (skillSlot == 3) { slotX = 113; slotZ = 17;  }
-		if (skillSlot == 4) { slotX = 181; slotZ = 45;  }
-		if (skillSlot == 5) { slotX = 208; slotZ = 113; }
-		if (skillSlot == 6) { slotX = 181; slotZ = 181; }
+		GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        
+		if (mc.thePlayer.inventory.armorItemInSlot(0) != null) {
+			IIcon icon = mc.thePlayer.inventory.armorItemInSlot(0).getIconIndex();
+			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+			drawTexturedModelRectFromIcon(left + 198, top + 163, icon, 26, 26);
+			
+			if (equippedSkills.getSkillInSlot(4).length() >= 3) {
+				RPGCore.network.sendToServer(new EquipNewSkillPacket(4, ""));
+			}
+		}
 		
+		if (mc.thePlayer.inventory.armorItemInSlot(1) != null) {
+			IIcon icon = mc.thePlayer.inventory.armorItemInSlot(1).getIconIndex();
+			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+			drawTexturedModelRectFromIcon(left + 163, top + 198, icon, 26, 26);
+			
+			if (equippedSkills.getSkillInSlot(5).length() >= 3) {
+				RPGCore.network.sendToServer(new EquipNewSkillPacket(5, ""));
+			}
+		}
+		
+		if (mc.thePlayer.inventory.armorItemInSlot(2) != null) {
+			IIcon icon = mc.thePlayer.inventory.armorItemInSlot(2).getIconIndex();
+			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+			drawTexturedModelRectFromIcon(left + 67, top + 198, icon, 26, 26);
+			
+			if (equippedSkills.getSkillInSlot(7).length() >= 3) {
+				RPGCore.network.sendToServer(new EquipNewSkillPacket(7, ""));
+			}
+		}
+		
+		if (mc.thePlayer.inventory.armorItemInSlot(3) != null) {
+			IIcon icon = mc.thePlayer.inventory.armorItemInSlot(3).getIconIndex();
+			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+			drawTexturedModelRectFromIcon(left + 32, top + 163, icon, 26, 26);
+			
+			if (equippedSkills.getSkillInSlot(8).length() >= 3) {
+				RPGCore.network.sendToServer(new EquipNewSkillPacket(8, ""));
+			}
+		}
+		
+		if (skillSlot == 0)  { slotX = 113;  slotZ = 17;  }
+		if (skillSlot == 1)  { slotX = 161;  slotZ = 30;  }
+		if (skillSlot == 2)  { slotX = 196;  slotZ = 65;  }
+		if (skillSlot == 3)  { slotX = 209;  slotZ = 113; }
+		if (skillSlot == 4)  { slotX = 196;  slotZ = 161; }
+		if (skillSlot == 5)  { slotX = 161;  slotZ = 196; }
+		if (skillSlot == 6)  { slotX = 113;  slotZ = 209; }
+		if (skillSlot == 7)  { slotX = 65;   slotZ = 196; }
+		if (skillSlot == 8)  { slotX = 30;   slotZ = 161; }
+		if (skillSlot == 9)  { slotX = 17;   slotZ = 113; }
+		if (skillSlot == 10) { slotX = 30;   slotZ = 64; }
+		if (skillSlot == 11) { slotX = 65;   slotZ = 29; }
+
 		if (skillSlot >= 0) {
 			GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -139,53 +267,22 @@ public class SkillSelectGui extends GuiContainer {
 		}
 	}
 	
-	protected void mouseClicked(int mouseX, int mouseZ, int buttonId) {
-        super.mouseClicked(mouseX, mouseZ, buttonId);
-        int skillSlot = getSkillSlotHover(mouseX, mouseZ);
-        if (skillSlot >= 0) {
-        	if (skillSlot == 4) {
-        		System.out.println("Clicked AGI/STR Slot");
-        		//RPGCore.network.sendToServer(new OpenGuiPacket(1));
-        	} else
-        	System.out.println("Clicked Skill Slot " + skillSlot);
-        	slotClicked = skillSlot;
-			openGui(2);
-        }
-	}
-	
-	public void openGui(int id) {
-		mc.thePlayer.openGui(RPGCore.instance, id, mc.thePlayer.worldObj, (int) mc.thePlayer.posX, (int) mc.thePlayer.posY, (int) mc.thePlayer.posZ);
-	}
-	
-	@Override
-	protected void drawGuiContainerForegroundLayer(int x, int z) {
-		
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glEnable(GL11.GL_BLEND);
-		this.mc.getTextureManager().bindTexture(skillEquip); //Main skill pane
-		int left = (this.width - this.xSize) / 2;
-		int top  = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect(left, top, 0, 0, this.xSize, this.ySize);
-		
-		this.mc.getTextureManager().bindTexture(skillEquip2); //Item inventory on the side (Skill window is a full 256x texture)
-		this.drawTexturedModalRect(left+this.xSize, top+11, 0, 0, 81, 176);
-	}
-	
 	public int getSkillSlotHover(int mouseX, int mouseZ) {
 		int left = (this.width - this.xSize) / 2;
 		int top  = (this.height - this.ySize) / 2;
 		
-		if (isMouseWithinCircle(mouseX, mouseZ, left + 45,  top + 181)) { return 0; }
-		if (isMouseWithinCircle(mouseX, mouseZ, left + 17,  top + 113)) { return 1; }
-		if (isMouseWithinCircle(mouseX, mouseZ, left + 45,  top + 45))  { return 2; }		
-		if (isMouseWithinCircle(mouseX, mouseZ, left + 113, top + 17))  { return 3; }
-		if (isMouseWithinCircle(mouseX, mouseZ, left + 181, top + 45))  { return 4; }
-		if (isMouseWithinCircle(mouseX, mouseZ, left + 208, top + 113)) { return 5; }
-		if (isMouseWithinCircle(mouseX, mouseZ, left + 181, top + 181)) { return 6; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 113, top + 17))  { return 0; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 161, top + 30))  { return 1; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 196, top + 65))  { return 2; }		
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 209, top + 113)) { return 3; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 196, top + 161)) { return 4; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 161, top + 196)) { return 5; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 113, top + 209)) { return 6; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 65,  top + 196)) { return 7; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 30,  top + 161)) { return 8; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 17,  top + 113)) { return 9; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 30,  top + 64))  { return 10; }
+		if (isMouseWithinCircle(mouseX, mouseZ, left + 65,  top + 29))  { return 11; }
 		
 		return -1;
 	}

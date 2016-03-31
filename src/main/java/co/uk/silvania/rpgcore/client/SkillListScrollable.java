@@ -59,7 +59,13 @@ public class SkillListScrollable extends GuiScrollingList {
 			RPGCore.network.sendToServer(new EquipNewSkillPacket(SkillSelectGui.slotClicked, skillList.get(index).skillId));
 			RPGCore.network.sendToServer(new OpenGuiPacket(0));
 		}
-		parent.selectModIndex(index);
+		
+		SkillLevelBase skillBase = skillList.get(index);
+		SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
+		
+		if (skill.canSkillBeEquipped(mc.thePlayer)) {
+			parent.selectModIndex(index);
+		}
 	}
 
 	@Override
@@ -81,7 +87,18 @@ public class SkillListScrollable extends GuiScrollingList {
         GL11.glDisable(GL11.GL_FOG);
         GL11.glColor4f(1,1,1,1);
         
+        SkillLevelBase skillBase = skillList.get(listIndex);
+		SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
+        
         int offset = 0;
+        
+        if (!skill.canSkillBeEquipped(mc.thePlayer)) {
+        	offset = 88;
+        }
+        
+        if (!skill.isSkillCompatable(mc.thePlayer)) {
+        	offset = 132;
+        }
         
         if (isSelected(listIndex)) {
         	offset = 44;
@@ -89,20 +106,19 @@ public class SkillListScrollable extends GuiScrollingList {
         
         mc.getTextureManager().bindTexture(skillIcons);
         gui.drawTexturedModalRect(((this.width - xSize) / 2) + 10, height, 0, 0 + offset, 236, 44);
-        
-		SkillLevelBase skillBase = skillList.get(listIndex);
-		SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
 		
-		if (skill.skillIcon != null) {
-			mc.getTextureManager().bindTexture(skill.skillIcon);
-			gui.drawTexturedModalRect(((this.width - xSize) / 2) + 18, height + 7, skill.iconX, skill.iconZ, 30, 30);
-		} else {
-			gui.drawTexturedModalRect(((this.width - xSize) / 2) + 18, height + 7, 0, 88, 30, 30);
+		if (skill != null) {
+			if (skill.skillIcon != null) {
+				mc.getTextureManager().bindTexture(skill.skillIcon);
+				gui.drawTexturedModalRect(((this.width - xSize) / 2) + 18, height + 7, skill.iconX, skill.iconZ, 30, 30);
+			} else {
+				gui.drawTexturedModalRect(((this.width - xSize) / 2) + 18, height + 7, 0, 176, 30, 30);
+			}
+			
+			mc.fontRenderer.drawString("Name: " + skill.skillName, ((this.width - xSize) / 2) + 56, height + 9, 16777215);
+			mc.fontRenderer.drawString("Lvl: " + skill.getLevel(), ((this.width - xSize) / 2) + 56, height + 18, 16777215);
+			mc.fontRenderer.drawString("XP: " + skill.getXPForPrint(), ((this.width - xSize) / 2) + 56, height + 27, 16777215);
 		}
-		
-		mc.fontRenderer.drawString("Name: " + skill.skillName, ((this.width - xSize) / 2) + 56, height + 9, 16777215);
-		mc.fontRenderer.drawString("Lvl: " + skill.getLevel(), ((this.width - xSize) / 2) + 56, height + 18, 16777215);
-		mc.fontRenderer.drawString("XP: " + skill.getXPForPrint(), ((this.width - xSize) / 2) + 56, height + 27, 16777215);
 	}
 
 }

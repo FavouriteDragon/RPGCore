@@ -18,10 +18,16 @@ public class EquippedSkillsPacket implements IMessage {
 	String slot4;
 	String slot5;
 	String slot6;
+	String slot7;
+	String slot8;
+	String slot9;
+	String slot10;
+	String slot11;
 	
 	public EquippedSkillsPacket() {}
 	
-	public EquippedSkillsPacket(String slot0, String slot1, String slot2, String slot3, String slot4, String slot5, String slot6) {
+	public EquippedSkillsPacket(String slot0, String slot1, String slot2, String slot3, String slot4, String slot5, 
+			String slot6, String slot7, String slot8, String slot9, String slot10, String slot11) {
 		this.slot0 = slot0;
 		this.slot1 = slot1;
 		this.slot2 = slot2;
@@ -29,6 +35,11 @@ public class EquippedSkillsPacket implements IMessage {
 		this.slot4 = slot4;
 		this.slot5 = slot5;
 		this.slot6 = slot6;
+		this.slot7 = slot7;
+		this.slot8 = slot8;
+		this.slot9 = slot9;
+		this.slot10 = slot10;
+		this.slot11 = slot11;
 	}
 
 	@Override
@@ -40,6 +51,11 @@ public class EquippedSkillsPacket implements IMessage {
 		slot4 = ByteBufUtils.readUTF8String(buf);
 		slot5 = ByteBufUtils.readUTF8String(buf);
 		slot6 = ByteBufUtils.readUTF8String(buf);
+		slot7 = ByteBufUtils.readUTF8String(buf);
+		slot8 = ByteBufUtils.readUTF8String(buf);
+		slot9 = ByteBufUtils.readUTF8String(buf);
+		slot10 = ByteBufUtils.readUTF8String(buf);
+		slot11 = ByteBufUtils.readUTF8String(buf);
 	}
 
 	@Override
@@ -51,6 +67,11 @@ public class EquippedSkillsPacket implements IMessage {
 		ByteBufUtils.writeUTF8String(buf, slot4);
 		ByteBufUtils.writeUTF8String(buf, slot5);
 		ByteBufUtils.writeUTF8String(buf, slot6);
+		ByteBufUtils.writeUTF8String(buf, slot7);
+		ByteBufUtils.writeUTF8String(buf, slot8);
+		ByteBufUtils.writeUTF8String(buf, slot9);
+		ByteBufUtils.writeUTF8String(buf, slot10);
+		ByteBufUtils.writeUTF8String(buf, slot11);
 	}
 	
 	public static class Handler implements IMessageHandler<EquippedSkillsPacket, IMessage> {
@@ -67,6 +88,11 @@ public class EquippedSkillsPacket implements IMessage {
 			skills.setSkill(4, message.slot4);
 			skills.setSkill(5, message.slot5);
 			skills.setSkill(6, message.slot6);
+			skills.setSkill(7, message.slot7);
+			skills.setSkill(8, message.slot8);
+			skills.setSkill(9, message.slot9);
+			skills.setSkill(10, message.slot10);
+			skills.setSkill(11, message.slot11);
 			return null;
 		}
 	}

@@ -69,6 +69,8 @@ public class SkillListGui extends GuiScreen {
 		buttonList.add(buttonDetails);
 		buttonList.add(buttonClear);
 		
+		buttonDetails.enabled = false;
+		
 		this.list = new SkillListScrollable(this, this.width, this.height, 256, 256);
 		this.list.registerScrollButtons(this.buttonList, 7, 8);
 		//buttons n stuff
@@ -85,6 +87,9 @@ public class SkillListGui extends GuiScreen {
         } else {
             this.selectedSkill = null;
         }
+        
+        buttonDetails.enabled = selectedSkill.hasGui;
+        
         System.out.println("Selected skill: " + selectedSkill.skillName);
         //cachedLogo = null;
     }
@@ -106,7 +111,7 @@ public class SkillListGui extends GuiScreen {
     		}
     		break;
     	case 3:
-    		System.out.println("Details not yet implemented.");
+    		this.selectedSkill.openGui();
     		break;
     	case 4:
     		RPGCore.network.sendToServer(new EquipNewSkillPacket(SkillSelectGui.slotClicked, ""));

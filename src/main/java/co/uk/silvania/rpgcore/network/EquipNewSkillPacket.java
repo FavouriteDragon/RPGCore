@@ -72,7 +72,12 @@ public class EquipNewSkillPacket implements IMessage {
 				equippedSkills.getSkillInSlot(3), 
 				equippedSkills.getSkillInSlot(4), 
 				equippedSkills.getSkillInSlot(5), 
-				equippedSkills.getSkillInSlot(6)
+				equippedSkills.getSkillInSlot(6),
+				equippedSkills.getSkillInSlot(7), 
+				equippedSkills.getSkillInSlot(8), 
+				equippedSkills.getSkillInSlot(9), 
+				equippedSkills.getSkillInSlot(10), 
+				equippedSkills.getSkillInSlot(11)
 			);
 		}
 	}

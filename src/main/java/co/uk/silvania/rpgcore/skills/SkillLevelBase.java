@@ -2,10 +2,13 @@ package co.uk.silvania.rpgcore.skills;
 
 import java.util.ArrayList;
 
+import co.uk.silvania.rpgcore.RPGCore;
 import co.uk.silvania.rpgcore.RegisterSkill;
+import co.uk.silvania.rpgcore.network.EquippedSkillsPacket;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -21,10 +24,17 @@ public class SkillLevelBase {
 	public int iconZ;
 	public String skillName;
 	public String skillId;
+	public boolean hasGui;
 	public double levelMultiplier = 1.0; //Higher value = slower levelling.
+	
+	public int unlockedLevel;
 	
 	public ArrayList<String> incompatableSkills = new ArrayList<String>();
 	public ArrayList<String> requiredSkills = new ArrayList<String>();
+	
+	public int firstReqSkillLevel = -1;
+	public int secondReqSkillLevel = -1;
+	public int thirdReqSkillLevel = -1;
 	
 	public SkillLevelBase() {
 		this.xp = 0;
@@ -34,8 +44,46 @@ public class SkillLevelBase {
 		EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get(player);
 		//We check on your behalf to make sure the skill is equipped before allowing the XP to be added.
 		if (equippedSkills.isSkillEquipped(skillId)) {
-			xp += xpAdd;
+			//We'll also make sure they've not equipped armour into the slot shared by a skill
+			if (!skillArmourConflict(equippedSkills, skillId, player)) {
+				xp += xpAdd;
+
+				//Every time a skill gains XP, the global level also gets 10% of that XP.
+				GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);
+				glevel.xpGlobal += (xpAdd/10.0);
+				
+				System.out.println("addXP called. Global XP: " + glevel.xpGlobal);
+			}
 		}
+	}
+	
+	public boolean skillArmourConflict(EquippedSkills equippedSkills, String skillId, EntityPlayer player) {
+		int slot = equippedSkills.findSkillSlot(skillId);
+		boolean removedSkill = false;
+		
+		if (slot == 4 && player.inventory.armorItemInSlot(0) != null) { equippedSkills.skillId4 = ""; removedSkill = true; }
+		if (slot == 5 && player.inventory.armorItemInSlot(0) != null) { equippedSkills.skillId5 = ""; removedSkill = true; }
+		if (slot == 7 && player.inventory.armorItemInSlot(0) != null) { equippedSkills.skillId7 = ""; removedSkill = true; }
+		if (slot == 8 && player.inventory.armorItemInSlot(0) != null) { equippedSkills.skillId8 = ""; removedSkill = true; }
+		
+		if (removedSkill) {
+			System.out.println("Armour and skill slot conflict! Removing skill and telling client..");
+			RPGCore.network.sendTo(new EquippedSkillsPacket(
+				equippedSkills.getSkillInSlot(0), 
+				equippedSkills.getSkillInSlot(1), 
+				equippedSkills.getSkillInSlot(2), 
+				equippedSkills.getSkillInSlot(3), 
+				equippedSkills.getSkillInSlot(4), 
+				equippedSkills.getSkillInSlot(5), 
+				equippedSkills.getSkillInSlot(6),
+				equippedSkills.getSkillInSlot(7), 
+				equippedSkills.getSkillInSlot(8), 
+				equippedSkills.getSkillInSlot(9), 
+				equippedSkills.getSkillInSlot(10), 
+				equippedSkills.getSkillInSlot(11)), (EntityPlayerMP) player);
+		}
+		
+		return removedSkill;
 	}
 	
 	public int getXP() {
@@ -43,7 +91,7 @@ public class SkillLevelBase {
 	}
 	
 	public String getXPForPrint() {
-		return getXP() + " / " + getXpForLevel(getLevel()+1);
+		return (int) getXP() + " / " + getXpForLevel(getLevel()+1);
 	}
 	
 	public int getLevel() {
@@ -79,7 +127,6 @@ public class SkillLevelBase {
 		int xpForLevel = 83;
 		
 		for (int i = 1; i < level; i++) {
-			System.out.println("[GetLevel] XP: " + xp + ", Previous XP: " + xpForLevel + ", Level: " + i + ", level/10: " + (i/10));
 			xpForLevel += base + ((base / 100.0) * ((i*levelMultiplier) * (35 + ((i/10)*10))));
 		}
 		return xpForLevel;
@@ -116,11 +163,58 @@ public class SkillLevelBase {
 			SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
 			SkillLevelBase skill = (SkillLevelBase) skillBase.get(player, skillBase.skillId);
 			
-			if (skill.skillId.equals(skillId)) {
+			if (skill != null && skill.skillId.equals(skillId)) {
 				return skill;
 			}
 		}
 		return null;
+	}
+	
+	public boolean isSkillUnlocked(EntityPlayer player) {
+		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);
+		if (glevel.getLevel() >= unlockedLevel) {
+			for (int i = 0; i < requiredSkills.size(); i++) {
+				String requiredSkillId = requiredSkills.get(i);
+				SkillLevelBase skill = (SkillLevelBase) SkillLevelBase.get(player, requiredSkillId);
+				EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get(player);
+				
+				//Check first three listed skills against required levels. 
+				if (i == 0) { if (skill.getLevel() < firstReqSkillLevel) { return false; }}
+				if (i == 1) { if (skill.getLevel() < secondReqSkillLevel) { return false; }}
+				if (i == 2) { if (skill.getLevel() < thirdReqSkillLevel) { return false; }}
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean canSkillBeEquipped(EntityPlayer player) {
+		if (!isSkillUnlocked(player)) {
+			return false;
+		}
+		
+		for (int i = 0; i < requiredSkills.size(); i++) {
+			String requiredSkillId = requiredSkills.get(i);
+			SkillLevelBase skill = (SkillLevelBase) SkillLevelBase.get(player, requiredSkillId);
+			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get(player);
+			if (!equippedSkills.isSkillEquipped(requiredSkillId)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean isSkillCompatable(EntityPlayer player) {
+		for (int i = 0; i < incompatableSkills.size(); i++) {
+			String requiredSkillId = incompatableSkills.get(i);
+			SkillLevelBase skill = (SkillLevelBase) SkillLevelBase.get(player, requiredSkillId);
+			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get(player);
+			if (equippedSkills.isSkillEquipped(requiredSkillId)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public void openGui() {}

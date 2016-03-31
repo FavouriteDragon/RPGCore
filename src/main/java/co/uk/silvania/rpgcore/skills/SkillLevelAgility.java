@@ -29,6 +29,7 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 		
 		incompatableSkills.add("skillStrength");
 		
+		hasGui = true;
 	}
 
 	@Override
@@ -45,6 +46,10 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 	}
 
 	@Override public void init(Entity entity, World world) {}
+	
+	public static final void register(EntityPlayer player) {
+		player.registerExtendedProperties(SkillLevelAgility.staticSkillId, new SkillLevelAgility(player, staticSkillId));
+	}
 	
 	@SubscribeEvent
 	public void onEntityConstructing(EntityConstructing event) {

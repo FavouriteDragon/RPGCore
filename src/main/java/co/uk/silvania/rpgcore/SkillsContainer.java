@@ -19,7 +19,7 @@ public class SkillsContainer extends Container {
 				
 		for (int i = 0; i < 4; ++i) {
             final int k = i;
-            this.addSlotToContainer(new Slot(inventory, inventory.getSizeInventory() - 1 - i, 53 + i * 18, 171) {
+            this.addSlotToContainer(new Slot(inventory, inventory.getSizeInventory() - 1 - i, 218 + i * 18, 140) {
             	
                 private static final String __OBFID = "CL_00001755";
                 

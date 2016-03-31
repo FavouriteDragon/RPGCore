@@ -20,7 +20,7 @@ public class SkillLevelSwords extends SkillLevelBase implements IExtendedEntityP
 		staticSkillId = skillID;
 		this.xp = 0;
 		skillIcon = new ResourceLocation(RPGCore.MODID, "textures/gui/skills.png");
-		iconX = 60;
+		iconX = 90;
 		iconZ = 0;
 	}
 
@@ -35,6 +35,10 @@ public class SkillLevelSwords extends SkillLevelBase implements IExtendedEntityP
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = (NBTTagCompound) compound.getTag(skillId);
 		xp = nbt.getInteger(skillName);		
+	}
+	
+	public static final void register(EntityPlayer player) {
+		player.registerExtendedProperties(SkillLevelSwords.staticSkillId, new SkillLevelSwords(player, staticSkillId));
 	}
 
 	@Override public void init(Entity entity, World world) {}

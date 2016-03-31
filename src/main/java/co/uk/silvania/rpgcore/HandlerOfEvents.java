@@ -3,6 +3,7 @@ package co.uk.silvania.rpgcore;
 import co.uk.silvania.rpgcore.network.EquippedSkillsPacket;
 import co.uk.silvania.rpgcore.network.LevelPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
+import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -21,15 +22,24 @@ public class HandlerOfEvents {
 		Minecraft mc = Minecraft.getMinecraft();
 		
 		int totalEquipped = 0;
+
+		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
+		if (glevel != null) {
+			mc.fontRenderer.drawString("Global Level: " + (int) glevel.getLevel() + ", XP: " + glevel.getXPGlobal(), 2, 2, 16777215);
+		} else {
+			System.out.println("Global level is null! This is bad!");
+		}
 		
 		for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
 			SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
 			SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
 			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) Minecraft.getMinecraft().thePlayer);
 			
-			if (equippedSkills.isSkillEquipped(skill.skillId)) {
-				totalEquipped++;
-				mc.fontRenderer.drawString("Name: " + skill.skillName + ", XP: " + skill.getXP(), 2, ((totalEquipped-1)*10)+2, 16777215);
+			if (skill != null) {
+				if (equippedSkills.isSkillEquipped(skill.skillId)) {
+					mc.fontRenderer.drawString("Name: " + skill.skillName + ", XP: " + skill.getXP(), 2, ((totalEquipped)*10)+12, 16777215);
+					totalEquipped++;
+				}
 			}
 		}
 	}
@@ -41,10 +51,16 @@ public class HandlerOfEvents {
 				SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
 				System.out.println("skillID being sent to client: " + skillBase.skillId);
 				SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) event.entity, skillBase.skillId);
-				System.out.println("Sending data to client!");
-				RPGCore.network.sendTo(new LevelPacket(skill.getXP(), skill.skillId), (EntityPlayerMP) event.entity);
+				if (skill != null) {
+					System.out.println("Sending data to client!");
+					RPGCore.network.sendTo(new LevelPacket(skill.getXP(), skill.skillId), (EntityPlayerMP) event.entity);
+				}
 			}
 			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) event.entity);
+			
+			System.out.println("Sending global level to client!");
+			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) event.entity);
+			RPGCore.network.sendTo(new LevelPacket((int)(glevel.getXPGlobal()*10), glevel.skillId), (EntityPlayerMP) event.entity);
 			
 			System.out.println("Sending equipped skills to client!");
 			System.out.println("Slot 0: " + equippedSkills.getSkillInSlot(0));
@@ -55,7 +71,12 @@ public class HandlerOfEvents {
 					equippedSkills.getSkillInSlot(3), 
 					equippedSkills.getSkillInSlot(4), 
 					equippedSkills.getSkillInSlot(5), 
-					equippedSkills.getSkillInSlot(6)), (EntityPlayerMP) event.entity);
+					equippedSkills.getSkillInSlot(6),
+					equippedSkills.getSkillInSlot(7),
+					equippedSkills.getSkillInSlot(8),
+					equippedSkills.getSkillInSlot(9),
+					equippedSkills.getSkillInSlot(10),
+					equippedSkills.getSkillInSlot(11)), (EntityPlayerMP) event.entity);
 		}
 	}
 
