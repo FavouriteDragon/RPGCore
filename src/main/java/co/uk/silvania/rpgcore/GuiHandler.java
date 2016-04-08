@@ -1,7 +1,7 @@
 package co.uk.silvania.rpgcore;
 
-import co.uk.silvania.rpgcore.client.SkillListGui;
-import co.uk.silvania.rpgcore.client.SkillSelectGui;
+import co.uk.silvania.rpgcore.client.skillgui.SkillListGui;
+import co.uk.silvania.rpgcore.client.skillgui.SkillSelectGui;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;

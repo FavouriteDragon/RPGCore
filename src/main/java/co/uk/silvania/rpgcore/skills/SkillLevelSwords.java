@@ -22,12 +22,19 @@ public class SkillLevelSwords extends SkillLevelBase implements IExtendedEntityP
 		skillIcon = new ResourceLocation(RPGCore.MODID, "textures/gui/skills.png");
 		iconX = 90;
 		iconZ = 0;
+		
+		description.add(nameFormat + "\u00A7l" + skillName);
+		description.add("\u00A7oExample skill, has no function currently.");
+		description.add("\u00A7oWill not be included in release.");
+		description.add("One-handed sword skill. Levelled by using");
+		description.add("one-handed swords.");
+		description.add("Later unlocks other skills.");
 	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setInteger(skillName, xp);
+		nbt.setFloat(skillName, xp);
 		compound.setTag(skillId, nbt);
 	}
 

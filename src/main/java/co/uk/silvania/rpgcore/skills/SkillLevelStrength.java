@@ -25,13 +25,20 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 		iconX = 0;
 		iconZ = 0;
 		
-		incompatableSkills.add("skillAgility"); 
+		incompatibleSkills.add("skillAgility");
+		
+		description.add(nameFormat + "\u00A7l" + skillName);
+		description.add("Base Skill.");
+		description.add("Required for most damage skills");
+		description.add("Levelled slowly with any act of strength,");
+		description.add("such as mining, fighting and so on.");
+		description.add("Slowly increases punch damage.");
 	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setInteger(skillName, xp);
+		nbt.setFloat(skillName, xp);
 		compound.setTag(skillId, nbt);
 	}
 

@@ -1,4 +1,4 @@
-package co.uk.silvania.rpgcore.client;
+package co.uk.silvania.rpgcore.client.skillgui;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import co.uk.silvania.rpgcore.skills.EquippedSkills;
 import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,6 +35,10 @@ public class SkillSelectGui extends GuiContainer {
 	
 	public static int slotClicked = -1;
 	
+	public MultiLineButton buttonConfig;
+	public GuiButton buttonParty;
+	public GuiButton buttonGuild;
+	
 	public SkillSelectGui(SkillsContainer containerSkills) {
 		super(containerSkills);
 		
@@ -41,6 +46,17 @@ public class SkillSelectGui extends GuiContainer {
 		
 		xSize = 256;
 		ySize = 256;
+	}
+	
+	@Override
+	public void initGui() {
+		super.initGui();
+		int left = (this.width - this.xSize) / 2;
+		int top  = (this.height - this.ySize) / 2;
+
+		buttonConfig = new MultiLineButton(1, left+257, top+206, 72, 22, "Configure#Skills");
+		
+		buttonList.add(buttonConfig);
 	}
 	
 	@Override
@@ -86,19 +102,21 @@ public class SkillSelectGui extends GuiContainer {
 		
 		
 		mc.fontRenderer.drawString("\u00A7l" + mc.thePlayer.getDisplayName(), left - 100, top + 17, 4210752);
-		mc.fontRenderer.drawString("Global Level: " + glevel.getLevel(), left - 100, top + 27, 4210752);
-		mc.fontRenderer.drawString("XP: " + glevel.getXPForPrint(), left - 100, top + 37, 4210752);
-		mc.fontRenderer.drawString("Guild: ", left - 100, top + 50, 4210752);
-		mc.fontRenderer.drawString("Faction: ", left - 100, top + 60, 4210752);
-		mc.fontRenderer.drawString("\u00A7lParty", left - 100, top + 80, 4210752);
-		mc.fontRenderer.drawString("\u00A7l" + "Player1", left - 98, top + 94, 4210752);
-		mc.fontRenderer.drawString("\u00A7l" + "Player2", left - 98, top + 108, 4210752);
-		mc.fontRenderer.drawString("\u00A7l" + "Player3", left - 98, top + 122, 4210752);
-		mc.fontRenderer.drawString("\u00A7l" + "Player4", left - 98, top + 136, 4210752);
-		mc.fontRenderer.drawString("\u00A7l" + "Player5", left - 98, top + 150, 4210752);
-		mc.fontRenderer.drawString("\u00A7l" + "Player6", left - 98, top + 164, 4210752);
-		mc.fontRenderer.drawString("\u00A7l" + "Player7", left - 98, top + 178, 4210752);
-		mc.fontRenderer.drawString("\u00A7l" + "Player8", left - 98, top + 192, 4210752);
+		mc.fontRenderer.drawString("Global Level: " + glevel.getLevel(), left - 100, top + 30, 4210752);
+		mc.fontRenderer.drawString("XP: " + glevel.getXPForPrint(), left - 100, top + 40, 4210752);
+		mc.fontRenderer.drawString("Guild: ", left - 100, top + 55, 4210752);
+		mc.fontRenderer.drawString("Faction: ", left - 100, top + 70, 4210752);
+		mc.fontRenderer.drawString("\u00A7lParty", left - 100, top + 82, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player1", left - 98, top + 96,  4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player2", left - 98, top + 110, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player3", left - 98, top + 124, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player4", left - 98, top + 138, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player5", left - 98, top + 152, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player6", left - 98, top + 166, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player7", left - 98, top + 180, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player8", left - 98, top + 194, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player9", left - 98, top + 208, 4210752);
+		mc.fontRenderer.drawString("\u00A7l" + "Player10", left - 98, top + 222, 4210752);
 	}
 
 	@Override
@@ -110,9 +128,9 @@ public class SkillSelectGui extends GuiContainer {
 		int top  = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(left, top, 0, 0, this.xSize, this.ySize);
 		
-		this.mc.getTextureManager().bindTexture(skillEquip2); //Item inventory on the side (Skill window is a full 256x texture)
-		this.drawTexturedModalRect(left+this.xSize, top+11, 0, 0, 81, 198);
-		this.drawTexturedModalRect(left-106, top+11, 150, 0, 106, 198);
+		this.mc.getTextureManager().bindTexture(skillEquip2); //Item inventory & party/guild panel
+		this.drawTexturedModalRect(left+this.xSize, top+11, 0, 0, 81, 226);
+		this.drawTexturedModalRect(left-106, top+11, 150, 0, 106, 226);
 		
 		int skillSlot = getSkillSlotHover(mouseX, mouseZ);
 		int slotX = 0;
@@ -260,7 +278,7 @@ public class SkillSelectGui extends GuiContainer {
             SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(skillSlot), mc.thePlayer);
             
 			if (skill != null) {
-				String[] text = {"\u00A7l" + skill.skillName, "Lvl: " + skill.getLevel(), "XP: " + skill.getXP(), "getXPForLevel: " + skill.getXpForLevel(skill.getLevel()), "XpToNextLevel: " + skill.xpToNextLevel()};
+				String[] text = {skill.nameFormat + "\u00A7l" + skill.skillName, "Lvl: " + skill.getLevel(), "XP: " + (int) skill.getXP() + "/" + (int) skill.getXpForLevel(skill.getLevel()), "XP to level up: " + (int) skill.xpToNextLevel()};
 				List temp = Arrays.asList(text);
 				drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
 			}

@@ -49,12 +49,12 @@ public class EquipNewSkillPacket implements IMessage {
 						equippedSkills.setSkill(i, "");
 					}
 					if (newSkill != null) {
-						for (int j = 0; j < newSkill.incompatableSkills.size(); j++) {
-							System.out.println("Iterating. " + j + ": " + newSkill.incompatableSkills.get(j));
-							if (newSkill.incompatableSkills.get(j).equals(skill.skillId)) {
-								System.out.println("Incompatable skill " + newSkill.incompatableSkills.get(j) + " detected. Incompatible with " + skill.skillId + ". Removing...?");
-								System.out.println("Slot: " + equippedSkills.findSkillSlot(newSkill.incompatableSkills.get(j)));
-								equippedSkills.setSkill(equippedSkills.findSkillSlot(newSkill.incompatableSkills.get(j)), "");
+						for (int j = 0; j < newSkill.incompatibleSkills.size(); j++) {
+							System.out.println("Iterating. " + j + ": " + newSkill.incompatibleSkills.get(j));
+							if (newSkill.incompatibleSkills.get(j).equals(skill.skillId)) {
+								System.out.println("Incompatable skill " + newSkill.incompatibleSkills.get(j) + " detected. Incompatible with " + skill.skillId + ". Removing...?");
+								System.out.println("Slot: " + equippedSkills.findSkillSlot(newSkill.incompatibleSkills.get(j)));
+								equippedSkills.setSkill(equippedSkills.findSkillSlot(newSkill.incompatibleSkills.get(j)), "");
 							}
 						}
 					}

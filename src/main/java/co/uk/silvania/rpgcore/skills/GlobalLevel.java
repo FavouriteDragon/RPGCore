@@ -76,7 +76,7 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 		return xpForLevel;
 	}
 	
-	public int xpToNextLevel() {		
+	public float xpToNextLevel() {		
 		return (getXpForLevel(getLevel())) - (int)getXPGlobal();
 	}
 	

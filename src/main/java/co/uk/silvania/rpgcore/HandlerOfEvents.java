@@ -25,11 +25,8 @@ public class HandlerOfEvents {
 
 		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
 		if (glevel != null) {
-			mc.fontRenderer.drawString("Global Level: " + (int) glevel.getLevel() + ", XP: " + glevel.getXPGlobal(), 2, 2, 16777215);
-		} else {
-			System.out.println("Global level is null! This is bad!");
-		}
-		
+			mc.fontRenderer.drawString("Global Level: " + (int) glevel.getLevel() + ", XP: " + (int) glevel.getXPGlobal(), 2, 2, 16777215);
+		}		
 		for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
 			SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
 			SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
@@ -37,7 +34,7 @@ public class HandlerOfEvents {
 			
 			if (skill != null) {
 				if (equippedSkills.isSkillEquipped(skill.skillId)) {
-					mc.fontRenderer.drawString("Name: " + skill.skillName + ", XP: " + skill.getXP(), 2, ((totalEquipped)*10)+12, 16777215);
+					mc.fontRenderer.drawString("Name: " + skill.skillName + ", XP: " + (int) skill.getXP(), 2, ((totalEquipped)*10)+12, 16777215);
 					totalEquipped++;
 				}
 			}

@@ -27,7 +27,13 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 		
 		levelMultiplier = 2.0; //Higher value = slower levelling.
 		
-		incompatableSkills.add("skillStrength");
+		incompatibleSkills.add("skillStrength");
+		
+		description.add(nameFormat + "\u00A7l" + skillName);
+		description.add("Base Skill");
+		description.add("Required for most speed skills");
+		description.add("Levelled slowly by sprinting and jumping.");
+		description.add("Slowly increases sprint speed.");
 		
 		hasGui = true;
 	}
@@ -35,14 +41,14 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setInteger(skillName + "XP", xp);
+		nbt.setFloat(skillName + "XP", xp);
 		compound.setTag(skillId, nbt);
 	}
 
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = (NBTTagCompound) compound.getTag(skillId);
-		xp = nbt.getInteger(skillName + "XP");
+		xp = nbt.getFloat(skillName + "XP");
 	}
 
 	@Override public void init(Entity entity, World world) {}

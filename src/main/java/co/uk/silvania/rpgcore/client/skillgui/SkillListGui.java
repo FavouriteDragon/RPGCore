@@ -1,6 +1,8 @@
-package co.uk.silvania.rpgcore.client;
+package co.uk.silvania.rpgcore.client.skillgui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
@@ -19,12 +21,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class SkillListGui extends GuiScreen {
 	
-	public static final ResourceLocation skillList  = new ResourceLocation(RPGCore.MODID, "textures/gui/skilllist.png");
+	public static final ResourceLocation skillListTexture  = new ResourceLocation(RPGCore.MODID, "textures/gui/skilllist.png");
+	ArrayList<SkillLevelBase> skillList = RegisterSkill.skillList;
 	
 	int xSize = 256;
 	int ySize = 256;
 	
-	GuiScrollingList list;
+	GuiScrollingList_Mod list;
 	
 	public GuiButton buttonCancel;
 	public GuiButton buttonConfirm;
@@ -38,7 +41,7 @@ public class SkillListGui extends GuiScreen {
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glEnable(GL11.GL_BLEND);
-		this.mc.getTextureManager().bindTexture(skillList); //Main skill pane
+		this.mc.getTextureManager().bindTexture(skillListTexture); //Main skill pane
 		int left = (this.width - this.xSize) / 2;
 		int top  = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(left, top, 0, 0, this.xSize, this.ySize);
@@ -46,6 +49,53 @@ public class SkillListGui extends GuiScreen {
 		mc.fontRenderer.drawString("Selecting skill for slot " + SkillSelectGui.slotClicked, left+9, top+9, 4210752);
 		
 		super.drawScreen(mouseX, mouseZ, partialTick);
+		
+		//TODO: This currently continues tooltip outside of GUI.
+		//Check if mouse is within the list's frame before rendering tooltip.
+		
+		SkillLevelBase skillBase = skillList.get(list.hoverElement);
+		SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
+		if (mouseX >= left+10 && mouseX <= left+51) {
+			if (skill != null && skill.description != null) {
+				drawHoveringText(skill.description, mouseX, mouseZ, fontRendererObj);
+			}
+		}
+		if (mouseX >= left+169 && mouseX <= left+230) {
+			if (skill != null) {
+				if ((!skill.incompatibleSkills.isEmpty() && !skill.isSkillCompatable(mc.thePlayer)) || skill.hasUnequippedRequirements(mc.thePlayer)) {
+					List str = new ArrayList();
+					str.add("\u00A7nCurrent Skill Issues");
+					str.add(" ");
+					
+					EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) mc.thePlayer);
+					
+					if (!skill.incompatibleSkills.isEmpty()) {
+						for (int i = 0; i < skill.incompatibleSkills.size(); i++) {
+							if (i == 0) { str.add("\u00A7lIncompatabilities:"); }
+							if (equippedSkills.isSkillEquipped(skill.incompatibleSkills.get(i))) {
+								str.add("\u00A7c" + RegisterSkill.getDisplayNameForSkill(skill.incompatibleSkills.get(i)));
+							}
+						}
+						str.add(" ");
+						str.add("Any incompatible skills will be automatically");
+						str.add("removed upon equipping this skill.");
+					}
+					
+					if (skill.hasUnequippedRequirements(mc.thePlayer)) {
+						for (int i = 0; i < skill.requiredSkills.size(); i++) {
+							if (i == 0) { str.add("\u00A7lRequired Skills:"); }
+							if (!equippedSkills.isSkillEquipped(skill.requiredSkills.get(i))) {
+								str.add("\u00A7c" + RegisterSkill.getDisplayNameForSkill(skill.requiredSkills.get(i)));
+							} else {
+								str.add("\u00A7a" + RegisterSkill.getDisplayNameForSkill(skill.requiredSkills.get(i)));
+							}
+						}
+					}
+
+					drawHoveringText(str, mouseX, mouseZ, fontRendererObj);
+				}
+			}
+		}
 	}
 	
 	@Override

@@ -12,25 +12,25 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class LevelPacket implements IMessage {
 	
-	public int xp;
+	public float xp;
 	public String skillId;
 	
 	public LevelPacket() {}
 	
-	public LevelPacket(int xp, String skillId) { 
+	public LevelPacket(float xp, String skillId) { 
 		this.xp = xp;
 		this.skillId = skillId;
 	}
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		xp = ByteBufUtils.readVarShort(buf);
+		xp = buf.readFloat();
 		skillId = ByteBufUtils.readUTF8String(buf);
 	}
 	
 	@Override
 	public void toBytes(ByteBuf buf) {
-		ByteBufUtils.writeVarShort(buf, xp);
+		buf.writeFloat(xp);
 		ByteBufUtils.writeUTF8String(buf, skillId);
 	}
 	

@@ -26,19 +26,30 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 		levelMultiplier = 1.2; //Higher value = slower levelling.
 		
 		unlockedLevel = 2;
+		requiredSkills.add("skillAgility"); 
+		requiredSkills.add("skillStrength");
+		requiredSkills.add("skillSwords");
+		requiredSkills.add("skillJump"); 
+		
+		description.add(nameFormat + "\u00A7l" + skillName);
+		description.add("\u00A7oRequirements are just to show how requirements work.");
+		description.add("\u00A7oRequirements can never be met.");
+		description.add("Each level gives +1 HP");
+		description.add("Experience earned by taking damage.");
+		description.add("Different damage sources give different XP.");
 	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setInteger(skillName + "XP", xp);
+		nbt.setFloat(skillName + "XP", xp);
 		compound.setTag(skillId, nbt);
 	}
 
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = (NBTTagCompound) compound.getTag(skillId);
-		xp = nbt.getInteger(skillName + "XP");
+		xp = nbt.getFloat(skillName + "XP");
 	}
 
 	@Override public void init(Entity entity, World world) {}
