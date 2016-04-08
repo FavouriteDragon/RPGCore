@@ -24,6 +24,12 @@ public class EquippedSkills implements IExtendedEntityProperties {
 	public String skillId10;
 	public String skillId11;
 	
+	public int[] showXP = new int[12];
+	public int xpBarPosition = 0;
+	public int xpXOffset = 0;
+	public int xpZOffset = 0;
+	public int xpTextType = 0;
+	
 	public int skillSlots = 12;
 	
 	public EquippedSkills() {}
@@ -44,6 +50,13 @@ public class EquippedSkills implements IExtendedEntityProperties {
 		nbt.setString("slot9", skillId9 + "");
 		nbt.setString("slot10", skillId10 + "");
 		nbt.setString("slot11", skillId11 + "");
+		nbt.setIntArray("showXP", showXP);
+		nbt.setInteger("xpBarPosition", xpBarPosition);
+		nbt.setInteger("xpXOffset", xpXOffset);
+		nbt.setInteger("xpZOffset", xpZOffset);
+		nbt.setInteger("xpTextType", xpTextType);
+		
+		
 		compound.setTag("equippedSkills", nbt);		
 	}
 
@@ -62,6 +75,11 @@ public class EquippedSkills implements IExtendedEntityProperties {
 		skillId9 = nbt.getString("slot9");
 		skillId10 = nbt.getString("slot10");
 		skillId11 = nbt.getString("slot11");
+		showXP = nbt.getIntArray("showXP");
+		xpBarPosition = nbt.getInteger("xpBarPosition");
+		xpXOffset = nbt.getInteger("xpXOffset");
+		xpZOffset = nbt.getInteger("xpZOffset");
+		xpTextType = nbt.getInteger("xpTextType");
 	}
 
 	@Override public void init(Entity entity, World world) {}

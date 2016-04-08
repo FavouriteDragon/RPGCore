@@ -8,6 +8,7 @@ import co.uk.silvania.rpgcore.RPGCore;
 import co.uk.silvania.rpgcore.RegisterSkill;
 import co.uk.silvania.rpgcore.SkillsContainer;
 import co.uk.silvania.rpgcore.network.EquipNewSkillPacket;
+import co.uk.silvania.rpgcore.network.OpenGuiPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
 import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
@@ -184,12 +185,6 @@ public class SkillSelectGui extends GuiContainer {
 					if (i == 11) { xPos = 65;   zPos = 29; }
 					
 					drawTexturedModalRect(((this.width - xSize) / 2) + xPos, ((this.height - ySize) / 2) + zPos, iconPosX, iconPosZ, 30, 30);
-					
-					/*if (skill != null && skillSlot == i) {
-						String[] text = {"\u00A7l" + skill.skillName, "Lvl: " + skill.getLevel(), "XP: " + skill.getXP()};
-						List temp = Arrays.asList(text);
-						drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
-					}*/
 				}
 			}
 		}
@@ -325,4 +320,14 @@ public class SkillSelectGui extends GuiContainer {
         }
 		return false;
 	}
+	
+    @Override
+    public void actionPerformed(GuiButton button) {
+    	switch(button.id) {
+    	case 1:
+    		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+    		player.openGui(RPGCore.instance, 1, Minecraft.getMinecraft().theWorld, (int) player.posX, (int) player.posY, (int) player.posZ);
+    		break;
+    	}
+    }
 }

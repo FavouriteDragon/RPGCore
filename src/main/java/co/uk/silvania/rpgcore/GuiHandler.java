@@ -1,5 +1,6 @@
 package co.uk.silvania.rpgcore;
 
+import co.uk.silvania.rpgcore.client.skillgui.SkillConfig;
 import co.uk.silvania.rpgcore.client.skillgui.SkillListGui;
 import co.uk.silvania.rpgcore.client.skillgui.SkillSelectGui;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -16,6 +17,9 @@ public class GuiHandler implements IGuiHandler {
 			case 0: {
 				return new SkillsContainer(player);
 			}
+			case 1: {
+				return new SkillsContainer(player);
+			}
 		}
 		return null;
 	}
@@ -27,8 +31,7 @@ public class GuiHandler implements IGuiHandler {
 				return new SkillSelectGui(new SkillsContainer(player));
 			}
 			case 1: {
-				//AGI/STR stuff
-				return null;
+				return new SkillConfig(new SkillsContainer(player));
 			}
 			case 2: {
 				return new SkillListGui();

@@ -123,19 +123,19 @@ public class SkillListScrollable extends GuiScrollingList_Mod {
 			int stacker = 0; //Offset for new lines so everything always rests at the top without empty lines.
 			String unlocked = skill.unlockedLevel + "";
 			if (!skill.isSkillUnlocked(mc.thePlayer)) {
-				mc.fontRenderer.drawString("Unlocked at Level " + skill.unlockedLevel,  ((w2 - (xSize*2)) / 2) + 480 - (unlocked.length()*6), h2 + 9, 11796480);
+				mc.fontRenderer.drawString("Unlocked at Level " + skill.unlockedLevel,  ((w2 - (xSize*2))) + 413 - (unlocked.length()*6), h2 + 9, 11796480);
 				stacker += 9;
 			} else {
 				if (!skill.canSkillBeEquipped(mc.thePlayer)) {
-					mc.fontRenderer.drawString("Requires currently unequipped skills." ,  ((w2 - (xSize*2)) / 2) + 385, h2 + 9 + stacker, 11796480);
+					mc.fontRenderer.drawString("Requires currently unequipped skills." ,  ((w2 - (xSize*2))) + 318, h2 + 9 + stacker, 11796480);
 					stacker += 9;
 				}
 				if (!skill.isSkillCompatable(mc.thePlayer)) {
-					mc.fontRenderer.drawString("Incompatibilities detected!" ,  ((w2 - (xSize*2)) / 2) + 446, h2 + 9 + stacker, 11796480);
+					mc.fontRenderer.drawString("Incompatibilities detected!" ,  ((w2 - (xSize*2))) + 379, h2 + 9 + stacker, 11796480);
 					stacker += 9;
 				}
 				if (stacker > 0) {
-					mc.fontRenderer.drawString("Hover here for more info." ,  ((w2 - (xSize*2)) / 2) + 441, h2 + 18 + stacker, 11796480);
+					mc.fontRenderer.drawString("Hover here for more info." ,  ((w2 - (xSize*2))) + 374, h2 + 18 + stacker, 11796480);
 				}
 			}
 			GL11.glScalef(2.0f, 2.0f, 2.0f);
