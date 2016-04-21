@@ -11,6 +11,7 @@ import co.uk.silvania.rpgcore.network.EquippedSkillsPacket;
 import co.uk.silvania.rpgcore.network.LevelPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
@@ -64,13 +65,11 @@ public abstract class SkillLevelBase {
 				//We'll also make sure they've not equipped armour into the slot shared by a skill
 				if (!skillArmourConflict(equippedSkills, skillId, player)) {
 					
-					if (xpAdd >= xpToNextLevel()+1) { levelUp(); }
+					if (xpAdd >= xpToNextLevel()+1) { levelUp(player); }
 					
 					xp += xpAdd;
 					
-					hoe.setXpForRender(xpAdd);
-					System.out.println("ADDING 2 DAT FILTHY HOE");
-					
+					hoe.setXpForRender(xpAdd);					
 					
 					//Every time a skill gains XP, the global level also gets 10% of that XP.
 					GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);
@@ -96,13 +95,15 @@ public abstract class SkillLevelBase {
 	/**
 	 * Called when the player has levelled up. Do anything you want upon levelling up here (eg notifying of unlocks.)
 	 */
-	public void levelUp() {}
+	public void levelUp(EntityPlayer player) {
+		player.addChatComponentMessage(new ChatComponentText(nameFormat() + "Level up! " + skillName() + " is now level " + getLevel()));
+	}
 	
 	/**
 	 * Forces a levelUp by force-adding the amount of XP remaining to the next level.
 	 */
-	public void forceLevelUp() {
-		forceAddXP(xpToNextLevel()+1);
+	public void forceLevelUp(EntityPlayer player) {
+		forceAddXP(xpToNextLevel()+1, player);
 	}
 	
 	/**
@@ -123,11 +124,11 @@ public abstract class SkillLevelBase {
 	 * Force XP adding, even if the skill is not equipped or even unlocked.
 	 * @param xpAdd
 	 */
-	public void forceAddXP(float xpAdd) {
+	public void forceAddXP(float xpAdd, EntityPlayer player) {
 		System.out.println("force-add XP");
 		if ((xpAdd+xp) >= getXpForLevel(getLevel())) {
 			System.out.println("Player levelled up!");
-			levelUp();
+			levelUp(player);
 		} else {
 			System.out.println("xpAdd: " + xpAdd + ", xp: " + xp + ", getXpForLevel: " + getXpForLevel(getLevel()));
 		}
@@ -145,12 +146,12 @@ public abstract class SkillLevelBase {
 	public static String addXPToSkill(int xpAdd, EntityPlayer player, String skillId) {
 		SkillLevelBase skill = getSkillByID(skillId, player);
 		if (skill != null) {
-			skill.forceAddXP(xpAdd);
+			skill.forceAddXP(xpAdd, player);
 			RPGCore.network.sendTo(new LevelPacket(skill.getXP(), -1, skill.skillId), (EntityPlayerMP) player);
 			return "\u00A7aAdded " + xpAdd + " xp to " + skill.skillName();
 		} else if (skillId.equalsIgnoreCase("globalLevel")) {
 			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);
-			glevel.forceAddXP(xpAdd);
+			glevel.forceAddXP(xpAdd, player);
 			RPGCore.network.sendTo(new LevelPacket((int)(glevel.getXPGlobal()*10), glevel.getSkillPoints(), glevel.skillId), (EntityPlayerMP) player);
 			return "\u00A7aAdded " + xpAdd + " xp to global level.";
 		}
@@ -466,6 +467,12 @@ public abstract class SkillLevelBase {
      * @return The name of your skill.
      */
 	public abstract String skillName();
+	
+	/**
+	 * Shorthand version of skill name, for example STR instead of Strength. Used in places that size matters, such as XP bars (If selected to)
+	 * @return
+	 */
+	public abstract String shortName();
 	
 	/**
 	 * Any text formatting you want to be applied to your skill's name. Not always used.

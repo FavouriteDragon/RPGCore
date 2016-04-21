@@ -51,8 +51,8 @@ public class SkillPointPacket implements IMessage {
 			if ((message.strAdd + message.agiAdd) <= glevel.skillPoints) {
 				SkillLevelBase skillStr = SkillLevelBase.getSkillByID("skillStrength", player);
 				SkillLevelBase skillAgi = SkillLevelBase.getSkillByID("skillAgility", player);
-				for (int i = 0; i < message.strAdd; i++) { skillStr.forceLevelUp(); }
-				for (int i = 0; i < message.agiAdd; i++) { skillAgi.forceLevelUp(); }
+				for (int i = 0; i < message.strAdd; i++) { skillStr.forceLevelUp(player); }
+				for (int i = 0; i < message.agiAdd; i++) { skillAgi.forceLevelUp(player); }
 				glevel.setSkillPoints(glevel.skillPoints - (message.strAdd+message.agiAdd));
 				
 				RPGCore.network.sendTo(new LevelPacket(skillStr.getXP(), -1, skillStr.skillId), (EntityPlayerMP) player);

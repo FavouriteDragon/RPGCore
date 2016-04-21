@@ -123,7 +123,7 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 	}
 	
 	@Override
-	public void forceAddXP(float xpAdd) {
+	public void forceAddXP(float xpAdd, EntityPlayer player) {
 		System.out.println("force-add XP");
 		if ((xpAdd+xpGlobal) >= getXpForLevel(getLevel())) {
 			System.out.println("Player levelled up!");
@@ -174,5 +174,10 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 	@Override
 	public int iconZ() {
 		return 0;
+	}
+
+	@Override
+	public String shortName() {
+		return "Global";
 	}
 }
