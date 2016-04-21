@@ -10,11 +10,8 @@ public class KeyInputHandler {
 	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		Minecraft mc = Minecraft.getMinecraft();
 		if (KeyBindings.openSkills.isPressed()) {
 			RPGCore.network.sendToServer(new OpenGuiPacket(0));
-			System.out.println("Open skills");
 		}
 	}
-
 }

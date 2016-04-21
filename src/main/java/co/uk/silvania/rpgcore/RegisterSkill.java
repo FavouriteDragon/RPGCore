@@ -12,14 +12,13 @@ public class RegisterSkill {
 	
 	public static void register(SkillLevelBase skill) {
 		skillList.add(skill);
-		System.out.println("[RPGCore] Skill " + skill.skillName + " loaded successfully!");
-		System.out.println("[RPGCore] Skill " + skill.skillName + " requires global level of " + skill.unlockedLevel + " to unlock!");
+		System.out.println("[RPGCore] Skill " + skill.skillName() + " loaded successfully!");
 	}
 	
 	public static String getDisplayNameForSkill(String skillId) {
 		for (int i = 0; i < skillList.size(); i++) {
 			if (skillList.get(i).skillId.equals(skillId)) {
-				return skillList.get(i).skillName;
+				return skillList.get(i).skillName();
 			}
 		}
 		return "";

@@ -64,12 +64,13 @@ public class MultiLineButton extends GuiButton {
             	}
 	            for (int j = 0; j < nl; j++) {
 	            	String[] lines = this.displayString.split("#");
-	            	this.drawCenteredString(fontrenderer, lines[j], this.xPosition + this.width / 2, this.yPosition + (this.height - 16) / 2 + (j * 9), l);
+	            	int lineOffset = (this.height / 2) -4;
+	            	if (this.displayString.contains("#")) {
+	            		lineOffset = 3 + (j*10);
+	            	}
+	            	this.drawCenteredString(fontrenderer, lines[j], this.xPosition + this.width / 2, this.yPosition + lineOffset, l);
 	            }
             }
         }
     }
-	
-	
-
 }

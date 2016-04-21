@@ -5,6 +5,7 @@ import co.uk.silvania.rpgcore.network.EquipNewSkillPacket;
 import co.uk.silvania.rpgcore.network.EquippedSkillsPacket;
 import co.uk.silvania.rpgcore.network.LevelPacket;
 import co.uk.silvania.rpgcore.network.OpenGuiPacket;
+import co.uk.silvania.rpgcore.network.SkillPointPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
 import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelAgility;
@@ -12,6 +13,7 @@ import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import co.uk.silvania.rpgcore.skills.SkillLevelHealth;
 import co.uk.silvania.rpgcore.skills.SkillLevelStrength;
 import co.uk.silvania.rpgcore.skills.SkillLevelSwords;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -39,21 +41,23 @@ public class RPGCore {
     
     @SidedProxy(clientSide="co.uk.silvania.rpgcore.client.ClientProxy", serverSide="co.uk.silvania.rpgcore.CommonProxy")
     public static CommonProxy proxy;
-    
     public static SimpleNetworkWrapper network;
+    public static String configPath;
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
+    	
+    	configPath = event.getModConfigurationDirectory() + "/RPGCore/";
+    	
+    	RPGCoreConfig.init(configPath);
+    	GuiConfig.init(configPath);
     }
     
     @EventHandler
     public void init(FMLInitializationEvent event) {
     	network = NetworkRegistry.INSTANCE.newSimpleChannel("RPGCore");
-    	
     	proxy.init();
-    	
-    	
     	
     	SkillLevelAgility skillAgility = new SkillLevelAgility(null, "skillAgility");
     	SkillLevelSwords skillSwords = new SkillLevelSwords(null, "skillSwords");
@@ -73,9 +77,12 @@ public class RPGCore {
     	network.registerMessage(OpenGuiPacket.Handler.class, OpenGuiPacket.class, 1, Side.SERVER);
     	network.registerMessage(EquippedSkillsPacket.Handler.class, EquippedSkillsPacket.class, 2, Side.CLIENT);
     	network.registerMessage(EquipNewSkillPacket.Handler.class, EquipNewSkillPacket.class, 3, Side.SERVER);
+    	network.registerMessage(SkillPointPacket.Handler.class, SkillPointPacket.class, 4, Side.SERVER);
+    	
+    	FMLCommonHandler.instance().bus().register(new HandlerOfEvents());
+    	FMLCommonHandler.instance().bus().register(new SkillLevelAgility(null, "skillAgility"));
     	
     	MinecraftForge.EVENT_BUS.register(new HandlerOfEvents());
-    	MinecraftForge.EVENT_BUS.register(new SkillLevelBase());
     	MinecraftForge.EVENT_BUS.register(new EquippedSkills());
     	MinecraftForge.EVENT_BUS.register(new GlobalLevel(null, "globalLevel"));
     	MinecraftForge.EVENT_BUS.register(new SkillLevelAgility(null, "skillAgility"));

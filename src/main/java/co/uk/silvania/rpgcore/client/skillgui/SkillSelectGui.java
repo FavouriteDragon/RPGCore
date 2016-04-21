@@ -1,5 +1,6 @@
 package co.uk.silvania.rpgcore.client.skillgui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -55,7 +56,7 @@ public class SkillSelectGui extends GuiContainer {
 		int left = (this.width - this.xSize) / 2;
 		int top  = (this.height - this.ySize) / 2;
 
-		buttonConfig = new MultiLineButton(1, left+257, top+206, 72, 22, "Configure#Skills");
+		buttonConfig = new MultiLineButton(1, left+257, top+206, 72, 22, "Configure#Player");
 		
 		buttonList.add(buttonConfig);
 	}
@@ -154,10 +155,10 @@ public class SkillSelectGui extends GuiContainer {
 		    		GL11.glEnable(GL11.GL_BLEND);
 					
 					if (skill != null) {
-						if (skill.skillIcon != null) {
-							mc.getTextureManager().bindTexture(skill.skillIcon);
-							iconPosX = skill.iconX;
-							iconPosZ = skill.iconZ;
+						if (skill.skillIcon() != null) {
+							mc.getTextureManager().bindTexture(skill.skillIcon());
+							iconPosX = skill.iconX();
+							iconPosZ = skill.iconZ();
 						} else {
 							mc.getTextureManager().bindTexture(skillIcons);
 							iconPosZ = 88;
@@ -273,9 +274,24 @@ public class SkillSelectGui extends GuiContainer {
             SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(skillSlot), mc.thePlayer);
             
 			if (skill != null) {
-				String[] text = {skill.nameFormat + "\u00A7l" + skill.skillName, "Lvl: " + skill.getLevel(), "XP: " + (int) skill.getXP() + "/" + (int) skill.getXpForLevel(skill.getLevel()), "XP to level up: " + (int) skill.xpToNextLevel()};
-				List temp = Arrays.asList(text);
-				drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
+				ArrayList<String> text = new ArrayList<String>();
+				text.add(skill.nameFormat() + "\u00A7l" + skill.skillName());
+				text.add("Lvl: " + skill.getLevel());
+				if (skill.canGainXP()) {
+					text.add("XP: " + (int) skill.getXP() + "/" + (int) skill.getXpForLevel(skill.getLevel()));
+					text.add("XP to level up: " + (int) skill.xpToNextLevel());
+				}
+				drawHoveringText(text, mouseX, mouseZ, fontRendererObj);
+			}
+			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
+			if (glevel.skillPoints > 0) {
+				buttonConfig.displayString = "* Configure *#** Player **";
+				if (buttonConfig.func_146115_a()) {
+					System.out.println("Hovering");
+					String[] str = {"Unspent Skill Points Available!", "Click here to allocate skill points."};
+					List temp = Arrays.asList(str);
+					drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
+				}
 			}
 		}
 	}
@@ -326,7 +342,7 @@ public class SkillSelectGui extends GuiContainer {
     	switch(button.id) {
     	case 1:
     		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-    		player.openGui(RPGCore.instance, 1, Minecraft.getMinecraft().theWorld, (int) player.posX, (int) player.posY, (int) player.posZ);
+    		player.openGui(RPGCore.instance, 3, Minecraft.getMinecraft().theWorld, (int) player.posX, (int) player.posY, (int) player.posZ);
     		break;
     	}
     }
