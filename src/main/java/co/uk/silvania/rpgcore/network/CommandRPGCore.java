@@ -36,7 +36,7 @@ public class CommandRPGCore extends CommandBase {
 			sender.addChatMessage(new ChatComponentText(red + "/rpgcore help" + green + " - Displays this help message"));
 			sender.addChatMessage(new ChatComponentText(red + "/rpgcore addxp <skillid> <amount> [player]" + green + " - Add amount XP to skill ID, to yourself or player."));
 		}
-		if (args[0].equalsIgnoreCase("addxp")) {
+		if (args[0].equalsIgnoreCase("addxp") || args[0].equalsIgnoreCase("xpadd")) {
 			if (args.length == 4) {
 				ArrayList<EntityPlayer> players = (ArrayList<EntityPlayer>) sender.getEntityWorld().playerEntities;
 				for (int i = 0; i < players.size(); i++) {
