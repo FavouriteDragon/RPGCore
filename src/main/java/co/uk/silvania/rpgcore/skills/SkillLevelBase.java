@@ -225,8 +225,32 @@ public abstract class SkillLevelBase {
 	 * Used anywhere you want to show XP relative to next level.
 	 * @return string with XP/XP for next level
 	 */
-	public String getXPForPrint() {
-		return (int) getXP() + " / " + getXpForLevel(getLevel()+1);
+	public String getXPTotalForPrint() {
+		return getXPProgressForPrint() + " (" + (int) getXP() + ")";
+	}
+	
+	/** 
+	 * Same as getXPForPrint, but shows it relevant to the current level/next level instead of total XP's
+	 * @return string with XP/XP for next level
+	 */
+	public String getXPProgressForPrint() {
+		return (int) (getXP() - getXpForLevel(getLevel()-1)) + "/" + (getXpForLevel(getLevel()) - getXpForLevel(getLevel()-1));
+	}
+	
+	/**
+	 * Gets a percentage of the skills progression to next level.
+	 * @return percentage xp gained
+	 */
+	public String getXPTotalAsPercentage() {
+		return (int) Math.round((getXP()/getXpForLevel(getLevel()+1))*100) + "%";
+	}
+	
+	/**
+	 * Same as getXPAsPercentage, but relevant only to current level/next level instead of total XP's
+	 * @return percentage xp gained
+	 */
+	public String getXPProgressAsPercentage() {
+		return (int) Math.round((getXP() - getXpForLevel(getLevel()-1))/(getXpForLevel(getLevel()) - getXpForLevel(getLevel()-1))*100) + "%";
 	}
 	
 	/**
@@ -268,7 +292,7 @@ public abstract class SkillLevelBase {
 	 * @return how much XP is required for the given level.
 	 */
 	public int getXpForLevel(int level) {
-		if (level <= 0) {
+		if (level < 1) {
 			return 0;
 		}
 		int base = config.baseXp;

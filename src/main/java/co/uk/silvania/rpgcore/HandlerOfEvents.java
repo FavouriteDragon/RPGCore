@@ -49,10 +49,17 @@ public class HandlerOfEvents {
 			double px = 1.0 / 256.0; //One pixel of the sprite sheet. Cleaner than manually calculating and having big numbers!
 			
 			double cent = (mc.displayWidth/2)/100.0; //1% of the screen width
-			
-			float target = glevel.getXpForLevel(glevel.getLevel()) - glevel.getXpForLevel(glevel.getLevel()-1); //The point it levels up
+			float target;
+			if (glevel.getLevel() <= 1) {
+				target = glevel.getXpForLevel(glevel.getLevel()); //The point it levels up
+			} else {
+				target = glevel.getXpForLevel(glevel.getLevel()) - glevel.getXpForLevel(glevel.getLevel()-1); //The point it levels up
+			}
+			if (target == 0) {
+				target = 1;
+			}
 			float current = glevel.getXPGlobal() - glevel.getXpForLevel(glevel.getLevel()-1); //Current amount of XP since last level-up
-			
+			//mc.fontRenderer.drawString("target: " + target + " (" + glevel.getXpForLevel(glevel.getLevel()), p_78276_2_, p_78276_3_, p_78276_4_)
 			double progress = (current/target) * 100; //Current XP as percentage
 			//Therefore progress*cent = percentage of screen to be filled
 			
@@ -180,11 +187,17 @@ public class HandlerOfEvents {
 							gui.drawTexturedModalRect(posX + xOffset+barWidth-11, posY + yOffset, barIconX+114, barIconY+91, 11, 12); //Bar Right
 						}
 						
+						int txtStyle = config.getXPTextType(slot);
+						String text = "";
+						if (txtStyle == 0) { text = skill.nameFormat() + "Lvl " + skill.getLevel(); }
+						if (txtStyle == 1) { text = skill.nameFormat() + "Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
+						if (txtStyle == 2) { text = skill.nameFormat() + "Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+						if (txtStyle == 3) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel(); }
+						if (txtStyle == 4) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
+						if (txtStyle == 5) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
 						
-						String text = skill.skillName() + " - Lvl: " + skill.getLevel();
-						if (rightAlign) {
-							textOffset = barWidth-RPGUtils.getStringLength(text)-14;
-						}
+						if (rightAlign) { textOffset = barWidth-RPGUtils.getStringLength(text)-14; }
+						
 						mc.fontRenderer.drawString(text, posX + xOffset + textOffset, posY + yOffset + 2, 16777215);
 						
 						ResourceLocation icon;
