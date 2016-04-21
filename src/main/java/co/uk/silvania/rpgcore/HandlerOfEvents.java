@@ -224,6 +224,36 @@ public class HandlerOfEvents {
 		mc.getTextureManager().bindTexture(new ResourceLocation("minecraft", "textures/gui/icons.png"));
 	}
 	
+	public float addedXpForRender = 0;
+	
+	boolean rendering = false;
+	int ticker = 0;
+	
+	/*@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void renderXPGain(RenderGameOverlayEvent.Post event) {
+		Minecraft mc = Minecraft.getMinecraft();
+		if (addedXpForRender > 0 && !rendering) {
+			rendering = true;
+			ticker = 0;
+			System.out.println("pt" + event.partialTicks);
+		}
+
+		if (rendering) {
+			if (ticker < 60) {
+				mc.fontRenderer.drawString("+"+addedXpForRender, mc.displayWidth/4, mc.displayHeight/4, 16777215);
+				//ticker++;
+			} else {
+				rendering = false;
+			}
+		}
+	}*/
+	
+	public void setXpForRender(float xp) {
+		System.out.println("setter called");
+		addedXpForRender = xp;
+	}
+	
 	@SubscribeEvent
 	public void onClonePlayer(PlayerEvent.Clone event) {
 		((SkillLevelBase) SkillLevelBase.get(event.entityPlayer, SkillLevelBase.staticId)).copy((SkillLevelBase) SkillLevelBase.get(event.original, SkillLevelBase.staticId));

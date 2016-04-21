@@ -92,4 +92,14 @@ public class SkillLevelSwords extends SkillLevelBase implements IExtendedEntityP
 	public void levelUp() {
 		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
 	}
+	
+	@Override
+	public boolean skillUnlocked() {
+		return false;
+	}
+	
+	@Override
+	public void addEquipIssues() {
+		equipIssues.add("Skill not yet implemented.");
+	}
 }

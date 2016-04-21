@@ -3,6 +3,7 @@ package co.uk.silvania.rpgcore.skills;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.uk.silvania.rpgcore.HandlerOfEvents;
 import co.uk.silvania.rpgcore.RPGCore;
 import co.uk.silvania.rpgcore.RPGCoreConfig;
 import co.uk.silvania.rpgcore.RegisterSkill;
@@ -18,6 +19,8 @@ public abstract class SkillLevelBase {
 	
 	public float xp;
 	public int level;
+	
+	HandlerOfEvents hoe = new HandlerOfEvents();
 
 	public static String staticId;
 	public String skillId;
@@ -44,6 +47,7 @@ public abstract class SkillLevelBase {
 		addRequirements();
 		addIncompatibilities();
 		addDescription();
+		addEquipIssues();
 	}
 	
 	/**
@@ -57,20 +61,17 @@ public abstract class SkillLevelBase {
 			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get(player);
 			//We check on your behalf to make sure the skill is equipped before allowing the XP to be added.
 			if (isSkillEquipped(player, skillId)) {
-				System.out.println("skillequipped");
 				//We'll also make sure they've not equipped armour into the slot shared by a skill
 				if (!skillArmourConflict(equippedSkills, skillId, player)) {
 					
-					if (xpAdd >= xpToNextLevel()+1) {
-						System.out.println("Player levelled up!");
-						levelUp();
-					}
+					if (xpAdd >= xpToNextLevel()+1) { levelUp(); }
 					
-					System.out.println("no armour conflict");
-					System.out.println("Pre-adding XP " + xp + ", skillId: " + skillId);
 					xp += xpAdd;
-					System.out.println("Post-adding XP " + xp);
-	
+					
+					hoe.setXpForRender(xpAdd);
+					System.out.println("ADDING 2 DAT FILTHY HOE");
+					
+					
 					//Every time a skill gains XP, the global level also gets 10% of that XP.
 					GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);
 					glevel.xpGlobal += (xpAdd/10.0);
@@ -369,7 +370,7 @@ public abstract class SkillLevelBase {
 	/**
 	 * True if skill can be equipped, false if not.
 	 * Remember to call super if you override, else it won't check for skill requirements or unlock level.
-	 * Use "equipIssues.add("");" to show on the skill list tooltip WHY they can't equip the skill - if you want.
+	 * Use addEquipIssues() to show on the skill list tooltip WHY they can't equip the skill - if you want.
 	 * You could always keep it a secret!
 	 * @param player
 	 * @return
@@ -512,6 +513,12 @@ public abstract class SkillLevelBase {
 	 * Rendered as a tooltip when hovering over icons in the Skill Selection gui.
 	 */
 	public abstract void addDescription();
+	
+	/**
+	 * Add text to describe any non-standard reasons a skill may be locked, for example it requires a quest to be completed.
+	 * Add new entries using equipIssues.add("");
+	 */
+	public void addEquipIssues() {}
 	
 	/**
      * Adjust the speed in which this skill levels up.
