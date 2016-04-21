@@ -18,25 +18,29 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 	public String skillId;
 	
 	public float xpGlobal;
+	public int skillPoints;
 	
 	public GlobalLevel(EntityPlayer player, String skillID) {
-		skillName = "Global Level";
+		super(skillID);
 		skillId = skillID;
 		staticSkillId = skillID;
-		this.xpGlobal = 0;		
+		this.xpGlobal = 0;
+		this.skillPoints = 0;
 	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setFloat(skillName + "XP", xpGlobal);
+		nbt.setFloat(skillId + "xp", xpGlobal);
+		nbt.setInteger("skillPoints", skillPoints);
 		compound.setTag(skillId, nbt);
 	}
 
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = (NBTTagCompound) compound.getTag(skillId);
-		xpGlobal = nbt.getFloat(skillName + "XP");
+		xpGlobal = nbt.getFloat(skillId + "xp");
+		skillPoints = nbt.getInteger("skillPoints");
 	}
 	
 	public static final void register(EntityPlayer player) {
@@ -45,17 +49,13 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 
 	@Override public void init(Entity entity, World world) {}
 	
-	public float getXPGlobal() {
-		return xpGlobal;
-	}
-	
 	public String getXPForPrint() {
 		return (int) getXPGlobal() + " / " + getXpForLevel(getLevel()+1);
 	}
 	
 	public int getLevel() {
-		int base = 83;
-		int previousXp = 83;
+		int base = config.baseXp;
+		int previousXp = config.baseXp;
 		int level = 1;
 		
 		while (xpGlobal >= previousXp) {
@@ -67,8 +67,8 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 	}
 	
 	public int getXpForLevel(int level) {
-		int base = 83;
-		int xpForLevel = 83;
+		int base = config.baseXp;
+		int xpForLevel = config.baseXp;
 		
 		for (int i = 1; i < level; i++) {
 			xpForLevel += base + ((base / 100.0) * ((i) * (35 + ((i/10)*10))));
@@ -80,13 +80,37 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 		return (getXpForLevel(getLevel())) - (int)getXPGlobal();
 	}
 	
-	public void setLevel() {
-		level = (int) Math.round(levelMultiplier * Math.sqrt(xp));
-		System.out.println("Level: " + level);
+	public void levelUpGlobal() {
+		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
+		skillPoints += config.skillPointsPerLevel;
 	}
 
 	public void setXP(float xpSet) {
 		xpGlobal = xpSet;
+	}
+	
+	public float getXPGlobal() {
+		return xpGlobal;
+	}
+	
+	public void setSkillPoints(int points) {
+		skillPoints = points;
+	}
+	
+	public int getSkillPoints() {
+		return skillPoints;
+	}
+	
+	@Override
+	public void forceAddXP(float xpAdd) {
+		System.out.println("force-add XP");
+		if ((xpAdd+xpGlobal) >= getXpForLevel(getLevel())) {
+			System.out.println("Player levelled up!");
+			levelUpGlobal();
+		} else {
+			System.out.println("xpAdd: " + xpAdd + ", xpGlobal: " + xpGlobal + ", getXpForLevel: " + getXpForLevel(getLevel()));
+		}
+		xpGlobal += xpAdd;
 	}
 	
 	@SubscribeEvent
@@ -98,5 +122,36 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 	
 	public static IExtendedEntityProperties get(EntityPlayer player) {
 		return player.getExtendedProperties(staticSkillId);
+	}
+
+	@Override
+	public boolean hasGui() {
+		return false;
+	}
+
+	@Override
+	public String skillName() {
+		return "Global Level";
+	}
+
+	@Override public void openGui() {}
+
+	@Override public void addDescription() {}
+
+	@Override
+	public ResourceLocation skillIcon() {
+		return null;
+	}
+
+	@Override public void activateSkill(EntityPlayer player, World world) {}
+
+	@Override
+	public int iconX() {
+		return 0;
+	}
+
+	@Override
+	public int iconZ() {
+		return 0;
 	}
 }
