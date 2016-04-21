@@ -129,7 +129,10 @@ public class HandlerOfEvents {
 						int iconBarX = 0;
 						
 						boolean rightAlign = false;
-						int textOffset = 8;
+						int textOffset = 2;
+						int iconOffset = 0;
+						
+						if (config.getShowIcon(slot)) { iconOffset = 8; }
 						
 						if (barStyle == 2 || barStyle == 4 || barStyle == 6 || barStyle == 8 || barStyle == 10 || barStyle == 12) { barIconX = 131; rightAlign = true; }
 						
@@ -196,9 +199,9 @@ public class HandlerOfEvents {
 						if (txtStyle == 4) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
 						if (txtStyle == 5) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
 						
-						if (rightAlign) { textOffset = barWidth-RPGUtils.getStringLength(text)-14; }
+						if (rightAlign) { textOffset = barWidth-mc.fontRenderer.getStringWidth(text)-2-iconOffset; iconOffset = 0; }
 						
-						mc.fontRenderer.drawString(text, posX + xOffset + textOffset, posY + yOffset + 2, 16777215);
+						mc.fontRenderer.drawString(text, posX + xOffset + textOffset + iconOffset, posY + yOffset + 2, 16777215);
 						
 						ResourceLocation icon;
 						int iconX;
