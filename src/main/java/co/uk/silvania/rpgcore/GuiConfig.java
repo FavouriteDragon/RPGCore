@@ -145,7 +145,7 @@ public class GuiConfig {
 			
 			showXP1 = config.getBoolean("Show XP (1)", Configuration.CATEGORY_GENERAL, true, "Show slot 1's XP bar");
 			showIcon1 = config.getBoolean("Show Icon (1)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType1 = config.getInt("XP Text Type (1)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType1 = config.getInt("XP Text Type (1)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos1 = config.getInt("XP Bar Position (1)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset1 = config.getInt("XP Bar X-Offset (1)", Configuration.CATEGORY_GENERAL, -96, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset1 = config.getInt("XP Bar Y-Offset (1)", Configuration.CATEGORY_GENERAL, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -154,7 +154,7 @@ public class GuiConfig {
 			
 			showXP2 = config.getBoolean("Show XP (2)", Configuration.CATEGORY_GENERAL, true, "Show slot 2's XP bar");
 			showIcon2 = config.getBoolean("Show Icon (2)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType2 = config.getInt("XP Text Type (2)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType2 = config.getInt("XP Text Type (2)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos2 = config.getInt("XP Bar Position (2)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset2 = config.getInt("XP Bar X-Offset (2)", Configuration.CATEGORY_GENERAL, -2, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset2 = config.getInt("XP Bar Y-Offset (2)", Configuration.CATEGORY_GENERAL, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -163,7 +163,7 @@ public class GuiConfig {
 			
 			showXP3 = config.getBoolean("Show XP (3)", Configuration.CATEGORY_GENERAL, true, "Show slot 3's XP bar");
 			showIcon3 = config.getBoolean("Show Icon (3)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType3 = config.getInt("XP Text Type (3)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType3 = config.getInt("XP Text Type (3)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos3 = config.getInt("XP Bar Position (3)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset3 = config.getInt("XP Bar X-Offset (3)", Configuration.CATEGORY_GENERAL, -2, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset3 = config.getInt("XP Bar Y-Offset (3)", Configuration.CATEGORY_GENERAL, 19, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -172,7 +172,7 @@ public class GuiConfig {
 			
 			showXP4 = config.getBoolean("Show XP (4)", Configuration.CATEGORY_GENERAL, true, "Show slot 4's XP bar");
 			showIcon4 = config.getBoolean("Show Icon (4)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType4 = config.getInt("XP Text Type (4)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType4 = config.getInt("XP Text Type (4)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos4 = config.getInt("XP Bar Position (4)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset4 = config.getInt("XP Bar X-Offset (4)", Configuration.CATEGORY_GENERAL, -2, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset4 = config.getInt("XP Bar Y-Offset (4)", Configuration.CATEGORY_GENERAL, 33, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -181,7 +181,7 @@ public class GuiConfig {
 			
 			showXP5 = config.getBoolean("Show XP (5)", Configuration.CATEGORY_GENERAL, true, "Show slot 5's XP bar");
 			showIcon5 = config.getBoolean("Show Icon (5)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType5 = config.getInt("XP Text Type (5)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType5 = config.getInt("XP Text Type (5)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos5 = config.getInt("XP Bar Position (5)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset5 = config.getInt("XP Bar X-Offset (5)", Configuration.CATEGORY_GENERAL, -2, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset5 = config.getInt("XP Bar Y-Offset (5)", Configuration.CATEGORY_GENERAL, 47, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -190,7 +190,7 @@ public class GuiConfig {
 			
 			showXP6 = config.getBoolean("Show XP (6)", Configuration.CATEGORY_GENERAL, true, "Show slot 6's XP bar");
 			showIcon6 = config.getBoolean("Show Icon (6)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType6 = config.getInt("XP Text Type (6)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType6 = config.getInt("XP Text Type (6)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos6 = config.getInt("XP Bar Position (6)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset6 = config.getInt("XP Bar X-Offset (6)", Configuration.CATEGORY_GENERAL, -2, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset6 = config.getInt("XP Bar Y-Offset (6)", Configuration.CATEGORY_GENERAL, 61, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -199,7 +199,7 @@ public class GuiConfig {
 			
 			showXP7 = config.getBoolean("Show XP (7)", Configuration.CATEGORY_GENERAL, true, "Show slot 7's XP bar");
 			showIcon7 = config.getBoolean("Show Icon (7)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType7 = config.getInt("XP Text Type (7)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType7 = config.getInt("XP Text Type (7)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos7 = config.getInt("XP Bar Position (7)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset7 = config.getInt("XP Bar X-Offset (7)", Configuration.CATEGORY_GENERAL, -2, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset7 = config.getInt("XP Bar Y-Offset (7)", Configuration.CATEGORY_GENERAL, 75, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -208,7 +208,7 @@ public class GuiConfig {
 			
 			showXP8 = config.getBoolean("Show XP (8)", Configuration.CATEGORY_GENERAL, true, "Show slot 8's XP bar");
 			showIcon8 = config.getBoolean("Show Icon (8)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType8 = config.getInt("XP Text Type (8)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType8 = config.getInt("XP Text Type (8)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos8 = config.getInt("XP Bar Position (8)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset8 = config.getInt("XP Bar X-Offset (8)", Configuration.CATEGORY_GENERAL, -96, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset8 = config.getInt("XP Bar Y-Offset (8)", Configuration.CATEGORY_GENERAL, 75, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -217,7 +217,7 @@ public class GuiConfig {
 			
 			showXP9 = config.getBoolean("Show XP (9)", Configuration.CATEGORY_GENERAL, true, "Show slot 9's XP bar");
 			showIcon9 = config.getBoolean("Show Icon (9)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType9 = config.getInt("XP Text Type (9)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType9 = config.getInt("XP Text Type (9)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos9 = config.getInt("XP Bar Position (9)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset9 = config.getInt("XP Bar X-Offset (9)", Configuration.CATEGORY_GENERAL, -96, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP Bar X-offset. Only change in-game!!");
 			yOffset9 = config.getInt("XP Bar Y-Offset (9)", Configuration.CATEGORY_GENERAL, 61, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP Bar Y-offset. Only change in-game!!");
@@ -226,7 +226,7 @@ public class GuiConfig {
 			
 			showXP10 = config.getBoolean("Show XP (10)", Configuration.CATEGORY_GENERAL, true, "Show slot 10's XP bar");
 			showIcon10 = config.getBoolean("Show Icon (10)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType10 = config.getInt("XP Text Type (10)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType10 = config.getInt("XP Text Type (10)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos10 = config.getInt("XP Bar Position (10)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset10 = config.getInt("XP Bar X-Offset (10)", Configuration.CATEGORY_GENERAL, -96, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset10 = config.getInt("XP Bar Y-Offset (10)", Configuration.CATEGORY_GENERAL, 47, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -235,7 +235,7 @@ public class GuiConfig {
 			
 			showXP11 = config.getBoolean("Show XP (11)", Configuration.CATEGORY_GENERAL, true, "Show slot 11's XP bar");
 			showIcon11 = config.getBoolean("Show Icon (11)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType11 = config.getInt("XP Text Type (11)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType11 = config.getInt("XP Text Type (11)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos11 = config.getInt("XP Bar Position (11)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset11 = config.getInt("XP Bar X-Offset (11)", Configuration.CATEGORY_GENERAL, -96, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset11 = config.getInt("XP Bar Y-Offset (11)", Configuration.CATEGORY_GENERAL, 33, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");
@@ -244,7 +244,7 @@ public class GuiConfig {
 			
 			showXP12 = config.getBoolean("Show XP (12)", Configuration.CATEGORY_GENERAL, true, "Show slot 12's XP bar");
 			showIcon12 = config.getBoolean("Show Icon (12)", Configuration.CATEGORY_GENERAL, false, "Show Skill Icon on slot's XP bar");
-			xpTextType12 = config.getInt("XP Text Type (12)", Configuration.CATEGORY_GENERAL, 3, 0, 6, "Type of text to show on XP bar");
+			xpTextType12 = config.getInt("XP Text Type (12)", Configuration.CATEGORY_GENERAL, 6, 0, 13, "Type of text to show on XP bar");
 			xpBarPos12 = config.getInt("XP Bar Position (12)", Configuration.CATEGORY_GENERAL, 3, 1, 6, "Position of XP bar on-screen");
 			xOffset12 = config.getInt("XP Bar X-Offset (12)", Configuration.CATEGORY_GENERAL, -96, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar X-offset. Only change in-game!!");
 			yOffset12 = config.getInt("XP Bar Y-Offset (12)", Configuration.CATEGORY_GENERAL, 19, Integer.MIN_VALUE, Integer.MAX_VALUE, "XP bar Y-offset. Only change in-game!!");

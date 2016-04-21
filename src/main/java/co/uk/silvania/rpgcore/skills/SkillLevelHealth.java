@@ -47,18 +47,12 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 	}
 	
 	@Override
-	public boolean secretSkill() {
-		return true;
-	}
-	
-	@Override
 	public double levelMultiplier() {
 		return 3;
 	}
 
 	@Override
 	public boolean hasGui() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -68,27 +62,17 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 	}
 
 	@Override
-	public void openGui() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void openGui() {}
 	
-	@Override
-	public void addRequirements() {
-		requiredSkills.add("skillAgility"); 
-		requiredSkills.add("skillStrength");
-		requiredSkills.add("skillSwords");
-		requiredSkills.add("skillJump"); 
-	}
+
 
 	@Override
 	public void addDescription() {
 		description.add(nameFormat() + "\u00A7l" + skillName());
-		description.add("\u00A7oRequirements are just to show how requirements work.");
-		description.add("\u00A7oRequirements can never be met.");
 		description.add("Each level gives +1 HP");
 		description.add("Experience earned by taking damage.");
 		description.add("Different damage sources give different XP.");
+		description.add("\u00A7oNot yet implemented.");
 	}
 	
 	@Override

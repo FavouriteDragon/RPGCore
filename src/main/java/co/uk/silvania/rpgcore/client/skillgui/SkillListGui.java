@@ -67,7 +67,7 @@ public class SkillListGui extends GuiScreen {
 		}
 		if (mouseX >= left+169 && mouseX <= left+240 && mouseZ >= top+48 && mouseZ <= top+212) {
 			if (skill != null) {
-				if ((!skill.incompatibleSkills.isEmpty() && !skill.isSkillCompatable(mc.thePlayer)) || skill.hasUnequippedRequirements(mc.thePlayer)) {
+				if ((!skill.incompatibleSkills.isEmpty() && !skill.isSkillCompatable(mc.thePlayer)) || skill.hasUnequippedRequirements(mc.thePlayer) || !skill.equipIssues.isEmpty()) {
 					List str = new ArrayList();
 					str.add("\u00A7nCurrent Skill Issues");
 					str.add(" ");
@@ -94,7 +94,13 @@ public class SkillListGui extends GuiScreen {
 							}
 						}
 					}
-
+					
+					if (!skill.equipIssues.isEmpty()) {
+						for (int i = 0; i < skill.equipIssues.size(); i++) {
+							if (i == 0) { str.add("\u00A7lMisc. Issues:"); }
+							str.add("\u00A7c" + skill.equipIssues.get(i));
+						}
+					}
 					drawHoveringText(str, mouseX, mouseZ, fontRendererObj);
 				}
 			}

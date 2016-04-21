@@ -10,6 +10,7 @@ import co.uk.silvania.rpgcore.RegisterSkill;
 import co.uk.silvania.rpgcore.network.EquipNewSkillPacket;
 import co.uk.silvania.rpgcore.network.OpenGuiPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
+import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import cpw.mods.fml.client.GuiScrollingList;
 import net.minecraft.client.Minecraft;
@@ -100,6 +101,7 @@ public class SkillListScrollable extends GuiScrollingList_Mod {
         SkillLevelBase skillBase = skillsForDisplay.get(listIndex);
 		SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
 		EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) mc.thePlayer);
+		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
         
         int offset = 0;
         boolean greenFrame = false;
@@ -146,8 +148,12 @@ public class SkillListScrollable extends GuiScrollingList_Mod {
 			
 			int stacker = 0; //Offset for new lines so everything always rests at the top without empty lines.
 			String unlocked = skill.unlockedLevel() + "";
-			if (!skill.isSkillUnlocked(mc.thePlayer)) {
+			if (!skill.isSkillUnlocked(mc.thePlayer) && skill.unlockedLevel() >= glevel.getLevel()) {
 				mc.fontRenderer.drawString("Unlocked at Level " + skill.unlockedLevel(),  ((w2 - (xSize*2))) + 413 - (unlocked.length()*6), h2 + 9, 11796480);
+				stacker += 9;
+			} else if (!skill.isSkillUnlocked(mc.thePlayer)) {
+				String str = "Skill locked, see details.";
+				mc.fontRenderer.drawString(str,  ((w2 - (xSize*2))) + 506 - mc.fontRenderer.getStringWidth(str), h2 + 9, 11796480);
 				stacker += 9;
 			} else {
 				if (!skill.canSkillBeEquipped(mc.thePlayer)) {
