@@ -101,15 +101,20 @@ public class SkillSelectGui extends GuiContainer {
 	}
 	
 	@Override
-	protected void drawGuiContainerForegroundLayer(int x, int z) {
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseZ) {
+		super.drawGuiContainerForegroundLayer(mouseX, mouseZ);
 		int left = -40;
 		int top  = -45;
-		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(mc.thePlayer);
 		
+		int skillSlot = getSkillSlotHover(mouseX, mouseZ);
+		
+		EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) Minecraft.getMinecraft().thePlayer);
+		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(mc.thePlayer);
+		SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(skillSlot), mc.thePlayer);
 		
 		mc.fontRenderer.drawString("\u00A7l" + mc.thePlayer.getDisplayName(), left - 100, top + 17, 4210752);
 		mc.fontRenderer.drawString("Global Level: " + glevel.getLevel(), left - 100, top + 30, 4210752);
-		mc.fontRenderer.drawString("XP: " + glevel.getXPForPrint(), left - 100, top + 40, 4210752);
+		mc.fontRenderer.drawString("XP: " + glevel.getXPTotalForPrint(), left - 100, top + 40, 4210752);
 		mc.fontRenderer.drawString("Guild: ", left - 100, top + 55, 4210752);
 		mc.fontRenderer.drawString("Faction: ", left - 100, top + 70, 4210752);
 		mc.fontRenderer.drawString("\u00A7lParty", left - 100, top + 82, 4210752);
@@ -123,6 +128,33 @@ public class SkillSelectGui extends GuiContainer {
 		mc.fontRenderer.drawString("\u00A7l" + "Player8", left - 98, top + 194, 4210752);
 		mc.fontRenderer.drawString("\u00A7l" + "Player9", left - 98, top + 208, 4210752);
 		mc.fontRenderer.drawString("\u00A7l" + "Player10", left - 98, top + 222, 4210752);
+		
+		ItemStack slot0 = mc.thePlayer.inventory.armorItemInSlot(0);
+		ItemStack slot1 = mc.thePlayer.inventory.armorItemInSlot(1);
+		ItemStack slot2 = mc.thePlayer.inventory.armorItemInSlot(2);
+		ItemStack slot3 = mc.thePlayer.inventory.armorItemInSlot(3);
+		
+		if (slot0 != null && skillSlot == 4) { drawHoveringText(slot0.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
+		if (slot1 != null && skillSlot == 5) { drawHoveringText(slot1.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
+		if (slot2 != null && skillSlot == 7) { drawHoveringText(slot2.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
+		if (slot3 != null && skillSlot == 8) { drawHoveringText(slot3.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
+        
+		if (skillSlot >= 0) {
+			if (skill != null) {
+				ArrayList<String> text = new ArrayList<String>();
+				text.add(skill.nameFormat() + "\u00A7l" + skill.skillName());
+				text.add("Lvl: " + skill.getLevel());
+				if (skill.canGainXP()) {
+					text.add("XP: " + skill.getXPTotalForPrint());
+					text.add("XP to level up: " + (int) skill.xpToNextLevel());
+				}
+				drawHoveringText(text, mouseX-guiLeft, mouseZ-guiTop, fontRendererObj);
+			} else if (glevel.slotUnlockedLevel(skillSlot) > glevel.getLevel()) {
+	        	String[] str = {"Skill slot locked!", "Unlocked at Level " + glevel.slotUnlockedLevel(skillSlot)};
+	        	List temp = Arrays.asList(str);
+	        	drawHoveringText(temp, mouseX-guiLeft, mouseZ-guiTop, fontRendererObj);
+			}
+		}
 	}
 
 	@Override
@@ -143,6 +175,7 @@ public class SkillSelectGui extends GuiContainer {
 		int slotZ = 0;
 		
 		EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) Minecraft.getMinecraft().thePlayer);
+		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
 		
 		if (equippedSkills != null) {
 			
@@ -171,6 +204,11 @@ public class SkillSelectGui extends GuiContainer {
 						mc.getTextureManager().bindTexture(skillIcons);
 						iconPosX = 226;
 						iconPosZ = 226;
+					}
+					
+					if (glevel.slotUnlockedLevel(i) > glevel.getLevel()) {
+						iconPosX = 139;
+						iconPosZ = 220;
 					}
 					
 					int xPos = 0;
@@ -222,7 +260,6 @@ public class SkillSelectGui extends GuiContainer {
 			drawTexturedModelRectFromIcon(left + 198, top + 163, icon, 26, 26);
 			
 			if (equippedSkills.getSkillInSlot(4).length() >= 3) { RPGCore.network.sendToServer(new EquipNewSkillPacket(4, "")); }
-			if (skillSlot == 4) { drawHoveringText(slot0.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
 		}
 		
 		if (slot1 != null) {
@@ -231,7 +268,6 @@ public class SkillSelectGui extends GuiContainer {
 			drawTexturedModelRectFromIcon(left + 163, top + 198, icon, 26, 26);
 			
 			if (equippedSkills.getSkillInSlot(5).length() >= 3) { RPGCore.network.sendToServer(new EquipNewSkillPacket(5, "")); }
-			if (skillSlot == 5) { drawHoveringText(slot1.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
 		}
 		
 		if (slot2 != null) {
@@ -240,7 +276,6 @@ public class SkillSelectGui extends GuiContainer {
 			drawTexturedModelRectFromIcon(left + 67, top + 198, icon, 26, 26);
 			
 			if (equippedSkills.getSkillInSlot(7).length() >= 3) { RPGCore.network.sendToServer(new EquipNewSkillPacket(7, "")); }
-			if (skillSlot == 7) { drawHoveringText(slot2.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
 		}
 		
 		if (slot3 != null) {
@@ -249,7 +284,6 @@ public class SkillSelectGui extends GuiContainer {
 			drawTexturedModelRectFromIcon(left + 32, top + 163, icon, 26, 26);
 			
 			if (equippedSkills.getSkillInSlot(8).length() >= 3) { RPGCore.network.sendToServer(new EquipNewSkillPacket(8, "")); }
-			if (skillSlot == 8) { drawHoveringText(slot3.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
 		}
 
 		if (skillSlot >= 0) {
@@ -275,24 +309,6 @@ public class SkillSelectGui extends GuiContainer {
             GL11.glColorMask(true, true, true, true);
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_DEPTH_TEST);
-            
-            SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(skillSlot), mc.thePlayer);
-            GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
-            
-			if (skill != null) {
-				ArrayList<String> text = new ArrayList<String>();
-				text.add(skill.nameFormat() + "\u00A7l" + skill.skillName());
-				text.add("Lvl: " + skill.getLevel());
-				if (skill.canGainXP()) {
-					text.add("XP: " + (int) skill.getXP() + "/" + (int) skill.getXpForLevel(skill.getLevel()));
-					text.add("XP to level up: " + (int) skill.xpToNextLevel());
-				}
-				drawHoveringText(text, mouseX, mouseZ, fontRendererObj);
-			} else if (glevel.slotUnlockedLevel(skillSlot) > glevel.getLevel()) {
-	        	String[] str = {"Skill slot locked!", "Unlocked at Level " + glevel.slotUnlockedLevel(skillSlot)};
-	        	List temp = Arrays.asList(str);
-	        	drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
-			}
 
 			if (glevel.skillPoints > 0) {
 				buttonConfig.displayString = "\u00A76* Configure *#\u00A76** Player **";
