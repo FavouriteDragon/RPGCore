@@ -120,7 +120,7 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 	}
 	
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onBlockBreak(BreakEvent event) {
 		Block block = event.block;		
 		EntityPlayer player = event.getPlayer();
@@ -135,10 +135,16 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 			SkillLevelStrength skill = (SkillLevelStrength) SkillLevelStrength.get(player, skillId);
 			skill.addXPWithUpdate(hardness / 2F, player);
 		}
+	}*/
+	
+	@Override
+	public void levelUp(EntityPlayer player) {
+		super.levelUp(player);
+		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
 	}
 	
 	@Override
-	public void levelUp() {
-		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
+	public String shortName() {
+		return "STR";
 	}
 }

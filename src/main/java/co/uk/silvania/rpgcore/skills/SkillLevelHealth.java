@@ -121,7 +121,8 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 	}
 
 	@Override
-	public void levelUp() {
+	public void levelUp(EntityPlayer player) {
+		super.levelUp(player);
 		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
 	}
 	
@@ -133,5 +134,10 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 	@Override
 	public void addEquipIssues() {
 		equipIssues.add("Skill not yet implemented.");
+	}
+	
+	@Override
+	public String shortName() {
+		return "HP";
 	}
 }

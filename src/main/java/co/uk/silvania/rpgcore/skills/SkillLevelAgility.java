@@ -106,37 +106,8 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 	float prevTickFall = 0;
 	float playerFallHealth = -1;
 	
-	@SubscribeEvent
-	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if (event.phase == TickEvent.Phase.START && event.side == Side.SERVER) {
-			if (event.player.isSprinting()) {
-				if (tick < 20) {
-					tick += 1;
-				} else {
-					System.out.println("Player sprinted for a full second. XP!");
-					System.out.println("Time: " + System.currentTimeMillis());
-					//addXPWithUpdate(1F, event.player);
-					tick = 0;
-				}
-			} else {
-				tick = 0;
-			}
-			if (event.player.fallDistance > prevTickFall) {
-				prevTickFall = event.player.fallDistance;
-				playerFallHealth = event.player.getHealth();
-			} else {
-				if (playerFallHealth <= event.player.getHealth() && prevTickFall > 3) {
-					System.out.println("Health! playerFallHealth: " + playerFallHealth + ", getHealth(): " + event.player.getHealth());
-					System.out.println("Player didn't take damage on falling, get some XP!");
-				}
-				playerFallHealth = -1;
-				prevTickFall = 0;
-			}
-		}
-	}
-	
 	@Override
-	public void levelUp() {
+	public void levelUp(EntityPlayer player) {
 		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
 	}
 	
@@ -148,5 +119,10 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 	@Override
 	public int xpBarColour() {
 		return 252;
+	}
+	
+	@Override
+	public String shortName() {
+		return "AGI";
 	}
 }
