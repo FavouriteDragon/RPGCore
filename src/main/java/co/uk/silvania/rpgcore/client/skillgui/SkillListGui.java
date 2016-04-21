@@ -102,11 +102,6 @@ public class SkillListGui extends GuiScreen {
 	}
 	
 	@Override
-	public boolean doesGuiPauseGame() {
-		return false;
-	}
-	
-	@Override
 	public void initGui() {
 		//Clone the list for displaying skills only
 		for (int i = 0; i < skillList.size(); i++) {
@@ -167,9 +162,6 @@ public class SkillListGui extends GuiScreen {
         }
         
         buttonDetails.enabled = selectedSkill.hasGui();
-        
-        System.out.println("Selected skill: " + selectedSkill.skillName());
-        //cachedLogo = null;
     }
 
     public boolean modIndexSelected(int index) {
@@ -202,4 +194,8 @@ public class SkillListGui extends GuiScreen {
     	}
     }
 
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
+    }
 }

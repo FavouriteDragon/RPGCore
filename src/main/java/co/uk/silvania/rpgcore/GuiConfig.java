@@ -11,6 +11,9 @@ public class GuiConfig {
 	public static File rpgCoreConfigFile;
 	
 	public static boolean globalXpTop;
+	public static boolean showGlobalXp;
+	public static boolean showGlobalLevel;
+	public static boolean globalLevelLeft;
 	
 	public static boolean showXP1;
 	public static boolean showIcon1;
@@ -134,6 +137,11 @@ public class GuiConfig {
 			config.addCustomCategoryComment(Configuration.CATEGORY_GENERAL, "These configs are best set from the in-game GUI." + "\n" 
 			+ "I recommend not playing with them here!!!" + "\n" 
 			+ "To edit, click an equipped skill, and press Configure.");
+			
+			globalXpTop = config.getBoolean("Global XP Top/Bottom", Configuration.CATEGORY_GENERAL, true, "True to show xp at top of screen, false for bottom.");
+			showGlobalXp = config.getBoolean("Show Global XP", Configuration.CATEGORY_GENERAL, true, "Show the global XP bar");
+			showGlobalLevel = config.getBoolean("Show Global Level", Configuration.CATEGORY_GENERAL, true, "Show the level as text on the global XP bar");
+			globalLevelLeft = config.getBoolean("Global Text Left/Right", Configuration.CATEGORY_GENERAL, true, "True to show the text on the left, false for right.");
 			
 			showXP1 = config.getBoolean("Show XP (1)", Configuration.CATEGORY_GENERAL, true, "Show slot 1's XP bar");
 			showIcon1 = config.getBoolean("Show Icon (1)", Configuration.CATEGORY_GENERAL, true, "Show Skill Icon on slot's XP bar");
@@ -624,6 +632,26 @@ public class GuiConfig {
 				} else {
 					System.out.println("Config not changed.");
 				}
+			}
+		}
+	}
+	
+	public void setGlobalSettings(boolean showGlobalXP, boolean globalLevelTop, boolean showGlobalLevel, boolean globalLevelLeft) {
+		try {
+			config.load();
+			config.get(Configuration.CATEGORY_GENERAL, "Show Global XP", showGlobalXP, "Show the global XP bar").set(showGlobalXP);
+			config.get(Configuration.CATEGORY_GENERAL, "Global XP Top/Bottom", globalLevelTop, "True to show xp at top of screen, false for bottom.").set(globalLevelTop);
+			config.get(Configuration.CATEGORY_GENERAL, "Show Global Level", showGlobalLevel, "Show the level as text on the global XP bar").set(showGlobalLevel);
+			config.get(Configuration.CATEGORY_GENERAL, "Global Text Left/Right", globalLevelLeft, "True to show the text on the left, false for right.").set(globalLevelLeft);
+		} catch (Exception e) {
+			System.out.println("### WARNING! RPGCore could not load it's config files! ###");
+		} finally {
+			if (config.hasChanged()) {
+				System.out.println("Saving config!");
+				config.save();
+				initConfig();
+			} else {
+				System.out.println("Config not changed.");
 			}
 		}
 	}

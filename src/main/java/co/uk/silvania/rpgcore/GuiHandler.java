@@ -1,5 +1,6 @@
 package co.uk.silvania.rpgcore;
 
+import co.uk.silvania.rpgcore.client.skillgui.GlobalLevelConfig;
 import co.uk.silvania.rpgcore.client.skillgui.PlayerConfig;
 import co.uk.silvania.rpgcore.client.skillgui.SkillConfig;
 import co.uk.silvania.rpgcore.client.skillgui.SkillListGui;
@@ -36,6 +37,9 @@ public class GuiHandler implements IGuiHandler {
 			}
 			case 3: {
 				return new PlayerConfig();
+			}
+			case 4: {
+				return new GlobalLevelConfig();
 			}
 		}
 		return null;

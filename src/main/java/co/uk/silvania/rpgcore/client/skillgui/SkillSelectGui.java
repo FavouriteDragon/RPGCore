@@ -6,10 +6,8 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import co.uk.silvania.rpgcore.RPGCore;
-import co.uk.silvania.rpgcore.RegisterSkill;
 import co.uk.silvania.rpgcore.SkillsContainer;
 import co.uk.silvania.rpgcore.network.EquipNewSkillPacket;
-import co.uk.silvania.rpgcore.network.OpenGuiPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
 import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
@@ -18,8 +16,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import scala.actors.threadpool.Arrays;
@@ -84,11 +82,17 @@ public class SkillSelectGui extends GuiContainer {
         		if (skillSlot == 8) { System.out.println("Armour in slot: " + mc.thePlayer.inventory.armorItemInSlot(3).getDisplayName()); }
         		
         		openGui = false;
-        		System.out.println("No skills while wearing armour!");
         	}
-        	System.out.println("Clicked Skill Slot " + skillSlot);
-        	slotClicked = skillSlot;
-			if (openGui) { openGui(2); }
+        	GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(mc.thePlayer);
+        	
+        	if (glevel.slotUnlockedLevel(skillSlot) > glevel.getLevel()) {
+        		openGui = false;
+        	}
+        	
+			if (openGui) {
+				slotClicked = skillSlot;
+				openGui(2);
+			}
         }
 	}
 	
@@ -193,46 +197,6 @@ public class SkillSelectGui extends GuiContainer {
 		GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        
-		if (mc.thePlayer.inventory.armorItemInSlot(0) != null) {
-			IIcon icon = mc.thePlayer.inventory.armorItemInSlot(0).getIconIndex();
-			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
-			drawTexturedModelRectFromIcon(left + 198, top + 163, icon, 26, 26);
-			
-			if (equippedSkills.getSkillInSlot(4).length() >= 3) {
-				RPGCore.network.sendToServer(new EquipNewSkillPacket(4, ""));
-			}
-		}
-		
-		if (mc.thePlayer.inventory.armorItemInSlot(1) != null) {
-			IIcon icon = mc.thePlayer.inventory.armorItemInSlot(1).getIconIndex();
-			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
-			drawTexturedModelRectFromIcon(left + 163, top + 198, icon, 26, 26);
-			
-			if (equippedSkills.getSkillInSlot(5).length() >= 3) {
-				RPGCore.network.sendToServer(new EquipNewSkillPacket(5, ""));
-			}
-		}
-		
-		if (mc.thePlayer.inventory.armorItemInSlot(2) != null) {
-			IIcon icon = mc.thePlayer.inventory.armorItemInSlot(2).getIconIndex();
-			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
-			drawTexturedModelRectFromIcon(left + 67, top + 198, icon, 26, 26);
-			
-			if (equippedSkills.getSkillInSlot(7).length() >= 3) {
-				RPGCore.network.sendToServer(new EquipNewSkillPacket(7, ""));
-			}
-		}
-		
-		if (mc.thePlayer.inventory.armorItemInSlot(3) != null) {
-			IIcon icon = mc.thePlayer.inventory.armorItemInSlot(3).getIconIndex();
-			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
-			drawTexturedModelRectFromIcon(left + 32, top + 163, icon, 26, 26);
-			
-			if (equippedSkills.getSkillInSlot(8).length() >= 3) {
-				RPGCore.network.sendToServer(new EquipNewSkillPacket(8, ""));
-			}
-		}
 		
 		if (skillSlot == 0)  { slotX = 113;  slotZ = 17;  }
 		if (skillSlot == 1)  { slotX = 161;  slotZ = 30;  }
@@ -246,6 +210,47 @@ public class SkillSelectGui extends GuiContainer {
 		if (skillSlot == 9)  { slotX = 17;   slotZ = 113; }
 		if (skillSlot == 10) { slotX = 30;   slotZ = 64; }
 		if (skillSlot == 11) { slotX = 65;   slotZ = 29; }
+		
+		ItemStack slot0 = mc.thePlayer.inventory.armorItemInSlot(0);
+		ItemStack slot1 = mc.thePlayer.inventory.armorItemInSlot(1);
+		ItemStack slot2 = mc.thePlayer.inventory.armorItemInSlot(2);
+		ItemStack slot3 = mc.thePlayer.inventory.armorItemInSlot(3);
+		
+		if (slot0 != null) {
+			IIcon icon = slot0.getIconIndex();
+			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+			drawTexturedModelRectFromIcon(left + 198, top + 163, icon, 26, 26);
+			
+			if (equippedSkills.getSkillInSlot(4).length() >= 3) { RPGCore.network.sendToServer(new EquipNewSkillPacket(4, "")); }
+			if (skillSlot == 4) { drawHoveringText(slot0.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
+		}
+		
+		if (slot1 != null) {
+			IIcon icon = slot1.getIconIndex();
+			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+			drawTexturedModelRectFromIcon(left + 163, top + 198, icon, 26, 26);
+			
+			if (equippedSkills.getSkillInSlot(5).length() >= 3) { RPGCore.network.sendToServer(new EquipNewSkillPacket(5, "")); }
+			if (skillSlot == 5) { drawHoveringText(slot1.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
+		}
+		
+		if (slot2 != null) {
+			IIcon icon = slot2.getIconIndex();
+			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+			drawTexturedModelRectFromIcon(left + 67, top + 198, icon, 26, 26);
+			
+			if (equippedSkills.getSkillInSlot(7).length() >= 3) { RPGCore.network.sendToServer(new EquipNewSkillPacket(7, "")); }
+			if (skillSlot == 7) { drawHoveringText(slot2.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
+		}
+		
+		if (slot3 != null) {
+			IIcon icon = slot3.getIconIndex();
+			mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+			drawTexturedModelRectFromIcon(left + 32, top + 163, icon, 26, 26);
+			
+			if (equippedSkills.getSkillInSlot(8).length() >= 3) { RPGCore.network.sendToServer(new EquipNewSkillPacket(8, "")); }
+			if (skillSlot == 8) { drawHoveringText(slot3.getTooltip(mc.thePlayer, false), mouseX, mouseZ, fontRendererObj); }
+		}
 
 		if (skillSlot >= 0) {
 			GL11.glDisable(GL11.GL_LIGHTING);
@@ -272,6 +277,7 @@ public class SkillSelectGui extends GuiContainer {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             
             SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(skillSlot), mc.thePlayer);
+            GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
             
 			if (skill != null) {
 				ArrayList<String> text = new ArrayList<String>();
@@ -282,12 +288,15 @@ public class SkillSelectGui extends GuiContainer {
 					text.add("XP to level up: " + (int) skill.xpToNextLevel());
 				}
 				drawHoveringText(text, mouseX, mouseZ, fontRendererObj);
+			} else if (glevel.slotUnlockedLevel(skillSlot) > glevel.getLevel()) {
+	        	String[] str = {"Skill slot locked!", "Unlocked at Level " + glevel.slotUnlockedLevel(skillSlot)};
+	        	List temp = Arrays.asList(str);
+	        	drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
 			}
-			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
+
 			if (glevel.skillPoints > 0) {
-				buttonConfig.displayString = "* Configure *#** Player **";
+				buttonConfig.displayString = "\u00A76* Configure *#\u00A76** Player **";
 				if (buttonConfig.func_146115_a()) {
-					System.out.println("Hovering");
 					String[] str = {"Unspent Skill Points Available!", "Click here to allocate skill points."};
 					List temp = Arrays.asList(str);
 					drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
@@ -345,5 +354,10 @@ public class SkillSelectGui extends GuiContainer {
     		player.openGui(RPGCore.instance, 3, Minecraft.getMinecraft().theWorld, (int) player.posX, (int) player.posY, (int) player.posZ);
     		break;
     	}
+    }
+    
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
     }
 }
