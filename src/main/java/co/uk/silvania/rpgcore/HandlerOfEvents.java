@@ -1,5 +1,7 @@
 package co.uk.silvania.rpgcore;
 
+import org.lwjgl.opengl.GL11;
+
 import co.uk.silvania.rpgcore.network.EquippedSkillsPacket;
 import co.uk.silvania.rpgcore.network.LevelPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
@@ -9,24 +11,66 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class HandlerOfEvents {
+	
+	GuiConfig config = new GuiConfig();
+	
+	public static final ResourceLocation icons = new ResourceLocation(RPGCore.MODID, "textures/gui/icons.png");
+	public static final ResourceLocation xpBars = new ResourceLocation(RPGCore.MODID, "textures/gui/xpbars.png");
+	public static final ResourceLocation skillIcons = new ResourceLocation(RPGCore.MODID, "textures/gui/skillicons.png");
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onRender(RenderGameOverlayEvent.Pre event) {
 		Minecraft mc = Minecraft.getMinecraft();
-		
-		int totalEquipped = 0;
+		Gui gui = new Gui();
 
+		//Global level XP bar
 		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
 		if (glevel != null) {
-			mc.fontRenderer.drawString("Global Level: " + (int) glevel.getLevel() + ", XP: " + (int) glevel.getXPGlobal(), 2, 2, 16777215);
-		}		
+			mc.getTextureManager().bindTexture(xpBars);
+
+			GL11.glEnable(GL11.GL_BLEND);
+         	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+         	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
+			
+			Tessellator tess = Tessellator.instance;
+			double px = 1.0 / 256.0; //One pixel of the sprite sheet. Cleaner than manually calculating and having big numbers!
+			
+			double cent = (mc.displayWidth/2)/100.0; //1% of the screen width
+			
+			float target = glevel.getXpForLevel(glevel.getLevel()) - glevel.getXpForLevel(glevel.getLevel()-1); //The point it levels up
+			float current = glevel.getXPGlobal() - glevel.getXpForLevel(glevel.getLevel()-1); //Current amount of XP since last level-up
+			
+			double progress = (current/target) * 100; //Current XP as percentage
+			//Therefore progress*cent = percentage of screen to be filled
+			
+			tess.startDrawingQuads();
+			tess.addVertexWithUV(0, 3, 1, 0, px*256);
+			tess.addVertexWithUV(mc.displayWidth/2, 3, 1, 1, px*256);
+			tess.addVertexWithUV(mc.displayWidth/2, 0, 1, 1, px*254);
+			tess.addVertexWithUV(0, 0, 1, 0, px*254);
+			tess.draw();
+			
+			tess.startDrawingQuads();
+			tess.addVertexWithUV(0, 3, 1, 0, px*253);
+			tess.addVertexWithUV(progress*cent, 3, 1, (current/target), px*253);
+			tess.addVertexWithUV(progress*cent, 0, 1, (current/target), px*251);
+			tess.addVertexWithUV(0, 0, 1, 0, px*251);
+			tess.draw();
+		}
+		//Skill XP bars
 		for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
 			SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
 			SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) mc.thePlayer, skillBase.skillId);
@@ -34,47 +78,166 @@ public class HandlerOfEvents {
 			
 			if (skill != null) {
 				if (equippedSkills.isSkillEquipped(skill.skillId)) {
-					mc.fontRenderer.drawString("Name: " + skill.skillName + ", XP: " + (int) skill.getXP(), 2, ((totalEquipped)*10)+12, 16777215);
-					totalEquipped++;
+					int slot = equippedSkills.findSkillSlot(skill.skillId);
+					
+					if (config.getShowXp(slot)) {
+						GL11.glEnable(GL11.GL_BLEND);
+			         	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+			         	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
+						
+						mc.getTextureManager().bindTexture(xpBars);
+						int barStyle = config.getXPBarStyle(slot);
+						int anchor = config.getXPBarPos(slot);
+						int barWidth = config.getXPBarWidth(slot);
+						int posX = 0;
+						int posY = 0;
+						
+						int xOffset = config.getXPXOffset(slot);
+						int yOffset = config.getXPYOffset(slot);
+						
+						if (anchor == 1 || anchor == 4) { posX = 0; }
+						if (anchor == 2 || anchor == 5) { posX = (mc.displayWidth/4)-barWidth; }
+						if (anchor == 3 || anchor == 6) { posX = (mc.displayWidth/2)-barWidth; }
+						
+						if (anchor == 1 || anchor == 2 || anchor == 3) { posY = 0; }
+						if (anchor == 4 || anchor == 5 || anchor == 6) { posY = (mc.displayHeight/2)-12; }
+						
+						int barIconX = 0;
+						int barIconY = 0;
+						
+						int iconBarX = 0;
+						
+						boolean rightAlign = false;
+						int textOffset = 8;
+						
+						if (barStyle == 2 || barStyle == 4 || barStyle == 6 || barStyle == 8 || barStyle == 10 || barStyle == 12) { barIconX = 131; rightAlign = true; }
+						
+						if (barStyle == 3 || barStyle == 4)   { barIconY = 13; }
+						if (barStyle == 5 || barStyle == 6)   { barIconY = 26; }
+						if (barStyle == 7 || barStyle == 8)   { barIconY = 39; }
+						if (barStyle == 9 || barStyle == 10)  { barIconY = 52; }
+						if (barStyle == 11 || barStyle == 12) { barIconY = 65; }
+						if (barStyle == 13)   				  { barIconY = 78; }
+						
+						if (barStyle == 1 || barStyle == 3 || barStyle == 5 || barStyle == 7) { iconBarX = posX - 8; }
+						if (barStyle == 2 || barStyle == 4 || barStyle == 6 || barStyle == 8) { iconBarX = (posX) + (barWidth) - 8; }
+						if (barStyle >= 9 && barStyle <= 13) { iconBarX = posX + (barWidth/2) - 8; }
+						
+						gui.drawTexturedModalRect(posX + xOffset,             posY + yOffset, barIconX,     barIconY, 11, 12); //Bar Left
+						gui.drawTexturedModalRect(posX + xOffset+11,          posY + yOffset, barIconX+11,  barIconY, barWidth-22, 12); //Bar
+						gui.drawTexturedModalRect(posX + xOffset+barWidth-11, posY + yOffset, barIconX+114, barIconY, 11, 12); //Bar Right
+						
+						int col = skill.xpBarColour();
+						
+						if ((col & -67108864) == 0) {
+							col |= -16777216;
+			            }
+						
+						float red = (float)(col >> 16 & 255) / 255.0F;
+						float blue = (float)(col >> 8 & 255) / 255.0F;
+						float green = (float)(col & 255) / 255.0F;
+						float alpha = (float)(col >> 24 & 255) / 255.0F;
+						
+						float target = skill.getXpForLevel(skill.getLevel()) - skill.getXpForLevel(skill.getLevel()-1); //The point it levels up
+						float current = skill.getXP() - skill.getXpForLevel(skill.getLevel()-1); //Current amount of XP since last level-up
+						
+						double progress = (current/target) * 100; //Current XP as percentage
+						double cent = barWidth/100.0;
+						
+						int xpFill = (int) (progress*cent);
+
+						GL11.glColor4f(red, blue, green, alpha);
+						if (skill.canGainXP()) {
+							if (xpFill < 11) {
+								gui.drawTexturedModalRect(posX + xOffset,             posY + yOffset, barIconX,     barIconY+91, xpFill, 12); //Bar Left
+							} else {
+								gui.drawTexturedModalRect(posX + xOffset,             posY + yOffset, barIconX,     barIconY+91, 11, 12); //Bar Left
+							}
+							
+							if (xpFill < barWidth-11) {
+								gui.drawTexturedModalRect(posX + xOffset+11,          posY + yOffset, barIconX+11,  barIconY+91, xpFill-11, 12); //Bar
+							} else {
+								gui.drawTexturedModalRect(posX + xOffset+11,          posY + yOffset, barIconX+11,  barIconY+91, barWidth-22, 12); //Bar
+								gui.drawTexturedModalRect(posX + xOffset+barWidth-11, posY + yOffset, barIconX+114, barIconY+91, xpFill-(barWidth-11), 12); //Bar Right
+							}
+						} else {
+							gui.drawTexturedModalRect(posX + xOffset,             posY + yOffset, barIconX,     barIconY+91, 11, 12); //Bar Left
+							gui.drawTexturedModalRect(posX + xOffset+11,          posY + yOffset, barIconX+11,  barIconY+91, barWidth-22, 12); //Bar
+							gui.drawTexturedModalRect(posX + xOffset+barWidth-11, posY + yOffset, barIconX+114, barIconY+91, 11, 12); //Bar Right
+						}
+						
+						
+						String text = skill.skillName() + " - Lvl: " + skill.getLevel();
+						if (rightAlign) {
+							textOffset = barWidth-RPGUtils.getStringLength(text)-14;
+						}
+						mc.fontRenderer.drawString(text, posX + xOffset + textOffset, posY + yOffset + 2, 16777215);
+						
+						ResourceLocation icon;
+						int iconX;
+						int iconZ;
+						
+						if (skill.skillIcon() != null) {
+							icon = skill.skillIcon();
+							iconX = skill.iconX();
+							iconZ = skill.iconZ()+128;
+						} else {
+							icon = skillIcons;
+							iconX = 92;
+							iconZ = 220;
+						}
+						
+						mc.getTextureManager().bindTexture(icon);
+						gui.drawTexturedModalRect(xOffset + iconBarX - 2, posY + yOffset - 2, skill.iconX(), skill.iconZ()+128, 16, 16); //small icon
+					}
 				}
 			}
 		}
+		mc.getTextureManager().bindTexture(new ResourceLocation("minecraft", "textures/gui/icons.png"));
+	}
+	
+	@SubscribeEvent
+	public void onClonePlayer(PlayerEvent.Clone event) {
+		((SkillLevelBase) SkillLevelBase.get(event.entityPlayer, SkillLevelBase.staticId)).copy((SkillLevelBase) SkillLevelBase.get(event.original, SkillLevelBase.staticId));
 	}
 	
 	@SubscribeEvent
 	public void onPlayerJoinWorld(EntityJoinWorldEvent event) {
-		if (event.entity instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
-			for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
-				SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
-				System.out.println("skillID being sent to client: " + skillBase.skillId);
-				SkillLevelBase skill = (SkillLevelBase) skillBase.get((EntityPlayer) event.entity, skillBase.skillId);
-				if (skill != null) {
-					System.out.println("Sending data to client!");
-					RPGCore.network.sendTo(new LevelPacket(skill.getXP(), skill.skillId), (EntityPlayerMP) event.entity);
+		if (event.entity instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) event.entity;
+			if (!player.worldObj.isRemote) {
+				for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
+					SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
+					System.out.println("skillID being sent to client: " + skillBase.skillId);
+					SkillLevelBase skill = (SkillLevelBase) skillBase.get(player, skillBase.skillId);
+					if (skill != null) {
+						System.out.println("Sending data to client!");
+						RPGCore.network.sendTo(new LevelPacket(skill.getXP(), -1, skill.skillId), (EntityPlayerMP) player);
+					}
 				}
+				EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) player);
+				
+				System.out.println("Sending global level to client!");
+				GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) player);
+				RPGCore.network.sendTo(new LevelPacket((int)(glevel.getXPGlobal()*10), glevel.getSkillPoints(), glevel.skillId), (EntityPlayerMP) player);
+				
+				System.out.println("Sending equipped skills to client!");
+				System.out.println("Slot 0: " + equippedSkills.getSkillInSlot(0));
+				RPGCore.network.sendTo(new EquippedSkillsPacket(
+						equippedSkills.getSkillInSlot(0), 
+						equippedSkills.getSkillInSlot(1), 
+						equippedSkills.getSkillInSlot(2), 
+						equippedSkills.getSkillInSlot(3), 
+						equippedSkills.getSkillInSlot(4), 
+						equippedSkills.getSkillInSlot(5), 
+						equippedSkills.getSkillInSlot(6),
+						equippedSkills.getSkillInSlot(7),
+						equippedSkills.getSkillInSlot(8),
+						equippedSkills.getSkillInSlot(9),
+						equippedSkills.getSkillInSlot(10),
+						equippedSkills.getSkillInSlot(11)), (EntityPlayerMP) player);
 			}
-			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) event.entity);
-			
-			System.out.println("Sending global level to client!");
-			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) event.entity);
-			RPGCore.network.sendTo(new LevelPacket((int)(glevel.getXPGlobal()*10), glevel.skillId), (EntityPlayerMP) event.entity);
-			
-			System.out.println("Sending equipped skills to client!");
-			System.out.println("Slot 0: " + equippedSkills.getSkillInSlot(0));
-			RPGCore.network.sendTo(new EquippedSkillsPacket(
-					equippedSkills.getSkillInSlot(0), 
-					equippedSkills.getSkillInSlot(1), 
-					equippedSkills.getSkillInSlot(2), 
-					equippedSkills.getSkillInSlot(3), 
-					equippedSkills.getSkillInSlot(4), 
-					equippedSkills.getSkillInSlot(5), 
-					equippedSkills.getSkillInSlot(6),
-					equippedSkills.getSkillInSlot(7),
-					equippedSkills.getSkillInSlot(8),
-					equippedSkills.getSkillInSlot(9),
-					equippedSkills.getSkillInSlot(10),
-					equippedSkills.getSkillInSlot(11)), (EntityPlayerMP) event.entity);
 		}
 	}
-
 }
