@@ -70,7 +70,7 @@ public class SkillConfig extends GuiScreen {
 		
 		showXP = new MultiLineButton(1, left+161, top+6, 88, 15, showxp);
 		showIcon = new MultiLineButton(2, left+161, top+24, 88, 15, showicon);
-		xpTextType = new GuiSlider(3, left+7, top+44, 117, 20, "", "", 0, 3, 0, false, true);
+		xpTextType = new GuiSlider(3, left+7, top+44, 117, 20, "", "", 0, 6, 0, false, true);
 		xpBarPos = new GuiSlider(4, left+132,  top+44, 117, 20, "", "", 1, 6, 1, false, true);
 		
 		xOffset = new GuiSlider(5, left+7,  top+68, 117, 20, "", "", -width/2, width/2, 0, false, true);
@@ -207,21 +207,28 @@ public class SkillConfig extends GuiScreen {
 		ResourceLocation icon;
 		int iconX;
 		int iconZ;
+		int smallIconX;
+		int smallIconZ;
 		
-		if (skill.skillIcon() != null) {
+		if (skill != null && skill.skillIcon() != null) {
 			icon = skill.skillIcon();
 			iconX = skill.iconX();
 			iconZ = skill.iconZ();
+			smallIconX = skill.iconX();
+			smallIconZ = skill.iconZ() + 128;
 		} else {
 			icon = skillIcons;
 			iconX = 0;
 			iconZ = 220;
+			smallIconX = 92;
+			smallIconZ = 220;
 		}
-		
-		mc.fontRenderer.drawString("Name: " + skill.skillName(), left + 43, top + 11, 4210752);
-		mc.fontRenderer.drawString("Lvl: " + skill.getLevel(), left + 43, top + 21, 4210752);
-		if (skill.canGainXP()) {
-			mc.fontRenderer.drawString("XP: " + skill.getXPForPrint(), left + 43, top + 30, 4210752);
+		if (skill != null) {
+			mc.fontRenderer.drawString("Name: " + skill.skillName(), left + 43, top + 11, 4210752);
+			mc.fontRenderer.drawString("Lvl: " + skill.getLevel(), left + 43, top + 21, 4210752);
+			if (skill.canGainXP()) {
+				mc.fontRenderer.drawString("XP: " + skill.getXPTotalForPrint(), left + 43, top + 30, 4210752);
+			}
 		}
 		
 		String tip = "Hold shift over buttons to see tips";
@@ -232,13 +239,16 @@ public class SkillConfig extends GuiScreen {
 			this.mc.getTextureManager().bindTexture(xpBars);
 			int barStyle = xpBarStyle.getValueInt();
 			int barWidth = xpBarWidth.getValueInt();
+			int txtStyle = xpTextType.getValueInt();
 			int leftPos = left+(xSize/2)-(barWidth/2);
 			int barX = 0;
 			int barY = 0;
 			int iconBarX = 0;
 			int iconBarY = 147;
+			boolean rightAlign = false;
+			int textOffset = 8;
 			
-			if (barStyle == 2 || barStyle == 4 || barStyle == 6 || barStyle == 8 || barStyle == 10 || barStyle == 12) { barX = 131; }
+			if (barStyle == 2 || barStyle == 4 || barStyle == 6 || barStyle == 8 || barStyle == 10 || barStyle == 12) { barX = 131; rightAlign = true;}
 			
 			if (barStyle == 3 || barStyle == 4)   { barY = 13; }
 			if (barStyle == 5 || barStyle == 6)   { barY = 26; }
@@ -257,12 +267,25 @@ public class SkillConfig extends GuiScreen {
 			
 			if (showIconBar) {
 				this.mc.getTextureManager().bindTexture(icon);
-				drawTexturedModalRect(iconBarX, top + iconBarY, skill.iconX(), skill.iconZ()+128, 16, 16); //small icon
+				drawTexturedModalRect(iconBarX, top + iconBarY, smallIconX, smallIconZ, 16, 16); //small icon
 			}
+			
+			
+			String text = "";
+			if (skill != null) {
+				if (txtStyle == 0) { text = skill.nameFormat() + "Lvl " + skill.getLevel(); }
+				if (txtStyle == 1) { text = skill.nameFormat() + "Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
+				if (txtStyle == 2) { text = skill.nameFormat() + "Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+				if (txtStyle == 3) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel(); }
+				if (txtStyle == 4) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
+				if (txtStyle == 5) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+			}
+			if (rightAlign) { textOffset = barWidth-RPGUtils.getStringLength(text)-14; }
+			mc.fontRenderer.drawString(text, iconBarX + textOffset, iconBarY + 1, 16777215);
 		}
 
 		this.mc.getTextureManager().bindTexture(icon);
-		drawTexturedModalRect(left + 8, top + 8, skill.iconX(), skill.iconZ(), 30, 30);
+		drawTexturedModalRect(left + 8, top + 8, iconX, iconZ, 30, 30);
 
 		
 		super.drawScreen(mouseX, mouseZ, par3);
@@ -275,7 +298,7 @@ public class SkillConfig extends GuiScreen {
 			}
 			
 			if (xpTextType.func_146115_a()) {
-				String[] str = {"\u00A7lXP Text Type", "\u00A7oToggle the text shown on the XP bar.", "\u00A7e0: Only level is shown", "\u00A7e1: XP is shown as XP since last level/XP for next level", "\u00A7e2: XP is shown as Overall Experience/XP for next level.", "\u00A7e3: XP is shown as a percentage (%)", "\u00A7aUse +/- or L/R arrow keys for fine-tuning."};
+				String[] str = {"\u00A7lXP Text Type", "\u00A7oToggle the text shown on the XP bar.", "\u00A7e0: Only level is shown", "\u00A7e1: XP is shown as XP since last level/XP for next level", "\u00A7e2: XP is shown as a percentage (%)", "\u00A7e3: No text at all.", "\u00A7aUse +/- or L/R arrow keys for fine-tuning."};
 				List temp = Arrays.asList(str);
 				drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
 			}
