@@ -15,41 +15,22 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 	public static String staticSkillId;
 	
 	public SkillLevelHealth(EntityPlayer player, String skillID) {
-		skillName = "Health";
-		skillId = skillID;
+		super(skillID);
 		staticSkillId = skillID;
 		this.xp = 0;
-		skillIcon = new ResourceLocation(RPGCore.MODID, "textures/gui/skills.png");
-		iconX = 60;
-		iconZ = 0;
-		
-		levelMultiplier = 1.2; //Higher value = slower levelling.
-		
-		unlockedLevel = 2;
-		requiredSkills.add("skillAgility"); 
-		requiredSkills.add("skillStrength");
-		requiredSkills.add("skillSwords");
-		requiredSkills.add("skillJump"); 
-		
-		description.add(nameFormat + "\u00A7l" + skillName);
-		description.add("\u00A7oRequirements are just to show how requirements work.");
-		description.add("\u00A7oRequirements can never be met.");
-		description.add("Each level gives +1 HP");
-		description.add("Experience earned by taking damage.");
-		description.add("Different damage sources give different XP.");
 	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setFloat(skillName + "XP", xp);
+		nbt.setFloat(skillId + "xp", xp);
 		compound.setTag(skillId, nbt);
 	}
 
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = (NBTTagCompound) compound.getTag(skillId);
-		xp = nbt.getFloat(skillName + "XP");
+		xp = nbt.getFloat(skillId + "xp");
 	}
 
 	@Override public void init(Entity entity, World world) {}
@@ -64,5 +45,83 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 			event.entity.registerExtendedProperties(skillId, new SkillLevelHealth((EntityPlayer)event.entity, skillId));
 		}
 	}
+	
+	@Override
+	public boolean secretSkill() {
+		return true;
+	}
+	
+	@Override
+	public double levelMultiplier() {
+		return 3;
+	}
 
+	@Override
+	public boolean hasGui() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String skillName() {
+		return "Health";
+	}
+
+	@Override
+	public void openGui() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void addRequirements() {
+		requiredSkills.add("skillAgility"); 
+		requiredSkills.add("skillStrength");
+		requiredSkills.add("skillSwords");
+		requiredSkills.add("skillJump"); 
+	}
+
+	@Override
+	public void addDescription() {
+		description.add(nameFormat() + "\u00A7l" + skillName());
+		description.add("\u00A7oRequirements are just to show how requirements work.");
+		description.add("\u00A7oRequirements can never be met.");
+		description.add("Each level gives +1 HP");
+		description.add("Experience earned by taking damage.");
+		description.add("Different damage sources give different XP.");
+	}
+	
+	@Override
+	public int unlockedLevel() {
+		return 2;
+	}
+
+	@Override
+	public ResourceLocation skillIcon() {
+		return new ResourceLocation(RPGCore.MODID, "textures/gui/skills.png");
+	}
+
+	@Override
+	public void activateSkill(EntityPlayer player, World world) {}
+
+	@Override
+	public int iconX() {
+		return 60;
+	}
+
+	@Override
+	public int iconZ() {
+		return 0;
+	}
+	
+	@Override
+	public void xpGained(String skillId, float xpAdd, EntityPlayer player) {
+		SkillLevelHealth skill = (SkillLevelHealth) SkillLevelHealth.get(player, skillId);
+		skill.addXP(xpAdd/10, player);
+	}
+
+	@Override
+	public void levelUp() {
+		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
+	}
 }
