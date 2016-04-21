@@ -70,7 +70,7 @@ public class SkillConfig extends GuiScreen {
 		
 		showXP = new MultiLineButton(1, left+161, top+6, 88, 15, showxp);
 		showIcon = new MultiLineButton(2, left+161, top+24, 88, 15, showicon);
-		xpTextType = new GuiSlider(3, left+7, top+44, 117, 20, "", "", 0, 6, 0, false, true);
+		xpTextType = new GuiSlider(3, left+7, top+44, 117, 20, "", "", 0, 13, 0, false, true);
 		xpBarPos = new GuiSlider(4, left+132,  top+44, 117, 20, "", "", 1, 6, 1, false, true);
 		
 		xOffset = new GuiSlider(5, left+7,  top+68, 117, 20, "", "", -width/2, width/2, 0, false, true);
@@ -209,6 +209,7 @@ public class SkillConfig extends GuiScreen {
 		int iconZ;
 		int smallIconX;
 		int smallIconZ;
+		int iconOffset = 0;
 		
 		if (skill != null && skill.skillIcon() != null) {
 			icon = skill.skillIcon();
@@ -233,7 +234,7 @@ public class SkillConfig extends GuiScreen {
 		
 		String tip = "Hold shift over buttons to see tips";
 		mc.fontRenderer.drawString(tip, left+128-(RPGUtils.getStringLength(tip)/2), top+236, 4210752);
-		mc.fontRenderer.drawString(saved, left+128-(RPGUtils.getStringLength(saved)/2), top+249, 4210752);
+		mc.fontRenderer.drawString(saved, left+128-(RPGUtils.getStringLength(saved)/2), top+249, 16777215);
 		
 		if (showXPBar) {
 			this.mc.getTextureManager().bindTexture(xpBars);
@@ -268,8 +269,8 @@ public class SkillConfig extends GuiScreen {
 			if (showIconBar) {
 				this.mc.getTextureManager().bindTexture(icon);
 				drawTexturedModalRect(iconBarX, top + iconBarY, smallIconX, smallIconZ, 16, 16); //small icon
+				iconOffset = 8;
 			}
-			
 			
 			String text = "";
 			if (skill != null) {
@@ -279,9 +280,16 @@ public class SkillConfig extends GuiScreen {
 				if (txtStyle == 3) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel(); }
 				if (txtStyle == 4) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
 				if (txtStyle == 5) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+				if (txtStyle == 6) { text = skill.nameFormat() + skill.shortName() + " - Lvl " + skill.getLevel(); }
+				if (txtStyle == 7) { text = skill.nameFormat() + skill.shortName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
+				if (txtStyle == 8) { text = skill.nameFormat() + skill.shortName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+				if (txtStyle == 9) { text = skill.nameFormat() + skill.skillName(); }
+				if (txtStyle == 10) { text = skill.nameFormat() + skill.shortName(); }
+				if (txtStyle == 11) { text = skill.nameFormat() + skill.getXPProgressForPrint(); }
+				if (txtStyle == 12) { text = skill.nameFormat() + skill.getXPProgressAsPercentage(); }
 			}
-			if (rightAlign) { textOffset = barWidth-RPGUtils.getStringLength(text)-14; }
-			mc.fontRenderer.drawString(text, iconBarX + textOffset, iconBarY + 1, 16777215);
+			if (rightAlign) { textOffset = barWidth-mc.fontRenderer.getStringWidth(text)-2-iconOffset; iconOffset = 0;; }
+			mc.fontRenderer.drawString(text, left+128-(RPGUtils.getStringLength(text)/2), top + iconBarY + 4, 16777215);
 		}
 
 		this.mc.getTextureManager().bindTexture(icon);
@@ -298,7 +306,22 @@ public class SkillConfig extends GuiScreen {
 			}
 			
 			if (xpTextType.func_146115_a()) {
-				String[] str = {"\u00A7lXP Text Type", "\u00A7oToggle the text shown on the XP bar.", "\u00A7e0: Only level is shown", "\u00A7e1: XP is shown as XP since last level/XP for next level", "\u00A7e2: XP is shown as a percentage (%)", "\u00A7e3: No text at all.", "\u00A7aUse +/- or L/R arrow keys for fine-tuning."};
+				String[] str = {"\u00A7lXP Text Type", "\u00A7oToggle the text shown on the XP bar.", 
+						"\u00A7e0: Only level is shown", 
+						"\u00A7e1: Level plus CurrentXP/LevelXP", 
+						"\u00A7e2: Level plus XP as a percentage (%)", 
+						"\u00A7e3: Skill name plus 0", 
+						"\u00A7e4: Skill name plus 1", 
+						"\u00A7e5: Skill name plus 2", 
+						"\u00A7e6: Skill shorthand plus 0", 
+						"\u00A7e7: Skill shorthand plus 1", 
+						"\u00A7e8: Skill shorthand plus 2", 
+						"\u00A7e9: Just Skillname", 
+						"\u00A7e10: Just shortname", 
+						"\u00A7e11: Just CurrentXP/LevelXP",
+						"\u00A7e12: Just XP as percentage",
+						"\u00A7e13: No text at all.", 
+						"\u00A7aUse +/- or L/R arrow keys for fine-tuning."};
 				List temp = Arrays.asList(str);
 				drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
 			}

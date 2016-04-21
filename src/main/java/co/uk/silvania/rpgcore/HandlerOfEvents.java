@@ -198,6 +198,13 @@ public class HandlerOfEvents {
 						if (txtStyle == 3) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel(); }
 						if (txtStyle == 4) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
 						if (txtStyle == 5) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+						if (txtStyle == 6) { text = skill.nameFormat() + skill.shortName() + " - Lvl " + skill.getLevel(); }
+						if (txtStyle == 7) { text = skill.nameFormat() + skill.shortName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
+						if (txtStyle == 8) { text = skill.nameFormat() + skill.shortName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+						if (txtStyle == 9) { text = skill.nameFormat() + skill.skillName(); }
+						if (txtStyle == 10) { text = skill.nameFormat() + skill.shortName(); }
+						if (txtStyle == 11) { text = skill.nameFormat() + skill.getXPProgressForPrint(); }
+						if (txtStyle == 12) { text = skill.nameFormat() + skill.getXPProgressAsPercentage(); }
 						
 						if (rightAlign) { textOffset = barWidth-mc.fontRenderer.getStringWidth(text)-2-iconOffset; iconOffset = 0; }
 						
