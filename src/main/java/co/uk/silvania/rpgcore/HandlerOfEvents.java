@@ -56,19 +56,32 @@ public class HandlerOfEvents {
 			double progress = (current/target) * 100; //Current XP as percentage
 			//Therefore progress*cent = percentage of screen to be filled
 			
+			int barPos = 0;
+			
+			if (!config.globalXpTop) { barPos = (mc.displayHeight/2)-3; }
+			
 			tess.startDrawingQuads();
-			tess.addVertexWithUV(0, 3, 1, 0, px*256);
-			tess.addVertexWithUV(mc.displayWidth/2, 3, 1, 1, px*256);
-			tess.addVertexWithUV(mc.displayWidth/2, 0, 1, 1, px*254);
-			tess.addVertexWithUV(0, 0, 1, 0, px*254);
+			tess.addVertexWithUV(0, barPos+3, 1, 0, px*256);
+			tess.addVertexWithUV(mc.displayWidth/2, barPos+3, 1, 1, px*256);
+			tess.addVertexWithUV(mc.displayWidth/2, barPos, 1, 1, px*254);
+			tess.addVertexWithUV(0, barPos, 1, 0, px*254);
 			tess.draw();
 			
 			tess.startDrawingQuads();
-			tess.addVertexWithUV(0, 3, 1, 0, px*253);
-			tess.addVertexWithUV(progress*cent, 3, 1, (current/target), px*253);
-			tess.addVertexWithUV(progress*cent, 0, 1, (current/target), px*251);
-			tess.addVertexWithUV(0, 0, 1, 0, px*251);
+			tess.addVertexWithUV(0, barPos+3, 1, 0, px*253);
+			tess.addVertexWithUV(progress*cent, barPos+3, 1, (current/target), px*253);
+			tess.addVertexWithUV(progress*cent, barPos, 1, (current/target), px*251);
+			tess.addVertexWithUV(0, barPos, 1, 0, px*251);
 			tess.draw();
+			
+			if (config.showGlobalLevel) {
+				int posLeft = config.globalLevelLeft ? 5 : (mc.displayWidth/2) - 22;
+				int posHeight = config.globalXpTop ? 3 : (mc.displayHeight/2) - 14;
+				
+				gui.drawTexturedModalRect(posLeft, posHeight, 0, 238, 17, 11);
+				String lvl = "" + glevel.getLevel();
+				mc.fontRenderer.drawString(lvl, posLeft+9-(RPGUtils.getStringLength(lvl)/2), posHeight+2, 16777215);
+			}
 		}
 		//Skill XP bars
 		for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
@@ -187,9 +200,10 @@ public class HandlerOfEvents {
 							iconX = 92;
 							iconZ = 220;
 						}
-						
-						mc.getTextureManager().bindTexture(icon);
-						gui.drawTexturedModalRect(xOffset + iconBarX - 2, posY + yOffset - 2, skill.iconX(), skill.iconZ()+128, 16, 16); //small icon
+						if (config.getShowIcon(slot)) {
+							mc.getTextureManager().bindTexture(icon);
+							gui.drawTexturedModalRect(xOffset + iconBarX - 2, posY + yOffset - 2, skill.iconX(), skill.iconZ()+128, 16, 16);
+						}
 					}
 				}
 			}

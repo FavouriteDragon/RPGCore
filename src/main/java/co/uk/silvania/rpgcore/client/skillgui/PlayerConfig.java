@@ -88,7 +88,7 @@ public class PlayerConfig extends GuiScreen {
 		configSlot11 = new GuiButton(17, left+130, top+205, 119, 20, "Configure Slot 11");
 		configSlot12 = new GuiButton(18, left+130, top+229, 119, 20, "Configure Slot 12");
 		
-		configGlobalLevel = new GuiButton(18, left+72, top+81, 120, 20, "Configure Global Level");
+		configGlobalLevel = new GuiButton(19, left+72, top+81, 120, 20, "Configure Global Level");
 
 
 		buttonList.add(addSTR);
@@ -139,8 +139,8 @@ public class PlayerConfig extends GuiScreen {
 		mc.fontRenderer.drawString(pnts, left + 249 - RPGUtils.getStringLength(pnts), top + 7, 4210752);
 		mc.fontRenderer.drawString("Player Configuration", left + 7, top + 7, 4210752);
 		
-		String str = "STR: " + SkillLevelBase.getSkillByID("skillStrength", mc.thePlayer).level;
-		String agi = "AGI: " + SkillLevelBase.getSkillByID("skillAgility", mc.thePlayer).level;
+		String str = "STR: " + SkillLevelBase.getSkillByID("skillStrength", mc.thePlayer).getLevel();
+		String agi = "AGI: " + SkillLevelBase.getSkillByID("skillAgility", mc.thePlayer).getLevel();
 		
 		String strAdd = addStrVal > 0 ? "+" + addStrVal : "";
 		String agiAdd = addAgiVal > 0 ? "+" + addAgiVal : "";
@@ -245,6 +245,60 @@ public class PlayerConfig extends GuiScreen {
     		Minecraft.getMinecraft().thePlayer.closeScreen();
     		RPGCore.network.sendToServer(new OpenGuiPacket(0));
     		break;
+    	case 7:
+    		configureSkill(1);
+    		break;
+    	case 8:
+    		configureSkill(2);
+    		break;
+    	case 9:
+    		configureSkill(3);
+    		break;
+    	case 10:
+    		configureSkill(4);
+    		break;
+    	case 11:
+    		configureSkill(5);
+    		break;
+    	case 12:
+    		configureSkill(6);
+    		break;
+    	case 13:
+    		configureSkill(7);
+    		break;
+    	case 14:
+    		configureSkill(8);
+    		break;
+    	case 15:
+    		configureSkill(9);
+    		break;
+    	case 16:
+    		configureSkill(10);
+    		break;
+    	case 17:
+    		configureSkill(11);
+    		break;
+    	case 18:
+    		configureSkill(12);
+    		break;
+    	case 19:
+    		configureSkill(999);
+    		break;
     	}
+    }
+    
+    public void configureSkill(int slot) {
+    	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+    	if (slot == 999) {
+    		player.openGui(RPGCore.instance, 4, Minecraft.getMinecraft().theWorld, (int) player.posX, (int) player.posY, (int) player.posZ);
+    	} else {
+	    	SkillSelectGui.slotClicked = slot;
+	    	player.openGui(RPGCore.instance, 1, Minecraft.getMinecraft().theWorld, (int) player.posX, (int) player.posY, (int) player.posZ);
+    	}
+    }
+    
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
     }
 }

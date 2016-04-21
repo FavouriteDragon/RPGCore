@@ -53,6 +53,21 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 		return (int) getXPGlobal() + " / " + getXpForLevel(getLevel()+1);
 	}
 	
+	public int slotUnlockedLevel(int slot) {
+		if ((slot >= 3 && slot <= 5) || (slot >= 7 && slot <= 9)) {
+			return -1;
+		}
+		
+		if (slot == 0)  { return 10; }
+		if (slot == 6)  { return 20; }
+		if (slot == 1)  { return 30; }
+		if (slot == 11) { return 40; }
+		if (slot == 2)  { return 50; }
+		if (slot == 10) { return 60; }
+		
+		return 999;
+	}
+	
 	public int getLevel() {
 		int base = config.baseXp;
 		int previousXp = config.baseXp;

@@ -68,8 +68,8 @@ public class SkillConfig extends GuiScreen {
 		String showxp = showXPBar ? "XP Bar: Shown" : "XP Bar: Hidden";
 		String showicon = showIconBar ? "Icon: Shown" : "Icon: Hidden";
 		
-		showXP = new MultiLineButton(1, left+161, top+6, 88, 16, showxp);
-		showIcon = new MultiLineButton(2, left+161, top+24, 88, 16, showicon);
+		showXP = new MultiLineButton(1, left+161, top+6, 88, 15, showxp);
+		showIcon = new MultiLineButton(2, left+161, top+24, 88, 15, showicon);
 		xpTextType = new GuiSlider(3, left+7, top+44, 117, 20, "", "", 0, 3, 0, false, true);
 		xpBarPos = new GuiSlider(4, left+132,  top+44, 117, 20, "", "", 1, 6, 1, false, true);
 		
@@ -81,7 +81,7 @@ public class SkillConfig extends GuiScreen {
 		
 		configureSkill = new MultiLineButton(9, left+23,  top+116, 60, 24, "Configure#Skill");
 		saveChanges =    new MultiLineButton(10, left+98,  top+116, 60, 24, "Save#Changes");
-		cancelChanges =  new MultiLineButton(11, left+173, top+116, 60, 24, "Cancel#Changes");
+		cancelChanges =  new MultiLineButton(11, left+173, top+116, 60, 24, "Close");
 		
 		xpTextType.displayString = "XP Text Type";
 		xpBarPos.displayString = "XP Bar Position";
@@ -97,6 +97,7 @@ public class SkillConfig extends GuiScreen {
 		}
 		
 		buttonList.add(showXP);
+		buttonList.add(showIcon);
 		buttonList.add(xpTextType);
 		buttonList.add(xpBarPos);
 		buttonList.add(xOffset);
@@ -217,13 +218,15 @@ public class SkillConfig extends GuiScreen {
 			iconZ = 220;
 		}
 		
-		mc.fontRenderer.drawString("Name: " + skill.skillName(), left + 43, top + 11, 16777215);
-		mc.fontRenderer.drawString("Lvl: " + skill.getLevel(), left + 43, top + 21, 16777215);
+		mc.fontRenderer.drawString("Name: " + skill.skillName(), left + 43, top + 11, 4210752);
+		mc.fontRenderer.drawString("Lvl: " + skill.getLevel(), left + 43, top + 21, 4210752);
 		if (skill.canGainXP()) {
-			mc.fontRenderer.drawString("XP: " + skill.getXPForPrint(), left + 43, top + 30, 16777215);
+			mc.fontRenderer.drawString("XP: " + skill.getXPForPrint(), left + 43, top + 30, 4210752);
 		}
 		
-		mc.fontRenderer.drawString(saved, left+128-(RPGUtils.getStringLength(saved)/2), top+249, 16777215);
+		String tip = "Hold shift over buttons to see tips";
+		mc.fontRenderer.drawString(tip, left+128-(RPGUtils.getStringLength(tip)/2), top+236, 4210752);
+		mc.fontRenderer.drawString(saved, left+128-(RPGUtils.getStringLength(saved)/2), top+249, 4210752);
 		
 		if (showXPBar) {
 			this.mc.getTextureManager().bindTexture(xpBars);
@@ -251,14 +254,16 @@ public class SkillConfig extends GuiScreen {
 			this.drawTexturedModalRect(leftPos,   top+149, barX, barY, 11, 12); //Bar Left
 			this.drawTexturedModalRect(leftPos+11, top+149, barX+11, barY, barWidth-22, 12); //Bar
 			this.drawTexturedModalRect(leftPos+barWidth-11, top+149, barX+114, barY, 11, 12); //Bar Right
-
-			this.mc.getTextureManager().bindTexture(icon);
-			drawTexturedModalRect(left + 8, top + 8, skill.iconX(), skill.iconZ(), 30, 30); //large icon
-			drawTexturedModalRect(iconBarX, top + iconBarY, skill.iconX(), skill.iconZ()+128, 16, 16); //small icon
-		} else {
-			this.mc.getTextureManager().bindTexture(icon);
-			drawTexturedModalRect(((this.width - xSize) / 2) + 8, ((this.height - ySize) / 2) + 8, skill.iconX(), skill.iconZ(), 30, 30);
+			
+			if (showIconBar) {
+				this.mc.getTextureManager().bindTexture(icon);
+				drawTexturedModalRect(iconBarX, top + iconBarY, skill.iconX(), skill.iconZ()+128, 16, 16); //small icon
+			}
 		}
+
+		this.mc.getTextureManager().bindTexture(icon);
+		drawTexturedModalRect(left + 8, top + 8, skill.iconX(), skill.iconZ(), 30, 30);
+
 		
 		super.drawScreen(mouseX, mouseZ, par3);
 		
@@ -312,13 +317,13 @@ public class SkillConfig extends GuiScreen {
 			}
 			
 			if (saveChanges.func_146115_a()) {
-				String[] str = {"\u00A7lSave Changes", "\u00A7oSave changes and return to Skill Overview."};
+				String[] str = {"\u00A7lSave Changes", "\u00A7oSaves changes to config and updates screen."};
 				List temp = Arrays.asList(str);
 				drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
 			}
 			
 			if (cancelChanges.func_146115_a()) {
-				String[] str = {"\u00A7lCancel Changes", "\u00A7oReturn to Skill Overview without saving."};
+				String[] str = {"\u00A7lClose", "\u00A7oReturn to Skill Overview.", "\u00A7cDoes not save - press save first if", "\u00A7cyou wish to keep your changes!"};
 				List temp = Arrays.asList(str);
 				drawHoveringText(temp, mouseX, mouseZ, fontRendererObj);
 			}
@@ -356,6 +361,7 @@ public class SkillConfig extends GuiScreen {
     	case 10:
     		System.out.println("click! (save)");
     		config.setShowXp(slot, showXPBar);
+    		config.setShowIcon(slot, showIconBar);
     		config.setXPTextType(slot, xpTextType.getValueInt());
     		config.setXPBarPos(slot, xpBarPos.getValueInt());
     		config.setXPXOffset(slot, xOffset.getValueInt());
@@ -370,5 +376,10 @@ public class SkillConfig extends GuiScreen {
     		RPGCore.network.sendToServer(new OpenGuiPacket(0));
     		break;
     	}
+    }
+    
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
     }
 }
