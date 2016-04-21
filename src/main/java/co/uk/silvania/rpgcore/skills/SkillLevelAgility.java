@@ -80,8 +80,8 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 		description.add(nameFormat() + "\u00A7l" + skillName());
 		description.add("Base Skill");
 		description.add("Required for most speed skills");
-		description.add("Levelled slowly by sprinting and jumping.");
-		description.add("Slowly increases sprint speed.");
+		description.add("Levelled using skill points gained from");
+		description.add("advancing your Global Level.");
 	}
 
 	@Override

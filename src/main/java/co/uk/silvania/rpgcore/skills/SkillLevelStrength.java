@@ -84,9 +84,8 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 		description.add(nameFormat() + "\u00A7l" + skillName());
 		description.add("Base Skill.");
 		description.add("Required for most damage skills");
-		description.add("Levelled slowly with any act of strength,");
-		description.add("such as mining, fighting and so on.");
-		description.add("Slowly increases punch damage.");
+		description.add("Levelled using skill points gained from");
+		description.add("advancing your Global Level.");
 	}
 
 	@Override
