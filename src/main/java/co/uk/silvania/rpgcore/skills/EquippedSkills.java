@@ -51,18 +51,18 @@ public class EquippedSkills implements IExtendedEntityProperties {
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
 		NBTTagCompound nbt = (NBTTagCompound) compound.getTag("equippedSkills");
-		skillId0 = nbt.getString("slot0");
-		skillId1 = nbt.getString("slot1");
-		skillId2 = nbt.getString("slot2");
-		skillId3 = nbt.getString("slot3");
-		skillId4 = nbt.getString("slot4");
-		skillId5 = nbt.getString("slot5");
-		skillId6 = nbt.getString("slot6");
-		skillId7 = nbt.getString("slot7");
-		skillId8 = nbt.getString("slot8");
-		skillId9 = nbt.getString("slot9");
-		skillId10 = nbt.getString("slot10");
-		skillId11 = nbt.getString("slot11");
+		skillId0 = nbt.getString("slot0") + "";
+		skillId1 = nbt.getString("slot1") + "";
+		skillId2 = nbt.getString("slot2") + "";
+		skillId3 = nbt.getString("slot3") + "";
+		skillId4 = nbt.getString("slot4") + "";
+		skillId5 = nbt.getString("slot5") + "";
+		skillId6 = nbt.getString("slot6") + "";
+		skillId7 = nbt.getString("slot7") + "";
+		skillId8 = nbt.getString("slot8") + "";
+		skillId9 = nbt.getString("slot9") + "";
+		skillId10 = nbt.getString("slot10") + "";
+		skillId11 = nbt.getString("slot11") + "";
 	}
 
 	@Override public void init(Entity entity, World world) {}
