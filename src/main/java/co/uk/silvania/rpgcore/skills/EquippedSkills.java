@@ -68,7 +68,6 @@ public class EquippedSkills implements IExtendedEntityProperties {
 	@Override public void init(Entity entity, World world) {}
 	
 	public void setSkill(int slot, String skillId) {
-		System.out.println("Setting skill! Slot: " + slot + ", skill ID: " + skillId);
 		if (slot == 0) { skillId0 = skillId; }
 		if (slot == 1) { skillId1 = skillId; }
 		if (slot == 2) { skillId2 = skillId; }

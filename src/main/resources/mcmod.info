@@ -5,7 +5,7 @@
   "description": "Core system for RPG-style mods in Forge.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "http://www.silvaniastudios.com/",
   "updateUrl": "",
   "authorList": ["Flenix"],
   "credits": "",

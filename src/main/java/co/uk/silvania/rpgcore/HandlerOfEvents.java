@@ -246,7 +246,6 @@ public class HandlerOfEvents {
 		if (addedXpForRender > 0 && !rendering) {
 			rendering = true;
 			ticker = 0;
-			System.out.println("pt" + event.partialTicks);
 		}
 
 		if (rendering) {
@@ -260,7 +259,6 @@ public class HandlerOfEvents {
 	}*/
 	
 	public void setXpForRender(float xp) {
-		System.out.println("setter called");
 		addedXpForRender = xp;
 	}
 	
@@ -276,21 +274,16 @@ public class HandlerOfEvents {
 			if (!player.worldObj.isRemote) {
 				for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
 					SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
-					System.out.println("skillID being sent to client: " + skillBase.skillId);
 					SkillLevelBase skill = (SkillLevelBase) skillBase.get(player, skillBase.skillId);
 					if (skill != null) {
-						System.out.println("Sending data to client!");
 						RPGCore.network.sendTo(new LevelPacket(skill.getXP(), -1, skill.skillId), (EntityPlayerMP) player);
 					}
 				}
 				EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) player);
 				
-				System.out.println("Sending global level to client!");
 				GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) player);
 				RPGCore.network.sendTo(new LevelPacket((int)(glevel.getXPGlobal()*10), glevel.getSkillPoints(), glevel.skillId), (EntityPlayerMP) player);
 				
-				System.out.println("Sending equipped skills to client!");
-				System.out.println("Slot 0: " + equippedSkills.getSkillInSlot(0));
 				RPGCore.network.sendTo(new EquippedSkillsPacket(
 						equippedSkills.getSkillInSlot(0), 
 						equippedSkills.getSkillInSlot(1), 

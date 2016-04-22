@@ -22,13 +22,11 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void syncLevelsWithClient(LevelPacket message, MessageContext ctx) {
 		if (message.skillId.equalsIgnoreCase(GlobalLevel.staticSkillId)) {
-			System.out.println("####### GLOBAL LEVEL RECEIVED. XP: " + message.xp + ", skill points: " + message.val);
 			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) Minecraft.getMinecraft().thePlayer, message.skillId);
 			glevel.setXP((message.xp)/10.0F);
 			glevel.setSkillPoints(message.val);
 		} else {
 			SkillLevelBase level = (SkillLevelBase) SkillLevelBase.get((EntityPlayer) Minecraft.getMinecraft().thePlayer, message.skillId);
-			System.out.println("PACKET RECEIVED! SKILLID: " + message.skillId + ", XP: " + message.xp);
 			level.setXP(message.xp);
 		}
 	}
@@ -36,7 +34,6 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void syncEquippedSkillsWithClient(EquippedSkillsPacket message, MessageContext ctx) {
 		EquippedSkills skills = (EquippedSkills) EquippedSkills.get((EntityPlayer) Minecraft.getMinecraft().thePlayer);
-		System.out.println("Equipped Skills packet received.");
 		
 		skills.setSkill(0, message.slot0);
 		skills.setSkill(1, message.slot1);
