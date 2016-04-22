@@ -12,7 +12,6 @@ import co.uk.silvania.rpgcore.skills.SkillLevelAgility;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import co.uk.silvania.rpgcore.skills.SkillLevelHealth;
 import co.uk.silvania.rpgcore.skills.SkillLevelStrength;
-import co.uk.silvania.rpgcore.skills.SkillLevelSwords;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -60,7 +59,6 @@ public class RPGCore {
     	proxy.init();
     	
     	SkillLevelAgility skillAgility = new SkillLevelAgility(null, "skillAgility");
-    	SkillLevelSwords skillSwords = new SkillLevelSwords(null, "skillSwords");
     	SkillLevelStrength skillStrength = new SkillLevelStrength(null, "skillStrength");
     	SkillLevelHealth skillHealth = new SkillLevelHealth(null, "skillHealth");
     	
@@ -69,7 +67,6 @@ public class RPGCore {
     	GlobalLevel gLevel = new GlobalLevel(null, "globalLevel");
     	
     	RegisterSkill.register(skillAgility);
-    	RegisterSkill.register(skillSwords);
     	RegisterSkill.register(skillStrength);
     	RegisterSkill.register(skillHealth);
     	
@@ -85,7 +82,6 @@ public class RPGCore {
     	MinecraftForge.EVENT_BUS.register(new EquippedSkills());
     	MinecraftForge.EVENT_BUS.register(new GlobalLevel(null, "globalLevel"));
     	MinecraftForge.EVENT_BUS.register(new SkillLevelAgility(null, "skillAgility"));
-    	MinecraftForge.EVENT_BUS.register(new SkillLevelSwords(null, "skillSwords"));
     	MinecraftForge.EVENT_BUS.register(new SkillLevelStrength(null, "skillStrength"));
     	MinecraftForge.EVENT_BUS.register(new SkillLevelHealth(null, "skillHealth"));
     }
