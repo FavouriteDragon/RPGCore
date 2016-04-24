@@ -112,7 +112,6 @@ public abstract class GuiScrollingList_Mod extends GuiScrollingList {
                     var11 = var10 / this.slotHeight;
 
                     if (mouseX >= boxLeft && mouseX <= boxRight && var11 >= 0 && var10 >= 0 && var11 < listLength) {
-                    	System.out.println("var11: " + var11);
                         boolean var12 = var11 == this.selectedIndex && System.currentTimeMillis() - this.lastClickTime < 250L;
                         this.elementClicked(var11, var12);
                         this.selectedIndex = var11;
