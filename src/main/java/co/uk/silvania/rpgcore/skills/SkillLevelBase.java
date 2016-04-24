@@ -197,7 +197,7 @@ public abstract class SkillLevelBase {
 		if (slot == 7 && player.inventory.armorItemInSlot(0) != null) { equippedSkills.skillId7 = ""; removedSkill = true; }
 		if (slot == 8 && player.inventory.armorItemInSlot(0) != null) { equippedSkills.skillId8 = ""; removedSkill = true; }
 		
-		if (removedSkill) {
+		if (removedSkill && !player.worldObj.isRemote) {
 			System.out.println("Armour and skill slot conflict! Removing skill and telling client..");
 			RPGCore.network.sendTo(new EquippedSkillsPacket(
 				equippedSkills.getSkillInSlot(0), 
