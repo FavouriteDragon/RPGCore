@@ -35,7 +35,6 @@ public class OpenGuiPacket implements IMessage {
 		public IMessage onMessage(OpenGuiPacket message, MessageContext ctx) {
 			EntityPlayer player = ctx.getServerHandler().playerEntity;
 			World world = player.worldObj;
-			System.out.println("Packet get! ID: " + message.guiId);
 			player.openGui(RPGCore.instance, message.guiId, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 			return null;
 		}
