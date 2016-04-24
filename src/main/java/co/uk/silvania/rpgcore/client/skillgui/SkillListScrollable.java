@@ -136,7 +136,7 @@ public class SkillListScrollable extends GuiScrollingList_Mod {
 				gui.drawTexturedModalRect(((this.width - xSize) / 2) + 18, height + 7, 0, 220, 30, 30);
 			}
 			
-			mc.fontRenderer.drawString("Name: " + skill.skillName(), ((this.width - xSize) / 2) + 56, height + 9, 16777215);
+			mc.fontRenderer.drawString("Name: " + skill.nameFormat() + skill.skillName(), ((this.width - xSize) / 2) + 56, height + 9, 16777215);
 			mc.fontRenderer.drawString("Lvl: " + skill.getLevel(), ((this.width - xSize) / 2) + 56, height + 18, 16777215);
 			if (skill.canGainXP()) {
 				mc.fontRenderer.drawString("XP: " + skill.getXPTotalForPrint(), ((this.width - xSize) / 2) + 56, height + 27, 16777215);

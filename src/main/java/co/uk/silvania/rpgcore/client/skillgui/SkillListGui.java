@@ -195,7 +195,7 @@ public class SkillListGui extends GuiScreen {
 			break;
     	case 5:
     		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-    		player.openGui(RPGCore.instance, 1, Minecraft.getMinecraft().theWorld, (int) player.posX, (int) player.posY, (int) player.posZ);
+    		player.openGui(RPGCore.instance, 3, Minecraft.getMinecraft().theWorld, (int) player.posX, (int) player.posY, (int) player.posZ);
     		break;
     	}
     }
