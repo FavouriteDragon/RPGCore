@@ -103,12 +103,6 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 		SkillLevelHealth skill = (SkillLevelHealth) SkillLevelHealth.get(player, skillId);
 		skill.addXP(xpAdd/10, player);
 	}
-
-	@Override
-	public void levelUp(EntityPlayer player) {
-		super.levelUp(player);
-		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
-	}
 	
 	@Override
 	public boolean skillUnlocked() {
@@ -123,5 +117,10 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 	@Override
 	public String shortName() {
 		return "HP";
+	}
+	
+	@Override
+	public String nameFormat() {
+		return "\u00A74";
 	}
 }

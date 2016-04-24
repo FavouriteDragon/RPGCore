@@ -107,11 +107,6 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 	float playerFallHealth = -1;
 	
 	@Override
-	public void levelUp(EntityPlayer player) {
-		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
-	}
-	
-	@Override
 	public boolean canGainXP() {
 		return false;
 	}
@@ -124,5 +119,10 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 	@Override
 	public String shortName() {
 		return "AGI";
+	}
+	
+	@Override
+	public String nameFormat() {
+		return "\u00A79";
 	}
 }

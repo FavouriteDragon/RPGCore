@@ -64,8 +64,7 @@ public abstract class SkillLevelBase {
 			if (isSkillEquipped(player, skillId)) {
 				//We'll also make sure they've not equipped armour into the slot shared by a skill
 				if (!skillArmourConflict(equippedSkills, skillId, player)) {
-					
-					if (xpAdd >= xpToNextLevel()+1) { levelUp(player); }
+					if ((xpAdd+getXP()) >= getXpForLevel(getLevel())) { levelUp(player, xpAdd); }
 					
 					xp += xpAdd;
 					
@@ -95,8 +94,10 @@ public abstract class SkillLevelBase {
 	/**
 	 * Called when the player has levelled up. Do anything you want upon levelling up here (eg notifying of unlocks.)
 	 */
-	public void levelUp(EntityPlayer player) {
-		player.addChatComponentMessage(new ChatComponentText(nameFormat() + "Level up! " + skillName() + " is now level " + getLevel()));
+	public void levelUp(EntityPlayer player, float xpAdd) {
+		if (!player.worldObj.isRemote) {
+			player.addChatComponentMessage(new ChatComponentText(nameFormat() + "Level up! " + skillName() + " is now level " + getLevelFromXP(getXP() + xpAdd)));
+		}
 	}
 	
 	/**
@@ -126,9 +127,10 @@ public abstract class SkillLevelBase {
 	 */
 	public void forceAddXP(float xpAdd, EntityPlayer player) {
 		System.out.println("force-add XP");
-		if ((xpAdd+xp) >= getXpForLevel(getLevel())) {
+		System.out.println("xpAdd: " + xpAdd + ", xp: " + getXP() + " (" + (xpAdd+getXP()) + ") ? >= "  + getXpForLevel(getLevel()));
+		if ((xpAdd+getXP()) >= getXpForLevel(getLevel())) {
 			System.out.println("Player levelled up!");
-			levelUp(player);
+			levelUp(player, xpAdd);
 		} else {
 			System.out.println("xpAdd: " + xpAdd + ", xp: " + xp + ", getXpForLevel: " + getXpForLevel(getLevel()));
 		}
@@ -260,6 +262,10 @@ public abstract class SkillLevelBase {
 	 * @return level, as an integer
 	 */
 	public int getLevel() {
+		return getLevelFromXP(getXP());
+	}
+	
+	public int getLevelFromXP(float xp) {
 		int base = config.baseXp;
 		int previousXp = config.baseXp;
 		int level = 1;
@@ -286,7 +292,6 @@ public abstract class SkillLevelBase {
 			return levelCap();
 		}
 		return level;
-		
 	}
 	
 	/**
@@ -337,10 +342,10 @@ public abstract class SkillLevelBase {
 	 * Clones the skill's properties, used on player death etc to persist skills through death.
 	 * Should be overriden if you save anything more than XP in your skill (eg cooldowns)
 	 * @param properties
-	 */
+	 *//*
 	public void copy(SkillLevelBase properties) {
 		xp = properties.xp;
-	}
+	}/*
 	
 	/** 
 	 * Checks if the skill is unlocked, based off the global level.
