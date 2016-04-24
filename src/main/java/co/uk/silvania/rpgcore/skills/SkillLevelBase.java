@@ -88,7 +88,9 @@ public abstract class SkillLevelBase {
 	 */
 	public void addXPWithUpdate(float xpAdd, EntityPlayer player) {
 		addXP(xpAdd, player);
-		RPGCore.network.sendTo(new LevelPacket(getXP(), -1, skillId), (EntityPlayerMP) player);
+		if (!player.worldObj.isRemote) {
+			RPGCore.network.sendTo(new LevelPacket(getXP(), -1, skillId), (EntityPlayerMP) player);
+		}
 	}
 	
 	/**
