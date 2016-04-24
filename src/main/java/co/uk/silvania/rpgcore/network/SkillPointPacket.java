@@ -51,8 +51,16 @@ public class SkillPointPacket implements IMessage {
 			if ((message.strAdd + message.agiAdd) <= glevel.skillPoints) {
 				SkillLevelBase skillStr = SkillLevelBase.getSkillByID("skillStrength", player);
 				SkillLevelBase skillAgi = SkillLevelBase.getSkillByID("skillAgility", player);
-				for (int i = 0; i < message.strAdd; i++) { skillStr.forceLevelUp(player); }
+				
+				float strAddB = skillStr.getXpForLevel(skillStr.getLevel()+message.strAdd-1) - skillStr.getXP();
+				System.out.println("Adding XP. Pre-add str: " + skillStr.getLevel() + ", adding " + strAddB);
+				skillStr.forceAddXP(strAddB, player);
+				System.out.println("Level is now " + skillStr.getLevel());
+				
+				
 				for (int i = 0; i < message.agiAdd; i++) { skillAgi.forceLevelUp(player); }
+				
+				
 				glevel.setSkillPoints(glevel.skillPoints - (message.strAdd+message.agiAdd));
 				
 				RPGCore.network.sendTo(new LevelPacket(skillStr.getXP(), -1, skillStr.skillId), (EntityPlayerMP) player);
@@ -63,7 +71,7 @@ public class SkillPointPacket implements IMessage {
 				//We won't accuse them, but we won't let them either.
 				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "Skill point server/client mismatch! Points not added."));
 			}
-			return null;
+			return new LevelPacket((int)(glevel.getXPGlobal()*10), glevel.getSkillPoints(), glevel.skillId);
 		}
 	}
 }
