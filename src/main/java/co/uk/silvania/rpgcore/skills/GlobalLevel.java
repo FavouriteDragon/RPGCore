@@ -1,10 +1,12 @@
 package co.uk.silvania.rpgcore.skills;
 
-import co.uk.silvania.rpgcore.RPGCore;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
@@ -77,7 +79,7 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 		int level = 1;
 		
 		while (xpGlobal >= previousXp) {
-			previousXp += base + ((base / 100.0) * ((level) * (35 + ((level/10)*10))));
+			previousXp += base + ((base / 100.0) * ((level*5) * (35 + ((level/10)*10))));
 			level++;
 		}
 		return level;
@@ -92,7 +94,7 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 		int xpForLevel = config.baseXp;
 		
 		for (int i = 1; i < level; i++) {
-			xpForLevel += base + ((base / 100.0) * ((i) * (35 + ((i/10)*10))));
+			xpForLevel += base + ((base / 100.0) * ((i*5) * (35 + ((i/10)*10))));
 		}
 		return xpForLevel;
 	}
@@ -101,7 +103,10 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 		return (getXpForLevel(getLevel())) - (int)getXPGlobal();
 	}
 	
-	public void levelUpGlobal() {
+	public void levelUpGlobal(EntityPlayer player, float xpAdd) {
+		ChatStyle cht = new ChatStyle();
+		player.addChatMessage(new ChatComponentText("Level up! Your Global Level is now " + getLevelFromXP(getXPGlobal() + xpAdd)).setChatStyle(cht.setColor(EnumChatFormatting.GOLD)));
+		player.addChatMessage(new ChatComponentText("You currently have " + (getSkillPoints()+config.skillPointsPerLevel) + " Skill Points available.").setChatStyle(cht.setColor(EnumChatFormatting.GOLD)));
 		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
 		skillPoints += config.skillPointsPerLevel;
 	}
@@ -124,12 +129,8 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 	
 	@Override
 	public void forceAddXP(float xpAdd, EntityPlayer player) {
-		System.out.println("force-add XP");
-		if ((xpAdd+xpGlobal) >= getXpForLevel(getLevel())) {
-			System.out.println("Player levelled up!");
-			levelUpGlobal();
-		} else {
-			System.out.println("xpAdd: " + xpAdd + ", xpGlobal: " + xpGlobal + ", getXpForLevel: " + getXpForLevel(getLevel()));
+		if ((xpAdd+getXPGlobal()) >= getXpForLevel(getLevel())) {
+			levelUpGlobal(player, xpAdd);
 		}
 		xpGlobal += xpAdd;
 	}

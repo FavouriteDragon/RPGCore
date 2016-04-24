@@ -142,4 +142,10 @@ public class EquippedSkills implements IExtendedEntityProperties {
 	public boolean isSkillEquipped(String skillId) {
 		return findSkillSlot(skillId) != -1;
 	}
+	
+	public void clearSkills() {
+		for (int i = 0; i < skillSlots; i++) {
+			setSkill(i, "");
+		}
+	}
 }
