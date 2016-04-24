@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -192,19 +193,19 @@ public class HandlerOfEvents {
 						
 						int txtStyle = config.getXPTextType(slot);
 						String text = "";
-						if (txtStyle == 0) { text = skill.nameFormat() + "Lvl " + skill.getLevel(); }
-						if (txtStyle == 1) { text = skill.nameFormat() + "Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
-						if (txtStyle == 2) { text = skill.nameFormat() + "Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
-						if (txtStyle == 3) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel(); }
-						if (txtStyle == 4) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
-						if (txtStyle == 5) { text = skill.nameFormat() + skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
-						if (txtStyle == 6) { text = skill.nameFormat() + skill.shortName() + " - Lvl " + skill.getLevel(); }
-						if (txtStyle == 7) { text = skill.nameFormat() + skill.shortName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
-						if (txtStyle == 8) { text = skill.nameFormat() + skill.shortName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
-						if (txtStyle == 9) { text = skill.nameFormat() + skill.skillName(); }
-						if (txtStyle == 10) { text = skill.nameFormat() + skill.shortName(); }
-						if (txtStyle == 11) { text = skill.nameFormat() + skill.getXPProgressForPrint(); }
-						if (txtStyle == 12) { text = skill.nameFormat() + skill.getXPProgressAsPercentage(); }
+						if (txtStyle == 0) { text = "Lvl " + skill.getLevel(); }
+						if (txtStyle == 1) { text = "Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
+						if (txtStyle == 2) { text = "Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+						if (txtStyle == 3) { text = skill.skillName() + " - Lvl " + skill.getLevel(); }
+						if (txtStyle == 4) { text = skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
+						if (txtStyle == 5) { text = skill.skillName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+						if (txtStyle == 6) { text = skill.shortName() + " - Lvl " + skill.getLevel(); }
+						if (txtStyle == 7) { text = skill.shortName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressForPrint() + ")"; }
+						if (txtStyle == 8) { text = skill.shortName() + " - Lvl " + skill.getLevel() + " (" + skill.getXPProgressAsPercentage() + ")"; }
+						if (txtStyle == 9) { text = skill.skillName(); }
+						if (txtStyle == 10) { text = skill.shortName(); }
+						if (txtStyle == 11) { text = skill.getXPProgressForPrint(); }
+						if (txtStyle == 12) { text = skill.getXPProgressAsPercentage(); }
 						
 						if (rightAlign) { textOffset = barWidth-mc.fontRenderer.getStringWidth(text)-2-iconOffset; iconOffset = 0; }
 						
@@ -262,9 +263,19 @@ public class HandlerOfEvents {
 		addedXpForRender = xp;
 	}
 	
+	//Save the player to disk, then load it to the new player
 	@SubscribeEvent
 	public void onClonePlayer(PlayerEvent.Clone event) {
-		((SkillLevelBase) SkillLevelBase.get(event.entityPlayer, SkillLevelBase.staticId)).copy((SkillLevelBase) SkillLevelBase.get(event.original, SkillLevelBase.staticId));
+		NBTTagCompound nbt = new NBTTagCompound();
+		for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
+			SkillLevelBase skillBase = RegisterSkill.skillList.get(i);
+			
+			skillBase.get(event.original, skillBase.skillId).saveNBTData(nbt);
+			skillBase.get(event.entityPlayer, skillBase.skillId).loadNBTData(nbt);
+		}
+		GlobalLevel.get(event.original).saveNBTData(nbt);
+		GlobalLevel.get(event.entityPlayer).loadNBTData(nbt);
+		//((SkillLevelBase) SkillLevelBase.get(event.entityPlayer, SkillLevelBase.staticId)).copy((SkillLevelBase) SkillLevelBase.get(event.original, SkillLevelBase.staticId));
 	}
 	
 	@SubscribeEvent
