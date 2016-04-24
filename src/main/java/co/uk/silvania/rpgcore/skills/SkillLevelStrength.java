@@ -104,21 +104,7 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 	public int iconZ() {
 		return 0;
 	}
-	
-	@SubscribeEvent
-	public void onPunch(LivingAttackEvent event) {
-		if (event.source.getEntity() instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer) event.source.getEntity();
-			SkillLevelStrength skill = (SkillLevelStrength) SkillLevelStrength.get(player, skillId);
-			if (player.getHeldItem() != null && player.getHeldItem().getItem().isItemTool(player.getHeldItem())) {
-				return;
-			}
-			skill.addXP(event.ammount / 5, player);
-			System.out.println("Punch! isRemote: " + event.source.getEntity().worldObj.isRemote);
-		}
-	}
-	
-	
+
 	/*@SubscribeEvent
 	public void onBlockBreak(BreakEvent event) {
 		Block block = event.block;		
@@ -137,13 +123,12 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 	}*/
 	
 	@Override
-	public void levelUp(EntityPlayer player) {
-		super.levelUp(player);
-		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
+	public String shortName() {
+		return "STR";
 	}
 	
 	@Override
-	public String shortName() {
-		return "STR";
+	public String nameFormat() {
+		return "\u00A7c";
 	}
 }
