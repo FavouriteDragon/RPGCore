@@ -16,15 +16,14 @@ public class RPGCoreConfig {
 	
 	public static void init(String configPath) {
 		rpgCoreConfigFile = new File(configPath + "RPGCore.cfg");
+		config = new Configuration(rpgCoreConfigFile);
 		
-		initConfig(rpgCoreConfigFile);
+		initConfig();
 	}
 	
 	public static Configuration config;
 	
-	public static void initConfig(File configFile) {
-		config = new Configuration(configFile);
-						
+	public static void initConfig() {						
 		try {
 			config.load();
 			factions = config.getStringList("Factions", Configuration.CATEGORY_GENERAL, new String[] {"Caelum", "Mortalitas"}, "Add new factions for players to select.");
@@ -37,6 +36,34 @@ public class RPGCoreConfig {
 		} finally {
 			if (config.hasChanged()) {
 				config.save();
+			}
+		}
+	}
+	
+	public void setVerbose(boolean par) {
+		try {
+			config.load();
+			config.get(Configuration.CATEGORY_GENERAL, "Verbose", par, "Console output on standard things, such as a player levelling up or equipping skills.").set(par);
+		} catch (Exception e) {
+			System.out.println("### WARNING! RPGCore could not load it's config files! ###");
+		} finally {
+			if (config.hasChanged()) {
+				config.save();
+				initConfig();
+			}
+		}
+	}
+	
+	public void setDebug(boolean par) {
+		try {
+			config.load();
+			config.get(Configuration.CATEGORY_GENERAL, "Debug Mode", par, "Add a load of prints to console about basically everything.").set(par);
+		} catch (Exception e) {
+			System.out.println("### WARNING! RPGCore could not load it's config files! ###");
+		} finally {
+			if (config.hasChanged()) {
+				config.save();
+				initConfig();
 			}
 		}
 	}
