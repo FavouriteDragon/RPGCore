@@ -1,9 +1,12 @@
 package co.uk.silvania.rpgcore.skills;
 
+import java.util.ArrayList;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
@@ -105,10 +108,18 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 	
 	public void levelUpGlobal(EntityPlayer player, float xpAdd) {
 		ChatStyle cht = new ChatStyle();
-		player.addChatMessage(new ChatComponentText("Level up! Your Global Level is now " + getLevelFromXP(getXPGlobal() + xpAdd)).setChatStyle(cht.setColor(EnumChatFormatting.GOLD)));
+		int lvl = getLevelFromXP(getXPGlobal() + xpAdd);
+		player.addChatMessage(new ChatComponentText("Level up! Your Global Level is now " + lvl).setChatStyle(cht.setColor(EnumChatFormatting.GOLD)));
 		player.addChatMessage(new ChatComponentText("You currently have " + (getSkillPoints()+config.skillPointsPerLevel) + " Skill Points available.").setChatStyle(cht.setColor(EnumChatFormatting.GOLD)));
-		System.out.println("Level up! " + skillName() + " is now level " + getLevel());
 		skillPoints += config.skillPointsPerLevel;
+		verbose(player.getDisplayName() + " reached Global Level " + lvl + " and now has " + getSkillPoints() + " skill points.");
+		
+		ArrayList<EntityPlayer> players = (ArrayList<EntityPlayer>) MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+		for (int i = 0; i < players.size(); i++) {
+			if (players.get(i) != player) {
+				players.get(i).addChatMessage(new ChatComponentText(player.getDisplayName() + " is now Level " + lvl + "!").setChatStyle(cht.setColor(EnumChatFormatting.GOLD)));
+			}
+		}
 	}
 
 	public void setXP(float xpSet) {

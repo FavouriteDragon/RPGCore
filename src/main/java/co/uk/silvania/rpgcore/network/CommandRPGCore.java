@@ -1,6 +1,7 @@
 package co.uk.silvania.rpgcore.network;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import co.uk.silvania.rpgcore.RPGCore;
 import co.uk.silvania.rpgcore.RPGUtils;
@@ -13,6 +14,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.event.HoverEvent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
@@ -22,6 +24,35 @@ public class CommandRPGCore extends CommandBase {
 	@Override
 	public String getCommandName() {
 		return "rpgcore";
+	}
+	
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args) {
+		ArrayList<String> list = new ArrayList<String>();
+		if (args.length <= 1) {
+			list.add("help");
+			list.add("addxp");
+			list.add("list");
+			list.add("info");
+			list.add("reset");
+		} else if (args[0].equalsIgnoreCase("addxp") || args[0].equalsIgnoreCase("xpadd") ) {
+			if (args.length < 3) {
+				for (int i = 0; i < RegisterSkill.skillList.size(); i++) {
+					list.add(RegisterSkill.skillList.get(i).skillId);
+				}
+			} else {
+				ArrayList<EntityPlayer> players = (ArrayList<EntityPlayer>) sender.getEntityWorld().playerEntities;
+				for (int i = 0; i < players.size(); i++) {
+					list.add(players.get(i).getDisplayName());
+				}
+			}
+		} else if (args[0].equalsIgnoreCase("info") || args[0].equalsIgnoreCase("reset") ) {
+			ArrayList<EntityPlayer> players = (ArrayList<EntityPlayer>) sender.getEntityWorld().playerEntities;
+			for (int i = 0; i < players.size(); i++) {
+				list.add(players.get(i).getDisplayName());
+			}
+		}
+		return list;
 	}
 
 	@Override
@@ -42,6 +73,7 @@ public class CommandRPGCore extends CommandBase {
 			sender.addChatMessage(new ChatComponentText(red + "/rpgcore help" + green + " - Displays this help message"));
 			sender.addChatMessage(new ChatComponentText(red + "/rpgcore addxp <skillid> <amount> [player]" + green + " - Add amount XP to skill ID, to yourself or player."));
 			sender.addChatMessage(new ChatComponentText(red + "/rpgcore list" + green + " - List all currently loaded skills"));
+			sender.addChatMessage(new ChatComponentText(red + "/rpgcore info <player>" + green + " - List a players skills along with XP and levels."));
 			sender.addChatMessage(new ChatComponentText(red + "/rpgcore reset <player>" + green + " - Reset ALL of the specified players skills and XP."));
 		}
 		if (args[0].equalsIgnoreCase("addxp") || args[0].equalsIgnoreCase("xpadd")) {
@@ -77,11 +109,38 @@ public class CommandRPGCore extends CommandBase {
 			
 			sender.addChatMessage(new ChatComponentText(green + "").appendSibling(chat));
 		}
+		if (args[0].equalsIgnoreCase("info")) {
+			ArrayList<String> list = new ArrayList<String>();
+			ArrayList<EntityPlayer> players = (ArrayList<EntityPlayer>) sender.getEntityWorld().playerEntities;
+			for (int i = 0; i < players.size(); i++) {
+				if (players.get(i).getCommandSenderName().equalsIgnoreCase(args[1])) {
+					list.add(players.get(i).getDisplayName() + "'s Skills:");
+					for (int j = 0; j < RegisterSkill.skillList.size(); j++) {		
+						SkillLevelBase skillBase = RegisterSkill.skillList.get(j);
+						SkillLevelBase skill = (SkillLevelBase) SkillLevelBase.get(players.get(i), skillBase.skillId);
+						EquippedSkills equipped = (EquippedSkills) EquippedSkills.get(players.get(i));
+						String eq = "";
+						
+						if (equipped.isSkillEquipped(skill.skillId)) {
+							eq = " [Equipped!]";
+						}
+						list.add(skill.nameFormat() + "[" + skill.skillName() + "] Lvl: " + skill.getLevel() + " (" + skill.getXP() + " XP)" + eq + "\n");
+					}
+					
+					IChatComponent chat = new ChatComponentText(green + "[" + players.get(i).getDisplayName() + "'s Skills]");
+					chat.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(list.toString().substring(1, list.toString().length()-2).replace(", ", ""))));
+					
+					sender.addChatMessage(new ChatComponentText(green + "").appendSibling(chat));
+					return;
+				}
+				sender.addChatMessage(new ChatComponentText(red + "Player not found."));
+			}
+		}
 		if (args[0].equalsIgnoreCase("reset")) {
 			if (args[1].isEmpty()) {
 				sender.addChatMessage(new ChatComponentText(red + "Please specify a player!"));
 			}
-			ArrayList<EntityPlayer> players = (ArrayList<EntityPlayer>) sender.getEntityWorld().playerEntities;
+			ArrayList<EntityPlayer> players = (ArrayList<EntityPlayer>) MinecraftServer.getServer().getConfigurationManager().playerEntityList;
 			for (int i = 0; i < players.size(); i++) {
 				if (players.get(i).getCommandSenderName().equalsIgnoreCase(args[1])) {
 					EntityPlayer player = players.get(i);

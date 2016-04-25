@@ -58,13 +58,19 @@ public abstract class SkillLevelBase {
 	 * @param player
 	 */
 	public void addXP(float xpAdd, EntityPlayer player) {
+		prtln("Attempting to add XP to " + player.getDisplayName() + "'s " + skillName() + " skill.");
 		if (canGainXP() && !player.capabilities.isCreativeMode) {
+			prtln("The skill can gain XP, and they're not in Creative.");
 			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get(player);
 			//We check on your behalf to make sure the skill is equipped before allowing the XP to be added.
 			if (isSkillEquipped(player, skillId)) {
+				prtln("The skill is equipped.");
 				//We'll also make sure they've not equipped armour into the slot shared by a skill
 				if (!skillArmourConflict(equippedSkills, skillId, player)) {
+					prtln("There are no armour conflicts");
 					if ((xpAdd+getXP()) >= getXpForLevel(getLevel())) { levelUp(player, xpAdd); }
+					
+					prtln("Adding " + xpAdd + " to " + player.getDisplayName() + "'s " + skillName() + " skill.");
 					
 					xp += xpAdd;
 					
@@ -87,6 +93,7 @@ public abstract class SkillLevelBase {
 	 * @param player
 	 */
 	public void addXPWithUpdate(float xpAdd, EntityPlayer player) {
+		prtln("Adding " + xpAdd + " to " + player.getDisplayName() + "'s " + skillName() + " skill, and notifying client.");
 		addXP(xpAdd, player);
 		if (!player.worldObj.isRemote) {
 			RPGCore.network.sendTo(new LevelPacket(getXP(), -1, skillId), (EntityPlayerMP) player);
@@ -97,6 +104,7 @@ public abstract class SkillLevelBase {
 	 * Called when the player has levelled up. Do anything you want upon levelling up here (eg notifying of unlocks.)
 	 */
 	public void levelUp(EntityPlayer player, float xpAdd) {
+		verbose(player.getDisplayName() + " levelled up their " + skillName() + " skill! They are now level " + getLevelFromXP(getXP() + xpAdd));
 		if (!player.worldObj.isRemote) {
 			player.addChatComponentMessage(new ChatComponentText(nameFormat() + "Level up! " + skillName() + " is now level " + getLevelFromXP(getXP() + xpAdd)));
 		}
@@ -106,6 +114,7 @@ public abstract class SkillLevelBase {
 	 * Forces a levelUp by force-adding the amount of XP remaining to the next level.
 	 */
 	public void forceLevelUp(EntityPlayer player) {
+		prtln("Attemping to force a levelup for " + player.getDisplayName());
 		forceAddXP(xpToNextLevel()+1, player);
 	}
 	
@@ -128,13 +137,9 @@ public abstract class SkillLevelBase {
 	 * @param xpAdd
 	 */
 	public void forceAddXP(float xpAdd, EntityPlayer player) {
-		System.out.println("force-add XP");
-		System.out.println("xpAdd: " + xpAdd + ", xp: " + getXP() + " (" + (xpAdd+getXP()) + ") ? >= "  + getXpForLevel(getLevel()));
+		prtln("Force-adding XP to " + player.getDisplayName() + "xpAdd: " + xpAdd + ", xp: " + getXP() + " (" + (xpAdd+getXP()) + ") ? >= "  + getXpForLevel(getLevel()));
 		if ((xpAdd+getXP()) >= getXpForLevel(getLevel())) {
-			System.out.println("Player levelled up!");
 			levelUp(player, xpAdd);
-		} else {
-			System.out.println("xpAdd: " + xpAdd + ", xp: " + xp + ", getXpForLevel: " + getXpForLevel(getLevel()));
 		}
 		xp += xpAdd;
 	}
@@ -200,7 +205,7 @@ public abstract class SkillLevelBase {
 		if (slot == 8 && player.inventory.armorItemInSlot(0) != null) { equippedSkills.skillId8 = ""; removedSkill = true; }
 		
 		if (removedSkill && !player.worldObj.isRemote) {
-			System.out.println("Armour and skill slot conflict! Removing skill and telling client..");
+			prtln("Armour and skill slot conflict for " + player.getDisplayName() + "! Removing skill and telling client..");
 			RPGCore.network.sendTo(new EquippedSkillsPacket(
 				equippedSkills.getSkillInSlot(0), 
 				equippedSkills.getSkillInSlot(1), 
@@ -214,6 +219,7 @@ public abstract class SkillLevelBase {
 				equippedSkills.getSkillInSlot(9), 
 				equippedSkills.getSkillInSlot(10), 
 				equippedSkills.getSkillInSlot(11)), (EntityPlayerMP) player);
+			player.addChatMessage(new ChatComponentText("You had applied armour over your equipped skills. The skills in question have been removed."));
 		}
 		
 		return removedSkill;
@@ -327,6 +333,7 @@ public abstract class SkillLevelBase {
 	 * @param xpSet
 	 */
 	public void setXP(float xpSet) {
+		prtln("Setting XP to " + xpSet);
 		xp = xpSet;
 	}
 	
@@ -592,4 +599,16 @@ public abstract class SkillLevelBase {
      * @return the Y position of the top-left of your 30x30 icon
      */
 	public abstract int iconZ();
+	
+	public void prtln(String str) {
+		if (config.debugMode) {
+			System.out.println("[RPGCore/" + skillName() + "] " + str);
+		}
+	}
+	
+	public void verbose(String str) {
+		if (config.verbose) {
+			System.out.println("[RPGCore/" + skillName() + "] " + str);
+		}
+	}
 }

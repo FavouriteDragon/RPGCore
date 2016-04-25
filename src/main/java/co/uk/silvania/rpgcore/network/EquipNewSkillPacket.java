@@ -1,5 +1,7 @@
 package co.uk.silvania.rpgcore.network;
 
+import co.uk.silvania.rpgcore.RPGCoreConfig;
+import co.uk.silvania.rpgcore.RPGUtils;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
 import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
@@ -10,6 +12,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public class EquipNewSkillPacket implements IMessage {
 	
@@ -39,27 +42,32 @@ public class EquipNewSkillPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(EquipNewSkillPacket message, MessageContext ctx) {
-			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get(ctx.getServerHandler().playerEntity);
-			SkillLevelBase newSkill = SkillLevelBase.getSkillByID(message.skillId, ctx.getServerHandler().playerEntity);
-			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) ctx.getServerHandler().playerEntity);
+			EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			
+			EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get(player);
+			SkillLevelBase newSkill = SkillLevelBase.getSkillByID(message.skillId, player);
+			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) player);
 			
 			for (int i = 0; i < equippedSkills.skillSlots; i++) {
-				SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(i), ctx.getServerHandler().playerEntity);	
+				SkillLevelBase skill = SkillLevelBase.getSkillByID(equippedSkills.getSkillInSlot(i), player);	
 				
 				if (skill != null) {
+					RPGUtils.prtln(player.getDisplayName() + " is attempting to equip " + skill.skillName());
+					
 					if (skill.skillId.equals(message.skillId)) {
-						System.out.println("Duplicate skill detected. Removing...");
+						RPGUtils.prtln("Duplicate skill detected. Removing...");
 						equippedSkills.setSkill(i, "");
 					}
 					
 					if (newSkill != null) {
 						for (int j = 0; j < newSkill.incompatibleSkills.size(); j++) {
-							System.out.println("Iterating. " + j + ": " + newSkill.incompatibleSkills.get(j));
+							RPGUtils.prtln("Iterating. " + j + ": " + newSkill.incompatibleSkills.get(j));
 							if (newSkill.incompatibleSkills.get(j).equals(skill.skillId)) {
-								System.out.println("Incompatable skill " + newSkill.incompatibleSkills.get(j) + " detected. Incompatible with " + skill.skillId + ". Removing...?");
-								System.out.println("Slot: " + equippedSkills.findSkillSlot(newSkill.incompatibleSkills.get(j)));
-								if (newSkill.canSkillBeEquipped(ctx.getServerHandler().playerEntity)) {
+								RPGUtils.prtln("Incompatable skill " + newSkill.incompatibleSkills.get(j) + " detected. Incompatible with " + skill.skillId + ". Removing...?");
+								RPGUtils.prtln("Slot: " + equippedSkills.findSkillSlot(newSkill.incompatibleSkills.get(j)));
+								if (newSkill.canSkillBeEquipped(player)) {
 									if (glevel.slotUnlockedLevel(message.slotId) <= glevel.getLevel()) {
+										RPGUtils.verbose(player + " has equipped skill " + skill.skillName() + " to slot " + message.slotId);
 										equippedSkills.setSkill(equippedSkills.findSkillSlot(newSkill.incompatibleSkills.get(j)), "");
 									}
 								}

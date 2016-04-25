@@ -35,5 +35,17 @@ public class RPGUtils {
 			return 0;
 		}
 	}
+	
+	public static void prtln(String str) {
+		if (RPGCoreConfig.debugMode) {
+			System.out.println("[RPGCore] " + str);
+		}
+	}
+	
+	public static void verbose(String str) {
+		if (RPGCoreConfig.verbose) {
+			System.out.println("[RPGCore] " + str);
+		}
+	}
 
 }

@@ -1,6 +1,7 @@
 package co.uk.silvania.rpgcore.network;
 
 import co.uk.silvania.rpgcore.RPGCore;
+import co.uk.silvania.rpgcore.RPGUtils;
 import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -44,7 +45,7 @@ public class SkillPointPacket implements IMessage {
 		public IMessage onMessage(SkillPointPacket message, MessageContext ctx) {
 			EntityPlayer player = ctx.getServerHandler().playerEntity;
 			World world = player.worldObj;
-			System.out.println("Skill Point Packet get! STR add: " + message.strAdd + ", AGI add: " + message.agiAdd);
+			RPGUtils.prtln("Skill Point Packet get from " + player.getDisplayName() + " STR add: " + message.strAdd + ", AGI add: " + message.agiAdd);
 			
 			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);
 			
@@ -53,22 +54,20 @@ public class SkillPointPacket implements IMessage {
 				SkillLevelBase skillAgi = SkillLevelBase.getSkillByID("skillAgility", player);
 				
 				float strAddB = skillStr.getXpForLevel(skillStr.getLevel()+message.strAdd-1) - skillStr.getXP();
-				System.out.println("Adding XP. Pre-add str: " + skillStr.getLevel() + ", adding " + strAddB);
 				skillStr.forceAddXP(strAddB, player);
-				System.out.println("Level is now " + skillStr.getLevel());
-				
 				
 				for (int i = 0; i < message.agiAdd; i++) { skillAgi.forceLevelUp(player); }
-				
 				
 				glevel.setSkillPoints(glevel.skillPoints - (message.strAdd+message.agiAdd));
 				
 				RPGCore.network.sendTo(new LevelPacket(skillStr.getXP(), -1, skillStr.skillId), (EntityPlayerMP) player);
 				RPGCore.network.sendTo(new LevelPacket(skillAgi.getXP(), -1, skillAgi.skillId), (EntityPlayerMP) player);
-				
 			} else {
 				//If they're above glevel.skillPoints, the player 99.9% is using a hacked client to try and cheat it.
 				//We won't accuse them, but we won't let them either.
+				//Oh, and if you're a "hacker", these lines will appear server-side even if you remove them here. ;)
+				RPGUtils.verbose("[ERROR] " + player.getDisplayName() + " tried to use more points than they had!!!");
+				RPGUtils.verbose("[ERROR] " + player.getDisplayName() + " this is a sign of a potentially hacked client!");
 				player.addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED + "Skill point server/client mismatch! Points not added."));
 			}
 			return new LevelPacket((int)(glevel.getXPGlobal()*10), glevel.getSkillPoints(), glevel.skillId);
