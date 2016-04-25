@@ -140,7 +140,6 @@ public class CommandRPGCore extends CommandBase {
 					sender.addChatMessage(new ChatComponentText(green + "").appendSibling(chat));
 					return;
 				}
-				sender.addChatMessage(new ChatComponentText(red + "Player not found."));
 			}
 		}
 		if (args[0].equalsIgnoreCase("reset")) {
@@ -173,7 +172,6 @@ public class CommandRPGCore extends CommandBase {
 					return;
 				}
 			}
-			sender.addChatMessage(new ChatComponentText(red + "Player not found."));
 		}
 		if (args[0].equalsIgnoreCase("verbose")) {
 			if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("1") || args[1].equalsIgnoreCase("yes")) {
@@ -190,7 +188,7 @@ public class CommandRPGCore extends CommandBase {
 				sender.addChatMessage(new ChatComponentText(green + "[RPGCore] Debug mode enabled."));
 			} else {
 				config.setDebug(false);
-				sender.addChatMessage(new ChatComponentText(green + "[RPGCore] Debug mode enabled."));
+				sender.addChatMessage(new ChatComponentText(green + "[RPGCore] Debug mode disabled."));
 			}
 		}
 	}
