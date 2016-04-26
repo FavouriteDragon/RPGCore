@@ -96,7 +96,10 @@ public abstract class SkillLevelBase {
 		prtln("Adding " + xpAdd + " to " + player.getDisplayName() + "'s " + skillName() + " skill, and notifying client.");
 		addXP(xpAdd, player);
 		if (!player.worldObj.isRemote) {
+			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);
+			
 			RPGCore.network.sendTo(new LevelPacket(getXP(), -1, skillId), (EntityPlayerMP) player);
+			RPGCore.network.sendTo(new LevelPacket(glevel.getXPGlobal(), glevel.getSkillPoints(), glevel.skillId), (EntityPlayerMP) player);
 		}
 	}
 	
