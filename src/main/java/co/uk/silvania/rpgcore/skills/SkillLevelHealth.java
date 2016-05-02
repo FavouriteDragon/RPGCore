@@ -63,8 +63,6 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 
 	@Override
 	public void openGui() {}
-	
-
 
 	@Override
 	public void addDescription() {
@@ -77,16 +75,16 @@ public class SkillLevelHealth extends SkillLevelBase implements IExtendedEntityP
 	
 	@Override
 	public int unlockedLevel() {
-		return 2;
-	}
-
-	@Override
-	public ResourceLocation skillIcon() {
-		return new ResourceLocation(RPGCore.MODID, "textures/gui/skills.png");
+		return 5;
 	}
 
 	@Override
 	public void activateSkill(EntityPlayer player, World world) {}
+	
+	@Override
+	public ResourceLocation skillIcon() {
+		return new ResourceLocation(RPGCore.MODID, "textures/gui/skills.png");
+	}
 
 	@Override
 	public int iconX() {

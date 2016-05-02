@@ -130,11 +130,11 @@ public class GlobalLevelConfig extends GuiScreen {
 			}
 		}
 		String title = "Global Configuration";
-		mc.fontRenderer.drawString(title, left+128-(RPGUtils.getStringLength(title)/2), top+7, 4210752);
+		mc.fontRenderer.drawString(title, left+128-(mc.fontRenderer.getStringWidth(title)/2), top+7, 4210752);
 		
 		String tip = "Hold shift over buttons to see tips";
-		mc.fontRenderer.drawString(tip, left+128-(RPGUtils.getStringLength(tip)/2), top+108, 4210752);
-		mc.fontRenderer.drawString(saved, left+128-(RPGUtils.getStringLength(saved)/2), top+121, 4210752);
+		mc.fontRenderer.drawString(tip, left+128-(mc.fontRenderer.getStringWidth(tip)/2), top+108, 4210752);
+		mc.fontRenderer.drawString(saved, left+128-(mc.fontRenderer.getStringWidth(saved)/2), top+121, 4210752);
 	}
 	
     @Override

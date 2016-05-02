@@ -59,11 +59,6 @@ public class SkillSelectGui extends GuiContainer {
 		buttonList.add(buttonConfig);
 	}
 	
-	@Override
-	public void drawScreen(int mouseX, int mouseZ, float par3) {
-		super.drawScreen(mouseX, mouseZ, par3);
-	}
-	
 	protected void mouseClicked(int mouseX, int mouseZ, int buttonId) {
         super.mouseClicked(mouseX, mouseZ, buttonId);
         int skillSlot = getSkillSlotHover(mouseX, mouseZ);
@@ -191,7 +186,7 @@ public class SkillSelectGui extends GuiContainer {
 		            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		    		GL11.glEnable(GL11.GL_BLEND);
 					
-					if (skill != null) {
+					if (skill != null && skill.skillId.length() > 3) {
 						if (skill.skillIcon() != null) {
 							mc.getTextureManager().bindTexture(skill.skillIcon());
 							iconPosX = skill.iconX();

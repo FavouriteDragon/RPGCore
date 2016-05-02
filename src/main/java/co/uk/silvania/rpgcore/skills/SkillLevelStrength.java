@@ -2,18 +2,13 @@ package co.uk.silvania.rpgcore.skills;
 
 import co.uk.silvania.rpgcore.RPGCore;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 
 public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntityProperties {
 	
@@ -65,11 +60,6 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 	public String skillName() {
 		return "Strength";
 	}
-	
-	@Override
-	public double levelMultiplier() {
-		return 3.5;
-	}
 
 	@Override
 	public void openGui() {}
@@ -87,13 +77,13 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 		description.add("Levelled using skill points gained from");
 		description.add("advancing your Global Level.");
 	}
+	
+	@Override public void activateSkill(EntityPlayer player, World world) {}
 
 	@Override
 	public ResourceLocation skillIcon() {
 		return new ResourceLocation(RPGCore.MODID, "textures/gui/skills.png");
 	}
-
-	@Override public void activateSkill(EntityPlayer player, World world) {}
 
 	@Override
 	public int iconX() {
@@ -121,6 +111,11 @@ public class SkillLevelStrength extends SkillLevelBase implements IExtendedEntit
 			skill.addXPWithUpdate(hardness / 2F, player);
 		}
 	}*/
+	
+	@Override
+	public int xpBarColour() {
+		return 16723484;
+	}
 	
 	@Override
 	public String shortName() {

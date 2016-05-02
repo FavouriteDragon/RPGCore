@@ -11,6 +11,7 @@
 /mcpmod.info
 /Start.java
 /logs/*
+/doc/*
 
 
 /.gradle

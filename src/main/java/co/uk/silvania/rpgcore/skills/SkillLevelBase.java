@@ -38,9 +38,7 @@ public abstract class SkillLevelBase {
 	public List description = new ArrayList();
 	
 	RPGCoreConfig config = new RPGCoreConfig();
-	
-	
-	
+
 	public SkillLevelBase(String skillID) {
 		this.xp = 0;
 		this.skillId = skillID;
@@ -79,6 +77,9 @@ public abstract class SkillLevelBase {
 					//Every time a skill gains XP, the global level also gets 10% of that XP.
 					GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);
 					glevel.xpGlobal += (xpAdd/10.0);
+					if (!player.worldObj.isRemote) {
+						RPGCore.network.sendTo(new LevelPacket((int)(glevel.getXPGlobal()), glevel.getSkillPoints(), glevel.skillId), (EntityPlayerMP) player);
+					}
 					
 					xpGained(skillId, xpAdd, player);
 				}
@@ -268,14 +269,19 @@ public abstract class SkillLevelBase {
 		return (int) Math.round((getXP() - getXpForLevel(getLevel()-1))/(getXpForLevel(getLevel()) - getXpForLevel(getLevel()-1))*100) + "%";
 	}
 	
-	/**
-	 * Calculates a level based on how much XP the player has.
-	 * @return level, as an integer
+	
+	/** 
+	 * Quick n' easy method to grab the current level.
+	 * @return
 	 */
 	public int getLevel() {
 		return getLevelFromXP(getXP());
 	}
 	
+	/**
+	 * Calculates a level based on how much XP the player has.
+	 * @return level, as an integer
+	 */
 	public int getLevelFromXP(float xp) {
 		int base = config.baseXp;
 		int previousXp = config.baseXp;
@@ -319,7 +325,6 @@ public abstract class SkillLevelBase {
 		for (int i = 1; i < level; i++) {
 			xpForLevel += base + ((base / 100.0) * ((i*levelMultiplier()) * (35 + ((i/10)*10))));
 		}
-		
 		return xpForLevel;
 	}
 	
@@ -349,15 +354,6 @@ public abstract class SkillLevelBase {
 	public static IExtendedEntityProperties get(EntityPlayer player, String skillId) {
 		return player.getExtendedProperties(skillId);
 	}
-	
-	/**
-	 * Clones the skill's properties, used on player death etc to persist skills through death.
-	 * Should be overriden if you save anything more than XP in your skill (eg cooldowns)
-	 * @param properties
-	 *//*
-	public void copy(SkillLevelBase properties) {
-		xp = properties.xp;
-	}/*
 	
 	/** 
 	 * Checks if the skill is unlocked, based off the global level.
@@ -603,12 +599,22 @@ public abstract class SkillLevelBase {
      */
 	public abstract int iconZ();
 	
+	/**
+	 * If debug mode is enabled print the string to console when called.
+	 * Useful for skill debugging etc, something that would otherwise be very spammy.
+	 * @param str
+	 */
 	public void prtln(String str) {
 		if (config.debugMode) {
 			System.out.println("[RPGCore/" + skillName() + "] " + str);
 		}
 	}
 	
+	/**
+	 * If verbose is enabled pring the string to console when called.
+	 * Useful for minor things, such as players levelling up or equipping skills - things an admin might want to know about.
+	 * @param str
+	 */
 	public void verbose(String str) {
 		if (config.verbose) {
 			System.out.println("[RPGCore/" + skillName() + "] " + str);

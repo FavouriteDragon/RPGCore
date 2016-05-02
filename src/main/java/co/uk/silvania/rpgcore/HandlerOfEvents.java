@@ -88,7 +88,7 @@ public class HandlerOfEvents {
 				
 				gui.drawTexturedModalRect(posLeft, posHeight, 0, 238, 17, 11);
 				String lvl = "" + glevel.getLevel();
-				mc.fontRenderer.drawString(lvl, posLeft+9-(RPGUtils.getStringLength(lvl)/2), posHeight+2, 16777215);
+				mc.fontRenderer.drawString(lvl, posLeft+9-(mc.fontRenderer.getStringWidth(lvl)/2), posHeight+2, 16777215);
 			}
 		}
 		//Skill XP bars
@@ -275,7 +275,6 @@ public class HandlerOfEvents {
 		}
 		GlobalLevel.get(event.original).saveNBTData(nbt);
 		GlobalLevel.get(event.entityPlayer).loadNBTData(nbt);
-		//((SkillLevelBase) SkillLevelBase.get(event.entityPlayer, SkillLevelBase.staticId)).copy((SkillLevelBase) SkillLevelBase.get(event.original, SkillLevelBase.staticId));
 	}
 	
 	@SubscribeEvent
@@ -293,7 +292,7 @@ public class HandlerOfEvents {
 				EquippedSkills equippedSkills = (EquippedSkills) EquippedSkills.get((EntityPlayer) player);
 				
 				GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) player);
-				RPGCore.network.sendTo(new LevelPacket((int)(glevel.getXPGlobal()*10), glevel.getSkillPoints(), glevel.skillId), (EntityPlayerMP) player);
+				RPGCore.network.sendTo(new LevelPacket((int)(glevel.getXPGlobal()), glevel.getSkillPoints(), glevel.skillId), (EntityPlayerMP) player);
 				
 				RPGCore.network.sendTo(new EquippedSkillsPacket(
 						equippedSkills.getSkillInSlot(0), 

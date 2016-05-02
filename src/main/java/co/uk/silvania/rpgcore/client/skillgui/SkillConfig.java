@@ -233,8 +233,8 @@ public class SkillConfig extends GuiScreen {
 		}
 		
 		String tip = "Hold shift over buttons to see tips";
-		mc.fontRenderer.drawString(tip, left+128-(RPGUtils.getStringLength(tip)/2), top+236, 4210752);
-		mc.fontRenderer.drawString(saved, left+128-(RPGUtils.getStringLength(saved)/2), top+249, 16777215);
+		mc.fontRenderer.drawString(tip, left+128-(mc.fontRenderer.getStringWidth(tip)/2), top+236, 4210752);
+		mc.fontRenderer.drawString(saved, left+128-(mc.fontRenderer.getStringWidth(saved)/2), top+249, 16777215);
 		
 		if (showXPBar) {
 			this.mc.getTextureManager().bindTexture(xpBars);
@@ -289,7 +289,7 @@ public class SkillConfig extends GuiScreen {
 				if (txtStyle == 12) { text = skill.nameFormat() + skill.getXPProgressAsPercentage(); }
 			}
 			if (rightAlign) { textOffset = barWidth-mc.fontRenderer.getStringWidth(text)-2-iconOffset; iconOffset = 0;; }
-			mc.fontRenderer.drawString(text, left+128-(RPGUtils.getStringLength(text)/2), top + iconBarY + 4, 16777215);
+			mc.fontRenderer.drawString(text, left+128-(mc.fontRenderer.getStringWidth(text)/2), top + iconBarY + 4, 16777215);
 		}
 
 		this.mc.getTextureManager().bindTexture(icon);

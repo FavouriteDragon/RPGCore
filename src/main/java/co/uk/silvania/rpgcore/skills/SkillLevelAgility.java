@@ -2,8 +2,6 @@ package co.uk.silvania.rpgcore.skills;
 
 import co.uk.silvania.rpgcore.RPGCore;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,7 +9,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
 
 public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntityProperties {
 	
@@ -48,15 +45,10 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 			event.entity.registerExtendedProperties(skillId, new SkillLevelAgility((EntityPlayer)event.entity, skillId));
 		}
 	}
-	
-	@Override
-	public double levelMultiplier() {
-		return 2.0;
-	}
 
 	@Override
 	public boolean hasGui() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -64,11 +56,7 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 		return "Agility";
 	}
 
-	@Override
-	public void openGui() {
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public void openGui() {}
 	
 	@Override
 	public void addIncompatibilities() {
@@ -85,12 +73,12 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 	}
 
 	@Override
+	public void activateSkill(EntityPlayer player, World world) {}
+	
+	@Override
 	public ResourceLocation skillIcon() {
 		return new ResourceLocation(RPGCore.MODID, "textures/gui/skills.png");
 	}
-
-	@Override
-	public void activateSkill(EntityPlayer player, World world) {}
 
 	@Override
 	public int iconX() {
@@ -101,10 +89,6 @@ public class SkillLevelAgility extends SkillLevelBase implements IExtendedEntity
 	public int iconZ() {
 		return 0;
 	}
-
-	int tick = 0;
-	float prevTickFall = 0;
-	float playerFallHealth = -1;
 	
 	@Override
 	public boolean canGainXP() {

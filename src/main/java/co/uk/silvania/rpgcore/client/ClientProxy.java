@@ -23,7 +23,7 @@ public class ClientProxy extends CommonProxy {
 	public void syncLevelsWithClient(LevelPacket message, MessageContext ctx) {
 		if (message.skillId.equalsIgnoreCase(GlobalLevel.staticSkillId)) {
 			GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) Minecraft.getMinecraft().thePlayer, message.skillId);
-			glevel.setXP((message.xp)/10.0F);
+			glevel.setXP(message.xp);
 			glevel.setSkillPoints(message.val);
 		} else {
 			SkillLevelBase level = (SkillLevelBase) SkillLevelBase.get((EntityPlayer) Minecraft.getMinecraft().thePlayer, message.skillId);

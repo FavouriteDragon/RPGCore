@@ -136,7 +136,7 @@ public class PlayerConfig extends GuiScreen {
 
 		String pnts = "Skill Points: " + availablePoints;
 		
-		mc.fontRenderer.drawString(pnts, left + 249 - RPGUtils.getStringLength(pnts), top + 7, 4210752);
+		mc.fontRenderer.drawString(pnts, left + 249 - mc.fontRenderer.getStringWidth(pnts), top + 7, 4210752);
 		mc.fontRenderer.drawString("Player Configuration", left + 7, top + 7, 4210752);
 		
 		String str = "STR: " + SkillLevelBase.getSkillByID("skillStrength", mc.thePlayer).getLevel();
@@ -145,11 +145,11 @@ public class PlayerConfig extends GuiScreen {
 		String strAdd = addStrVal > 0 ? "+" + addStrVal : "";
 		String agiAdd = addAgiVal > 0 ? "+" + addAgiVal : "";
 		
-		mc.fontRenderer.drawString(str, left + 66-(RPGUtils.getStringLength(str+strAdd)/2), top + 27, 4210752);
-		mc.fontRenderer.drawString(strAdd, left + 66+(RPGUtils.getStringLength(str)/2), top + 27, 25600);
+		mc.fontRenderer.drawString(str, left + 66-(mc.fontRenderer.getStringWidth(str+strAdd)/2), top + 27, 4210752);
+		mc.fontRenderer.drawString(strAdd, left + 66+(mc.fontRenderer.getStringWidth(str)/2), top + 27, 25600);
 		
-		mc.fontRenderer.drawString(agi, left + 189-(RPGUtils.getStringLength(agi+agiAdd)/2), top + 27, 4210752);
-		mc.fontRenderer.drawString(agiAdd, left + 189+(RPGUtils.getStringLength(agi)/2), top + 27, 25600);
+		mc.fontRenderer.drawString(agi, left + 189-(mc.fontRenderer.getStringWidth(agi+agiAdd)/2), top + 27, 4210752);
+		mc.fontRenderer.drawString(agiAdd, left + 189+(mc.fontRenderer.getStringWidth(agi)/2), top + 27, 25600);
 		
 		super.drawScreen(mouseX, mouseZ, par3);
 		

@@ -67,10 +67,10 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 			return -1;
 		}
 		
-		if (slot == 0)  { return 10; }
-		if (slot == 1)  { return 20; }
-		if (slot == 11) { return 30; }
-		if (slot == 2)  { return 40; }
+		if (slot == 0)  { return 3; }
+		if (slot == 1)  { return 10; }
+		if (slot == 11) { return 15; }
+		if (slot == 2)  { return 25; }
 		if (slot == 10) { return 50; }
 		
 		return 999;
@@ -86,7 +86,6 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 			level++;
 		}
 		return level;
-		
 	}
 	
 	public int getXpForLevel(int level) {
@@ -168,15 +167,13 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 	}
 
 	@Override public void openGui() {}
-
 	@Override public void addDescription() {}
-
+	@Override public void activateSkill(EntityPlayer player, World world) {}
+	
 	@Override
 	public ResourceLocation skillIcon() {
 		return null;
 	}
-
-	@Override public void activateSkill(EntityPlayer player, World world) {}
 
 	@Override
 	public int iconX() {
