@@ -77,6 +77,11 @@ public abstract class SkillLevelBase {
 					//Every time a skill gains XP, the global level also gets 10% of that XP.
 					GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);
 					glevel.xpGlobal += (xpAdd/10.0);
+					
+					if (((xpAdd/10.0)+glevel.getXPGlobal()) >= getXpForLevel(getLevel())) {
+						glevel.levelUpGlobal(player, xpAdd);
+					}
+										
 					if (!player.worldObj.isRemote) {
 						RPGCore.network.sendTo(new LevelPacket((int)(glevel.getXPGlobal()), glevel.getSkillPoints(), glevel.skillId), (EntityPlayerMP) player);
 					}
