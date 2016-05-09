@@ -122,6 +122,8 @@ public class CommandRPGCore extends CommandBase {
 			for (int i = 0; i < players.size(); i++) {
 				if (players.get(i).getCommandSenderName().equalsIgnoreCase(args[1])) {
 					list.add(players.get(i).getDisplayName() + "'s Skills:\n");
+					GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(players.get(i));
+					list.add(EnumChatFormatting.BOLD + "[Global] Lvl: " + glevel.level + " (" + glevel.getXPGlobal() + " XP)\n");
 					for (int j = 0; j < RegisterSkill.skillList.size(); j++) {		
 						SkillLevelBase skillBase = RegisterSkill.skillList.get(j);
 						SkillLevelBase skill = (SkillLevelBase) SkillLevelBase.get(players.get(i), skillBase.skillId);
