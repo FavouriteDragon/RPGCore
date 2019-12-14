@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlobalLevel extends SkillLevelBase implements ICapabilitySerializable<NBTBase> {
+public class GlobalLevel extends SkillLevelBase implements ICapabilitySerializable<NBTTagCompound> {
 
 	public static String staticSkillId;
 
@@ -237,17 +237,12 @@ public class GlobalLevel extends SkillLevelBase implements ICapabilitySerializab
 	}
 
 	@Override
-	public Entity serializeNBT() {
+	public NBTTagCompound serializeNBT() {
 		return null;
 	}
 
 	@Override
-	public void deserializeNBT(NBTBase nbt) {
-
-	}
-
-	@Override
-	public void deserializeNBT(Entity nbt) {
+	public void deserializeNBT(NBTTagCompound nbt) {
 
 	}
 }
