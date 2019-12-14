@@ -5,17 +5,26 @@ import java.util.ArrayList;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.client.CPacketPlayerAbilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 
-public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProperties {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public class GlobalLevel extends SkillLevelBase implements ICapabilitySerializable<NBTBase> {
 	
 	public static String staticSkillId;
 	
@@ -188,5 +197,31 @@ public class GlobalLevel extends SkillLevelBase implements IExtendedEntityProper
 	@Override
 	public String shortName() {
 		return "Global";
+	}
+
+	@Override
+	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+		return null;
+	}
+
+	@Override
+	public Entity serializeNBT() {
+		return null;
+	}
+
+	@Override
+	public void deserializeNBT(NBTBase nbt) {
+
+	}
+
+	@Override
+	public void deserializeNBT(Entity nbt) {
+
 	}
 }

@@ -27,3 +27,5 @@
 *.sh
 *.lzma
 *.log
+*.xml
+*.iml
