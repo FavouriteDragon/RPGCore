@@ -9,7 +9,6 @@ import co.uk.silvania.rpgcore.network.SkillPointPacket;
 import co.uk.silvania.rpgcore.skills.EquippedSkills;
 import co.uk.silvania.rpgcore.skills.GlobalLevel;
 import co.uk.silvania.rpgcore.skills.SkillLevelAgility;
-import co.uk.silvania.rpgcore.skills.SkillLevelBase;
 import co.uk.silvania.rpgcore.skills.SkillLevelHealth;
 import co.uk.silvania.rpgcore.skills.SkillLevelStrength;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -76,9 +75,9 @@ public class RPGCore {
     	network.registerMessage(EquipNewSkillPacket.Handler.class, EquipNewSkillPacket.class, 3, Side.SERVER);
     	network.registerMessage(SkillPointPacket.Handler.class, SkillPointPacket.class, 4, Side.SERVER);
     	
-    	FMLCommonHandler.instance().bus().register(new HandlerOfEvents());
+    	FMLCommonHandler.instance().bus().register(new EventHandler());
     	
-    	MinecraftForge.EVENT_BUS.register(new HandlerOfEvents());
+    	MinecraftForge.EVENT_BUS.register(new EventHandler());
     	MinecraftForge.EVENT_BUS.register(new EquippedSkills());
     	MinecraftForge.EVENT_BUS.register(new GlobalLevel(null, "globalLevel"));
     	MinecraftForge.EVENT_BUS.register(new SkillLevelAgility(null, "skillAgility"));

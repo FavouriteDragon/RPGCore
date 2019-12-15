@@ -3,7 +3,7 @@ package co.uk.silvania.rpgcore.skills;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.uk.silvania.rpgcore.HandlerOfEvents;
+import co.uk.silvania.rpgcore.EventHandler;
 import co.uk.silvania.rpgcore.RPGCore;
 import co.uk.silvania.rpgcore.RPGCoreConfig;
 import co.uk.silvania.rpgcore.RegisterSkill;
@@ -21,7 +21,7 @@ public abstract class SkillLevelBase {
 	public float xp;
 	public int level;
 	
-	HandlerOfEvents hoe = new HandlerOfEvents();
+	EventHandler eventHandler = new EventHandler();
 
 	public static String staticId;
 	public String skillId;
@@ -72,7 +72,7 @@ public abstract class SkillLevelBase {
 					
 					xp += xpAdd;
 					
-					hoe.setXpForRender(xpAdd);					
+					eventHandler.setXpForRender(xpAdd);
 					
 					//Every time a skill gains XP, the global level also gets 10% of that XP.
 					GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(player);

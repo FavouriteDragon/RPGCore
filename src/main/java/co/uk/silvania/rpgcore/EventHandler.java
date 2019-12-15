@@ -1,5 +1,8 @@
 package co.uk.silvania.rpgcore;
 
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import co.uk.silvania.rpgcore.network.EquippedSkillsPacket;
@@ -22,7 +25,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-public class HandlerOfEvents {
+public class EventHandler {
 	
 	GuiConfig config = new GuiConfig();
 	
@@ -37,7 +40,7 @@ public class HandlerOfEvents {
 		Gui gui = new Gui();
 
 		//Global level XP bar
-		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get((EntityPlayer) mc.thePlayer);
+		GlobalLevel glevel = (GlobalLevel) GlobalLevel.get(mc.player);
 		if (glevel != null) {
 			mc.getTextureManager().bindTexture(xpBars);
 
