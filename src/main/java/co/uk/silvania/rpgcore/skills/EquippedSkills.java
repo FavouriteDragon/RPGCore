@@ -82,7 +82,7 @@ public class EquippedSkills implements IExtendedEntityProperties {
 		if (slot == 11) { skillId11 = skillId; }
 	}
 	
-	public static IExtendedEntityProperties get(EntityPlayer player) {
+	public static EquippedSkills get(EntityPlayer player) {
 		return player.getExtendedProperties("equippedSkills");
 	}
 	

@@ -2,6 +2,7 @@ package co.uk.silvania.rpgcore;
 
 import co.uk.silvania.rpgcore.network.*;
 import co.uk.silvania.rpgcore.skills.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
@@ -77,7 +78,7 @@ public class RPGCore {
 
 	@Mod.EventHandler
 	public void serverStart(FMLServerStartingEvent event) {
-		MinecraftServer server = MinecraftServer.getServer();
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		ICommandManager command = server.getCommandManager();
 		ServerCommandManager manager = (ServerCommandManager) command;
 

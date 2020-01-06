@@ -2,7 +2,7 @@ package co.uk.silvania.rpgcore;
 
 import co.uk.silvania.rpgcore.network.EquippedSkillsPacket;
 import co.uk.silvania.rpgcore.network.LevelPacket;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class CommonProxy {
 	

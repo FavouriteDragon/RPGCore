@@ -1,17 +1,14 @@
 package co.uk.silvania.rpgcore.network;
 
 import co.uk.silvania.rpgcore.RPGCore;
-import co.uk.silvania.rpgcore.skills.EquippedSkills;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class EquippedSkillsPacket implements IMessage {
-	
+
 	public String slot0;
 	public String slot1;
 	public String slot2;
@@ -24,11 +21,12 @@ public class EquippedSkillsPacket implements IMessage {
 	public String slot9;
 	public String slot10;
 	public String slot11;
-	
-	public EquippedSkillsPacket() {}
-	
-	public EquippedSkillsPacket(String slot0, String slot1, String slot2, String slot3, String slot4, String slot5, 
-			String slot6, String slot7, String slot8, String slot9, String slot10, String slot11) {
+
+	public EquippedSkillsPacket() {
+	}
+
+	public EquippedSkillsPacket(String slot0, String slot1, String slot2, String slot3, String slot4, String slot5,
+								String slot6, String slot7, String slot8, String slot9, String slot10, String slot11) {
 		this.slot0 = slot0;
 		this.slot1 = slot1;
 		this.slot2 = slot2;
@@ -74,9 +72,9 @@ public class EquippedSkillsPacket implements IMessage {
 		ByteBufUtils.writeUTF8String(buf, slot10);
 		ByteBufUtils.writeUTF8String(buf, slot11);
 	}
-	
+
 	public static class Handler implements IMessageHandler<EquippedSkillsPacket, IMessage> {
-		
+
 		@Override
 		public IMessage onMessage(EquippedSkillsPacket message, MessageContext ctx) {
 			RPGCore.proxy.syncEquippedSkillsWithClient(message, ctx);

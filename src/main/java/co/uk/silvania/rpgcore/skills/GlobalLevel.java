@@ -52,7 +52,7 @@ public class GlobalLevel extends SkillLevelBase implements ICapabilitySerializab
 		player.registerExtendedProperties(GlobalLevel.staticSkillId, new GlobalLevel(player, staticSkillId));
 	}
 
-	public static IExtendedEntityProperties get(EntityPlayer player) {
+	public static SkillLevelBase get(EntityPlayer player) {
 		return player.getExtendedProperties(staticSkillId);
 	}
 
